@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+
+import {DataSource} from '@angular/cdk/collections';
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -13,12 +15,24 @@ import { Entity } from '../models/entity';
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit {
-  entities$: Observable<Entity[]>;
+  displayedColumns = ['id', 'code', 'name'];
+  dataSource: VisualiserDataSource | null;
 
   constructor(private store: Store<fromRoot.State>) {}
 
   ngOnInit() {
-    this.entities$ = this.store.select('entities');
+    this.dataSource = new VisualiserDataSource(this.store);
+  }
+}
+
+export class VisualiserDataSource extends DataSource<any> {
+  constructor(private store: Store<fromRoot.State>) {
+    super();
   }
 
+  public connect(): Observable<Entity[]> {
+    return this.store.select('entities');
+  }
+
+  public disconnect() {}
 }

@@ -1,6 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatTableModule
+} from '@angular/material';
+
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { DBModule } from '@ngrx/db';
@@ -31,10 +36,6 @@ export function RestangularConfigFactory (RestangularProvider) {
   // Extract collection content
   RestangularProvider.setResponseExtractor(function(response, operation) {
     if (operation === 'getList') {
-        // var newResponse = response.body;
-        // newResponse.pagination = response.pagination;
-        // newResponse.entities = response[Object.keys(response)[0]];
-        // return newResponse;
         return response[Object.keys(response)[0]];
     }
     return response;
@@ -52,7 +53,14 @@ export function RestangularConfigFactory (RestangularProvider) {
     StoreModule.forRoot(fromRoot.reducers),
     EffectsModule.forRoot([EntitiesEffects]),
     DBModule.provideDB(schema),
-    RestangularModule.forRoot(RestangularConfigFactory)
+    RestangularModule.forRoot(RestangularConfigFactory),
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatTableModule
   ],
   providers: [
     ConnecApiService

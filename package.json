@@ -13,7 +13,7 @@
   },
   "private": false,
   "dependencies": {
-    "@angular/animations": "^4.4.0",
+    "@angular/animations": "^4.4.6",
     "@angular/common": "^4.4.0",
     "@angular/compiler": "^4.4.0",
     "@angular/core": "^4.4.0",
@@ -22,6 +22,8 @@
     "@angular/platform-browser": "^4.4.0",
     "@angular/platform-browser-dynamic": "^4.4.0",
     "@angular/router": "^4.4.0",
+    "@angular/material": "^2.0.0-beta.12",
+    "@angular/cdk": "^2.0.0-beta.12",
     "@ngrx/core": "^1.2.0",
     "@ngrx/db": "^2.0.2",
     "@ngrx/effects": "^4.1.1",
