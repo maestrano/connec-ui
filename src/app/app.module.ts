@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatTableModule
 } from '@angular/material';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -12,6 +13,8 @@ import { DBModule } from '@ngrx/db';
 
 import { Http, Response } from '@angular/http';
 import { RestangularModule, Restangular } from 'ngx-restangular';
+
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 
@@ -39,7 +42,7 @@ export function RestangularConfigFactory (RestangularProvider) {
         return response[Object.keys(response)[0]];
     }
     return response;
-});
+  });
 
 }
 
@@ -54,6 +57,7 @@ export function RestangularConfigFactory (RestangularProvider) {
     EffectsModule.forRoot([EntitiesEffects]),
     DBModule.provideDB(schema),
     RestangularModule.forRoot(RestangularConfigFactory),
+    NgbModule.forRoot(),
     BrowserAnimationsModule,
     MatButtonModule,
     MatCardModule,
