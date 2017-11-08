@@ -1,24 +1,10 @@
-<mat-toolbar color="primary">
-    <span>MyCompany</span>
-    <span class="example-spacer"></span>
-    <button mat-button [matMenuTriggerFor]="appMenu"><mat-icon>menu</mat-icon> Menu</button>
-</mat-toolbar>
+<div>
+  <mat-toolbar color="primary">
+    <span>Connec!™ Contacts</span>
+  </mat-toolbar>
+</div>
 
-<mat-menu #appMenu="matMenu">
-  <button mat-menu-item> Settings </button>
-  <button mat-menu-item> Help </button>
-</mat-menu>
-
-<h1>Entities!</h1>
-
-<!-- <div *ngIf="entities$ | async as entities" class="row">
-  <div *ngFor="let entity of entities">
-    {{ entity.id }} {{ entity.code }} {{ entity.name }}
-  </div>
-</div> -->
-
-
-<div class="example-container mat-elevation-z8">
+<div class="container mat-elevation-z8">
   <mat-table #table [dataSource]="dataSource">
     <!-- ID Column -->
     <ng-container matColumnDef="id">
