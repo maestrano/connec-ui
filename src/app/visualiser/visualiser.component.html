@@ -1,0 +1,7 @@
+<h1>Entities!</h1>
+
+<div *ngIf="entities$ | async as entities" class="row">
+  <div *ngFor="let entity of entities">
+    {{ entity.id }}
+  </div>
+</div>
