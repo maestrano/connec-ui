@@ -1,11 +1,11 @@
 import { ActionReducerMap } from '@ngrx/store';
-import * as fromEntities from './entities';
-import { Entity } from '../models/entity';
+import * as fromEntitiesPage from './entities_page';
+import { EntitiesPage } from '../models/entities_page';
 
 export interface State {
-  entities: Array<Entity>;
+  entitiesPage: EntitiesPage;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  entities: fromEntities.reducer
+  entitiesPage: fromEntitiesPage.reducer
 };

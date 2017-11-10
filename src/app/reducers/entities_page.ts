@@ -1,7 +1,7 @@
-import * as entities from '../actions/entities';
-import { Entity } from '../models/entity';
+import * as entities from '../actions/entities_page';
+import { EntitiesPage } from '../models/entities_page';
 
-export function reducer(state: Array<Entity>, action: entities.Actions): Array<Entity> {
+export function reducer(state: EntitiesPage, action: entities.Actions): EntitiesPage {
   switch (action.type) {
     case entities.LOAD: {
       console.log('### DEBUG LOAD', action);

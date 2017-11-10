@@ -12,13 +12,13 @@ import { Observable } from 'rxjs/Observable';
 import { defer } from 'rxjs/observable/defer';
 import { of } from 'rxjs/observable/of';
 
-import * as entitiesAction from '../actions/entities';
-import { Entity } from '../models/entity';
+import * as entitiesPageAction from '../actions/entities_page';
+import { EntitiesPage } from '../models/entities_page';
 
 import { ConnecApiService } from '../services/connec-api.service';
 
 @Injectable()
-export class EntitiesEffects {
+export class EntitiesPageEffects {
 
   /**
    * This effect does not yield any actions back to the store. Set
@@ -41,12 +41,12 @@ export class EntitiesEffects {
    */
   @Effect()
   loadEntities$: Observable<Action> = this.actions$
-    .ofType(entitiesAction.LOAD)
-    .startWith(new entitiesAction.LoadAction())
+    .ofType(entitiesPageAction.LOAD)
+    // .startWith(new entitiesPageAction.LoadAction())
     .mergeMap(() => {
       return this.connecApiService.fetchEntities('contacts')
-        .map((entities: Entity[]) => new entitiesAction.LoadSuccessAction(entities))
-        .catch(error => of(new entitiesAction.LoadFailAction(error)))
+        .map((entitiesPage: EntitiesPage) => new entitiesPageAction.LoadSuccessAction(entitiesPage))
+        .catch(error => of(new entitiesPageAction.LoadFailAction(error)))
     });
 
     constructor(

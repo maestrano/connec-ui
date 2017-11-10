@@ -3,7 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatTableModule
+  MatButtonModule,
+  MatCardModule,
+  MatMenuModule,
+  MatToolbarModule,
+  MatIconModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule
 } from '@angular/material';
 import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -24,7 +31,7 @@ import 'rxjs/add/operator/catch';
 
 import { VisualiserComponent } from './visualiser/visualiser.component';
 
-import { EntitiesEffects } from './effects/entities';
+import { EntitiesPageEffects } from './effects/entities_page';
 
 import * as fromRoot from './reducers/index';
 
@@ -54,7 +61,7 @@ export function RestangularConfigFactory (RestangularProvider) {
   imports: [
     BrowserModule,
     StoreModule.forRoot(fromRoot.reducers),
-    EffectsModule.forRoot([EntitiesEffects]),
+    EffectsModule.forRoot([EntitiesPageEffects]),
     DBModule.provideDB(schema),
     RestangularModule.forRoot(RestangularConfigFactory),
     NgbModule.forRoot(),
@@ -64,7 +71,9 @@ export function RestangularConfigFactory (RestangularProvider) {
     MatMenuModule,
     MatToolbarModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [
     ConnecApiService

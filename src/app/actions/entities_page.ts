@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Entity } from '../models/entity';
+import { EntitiesPage } from '../models/entities_page';
 
 export const LOAD =                 '[Entities] Load';
 export const LOAD_SUCCESS =         '[Entities] Load Success';
@@ -12,7 +12,7 @@ export class LoadAction implements Action {
 export class LoadSuccessAction implements Action {
   readonly type = LOAD_SUCCESS;
 
-  constructor(public payload: Entity[]) { }
+  constructor(public payload: EntitiesPage) { }
 }
 
 export class LoadFailAction implements Action {
