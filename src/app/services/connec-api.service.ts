@@ -13,6 +13,17 @@ export class ConnecApiService {
 
   constructor(private restangular: Restangular) { }
 
+  public collections(): Observable<String[]> {
+    return this.restangular.all('/').get('')
+    .map((res: any) => {
+      var cols = res._links.map((collection: any) => Object.keys(collection)[0]);
+      return cols;
+     })
+    .catch(error => {
+      this.handleError(error)
+    });
+  }
+
   public fetchEntities(collection: string, pageSize=100, pageNumber=0): Observable<EntitiesPage> {
     return this.restangular.all('org-fbba').customGET(collection, {'$top': pageSize, '$skip': pageSize * (pageNumber)})
     .map((res: any) => this.extractQueryData(res, collection))
@@ -20,15 +31,17 @@ export class ConnecApiService {
   }
 
   private extractQueryData(res: any, collection: string): EntitiesPage {
-    console.log("ENTITIES PAGE FETCHED ", res);
-
     const entitiesPage: EntitiesPage = new EntitiesPage([], res['pagination']);
 
-    res[collection].forEach((record: any) => {
-      const entity: Entity = this.deserializeModel(record);
-      entitiesPage.entities.push(entity);
-    });
-
+    if(res[collection].constructor == Array) {
+      res[collection].forEach((record: any) => {
+        const entity: Entity = this.deserializeModel(record);
+        entitiesPage.entities.push(entity);
+      });
+    } else {
+      entitiesPage.pagination = {total: 1};
+      entitiesPage.entities.push(this.deserializeModel(res[collection]));
+    }
     return entitiesPage;
   }
 

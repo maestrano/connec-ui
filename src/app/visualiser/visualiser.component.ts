@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 
-import {MatPaginator, MatSort} from '@angular/material';
-import {DataSource} from '@angular/cdk/collections';
+import { MatPaginator, MatSort, MatSelect, MatSelectChange } from '@angular/material';
+import { DataSource } from '@angular/cdk/collections';
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -21,26 +21,33 @@ import { ConnecApiService } from '../services/connec-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit {
-  displayedColumns = ['id', 'code', 'name'];
+  collections$: Observable<any[]>;
+
   dataSource: VisualiserDataSource | null;
 
+  @ViewChild(MatSelect) select: MatSelect;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private store: Store<fromRoot.State>, private connecApiService: ConnecApiService) {}
 
   ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this.store, this.connecApiService, this.paginator, this.sort);
+    this.dataSource = new VisualiserDataSource(this.store, this.connecApiService, this.select, this.paginator, this.sort);
+    this.collections$ = this.connecApiService.collections();
+    this.select.value = 'company';
   }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
+  displayedColumns = ['id', 'code', 'name'];
+
   pageSize = 100;
   resultsLength = 0;
   isLoadingResults = false;
 
   constructor(private store: Store<fromRoot.State>,
               private connecApiService: ConnecApiService,
+              private select: MatSelect,
               private paginator: MatPaginator,
               private sort: MatSort) {
     super();
@@ -49,7 +56,8 @@ export class VisualiserDataSource extends DataSource<any> {
   public connect(): Observable<Entity[]> {
     const displayDataChanges = [
       this.sort.sortChange,
-      this.paginator.page
+      this.paginator.page,
+      this.select.valueChange
     ];
 
     // If the user changes the sort order, reset back to the first page.
@@ -59,7 +67,7 @@ export class VisualiserDataSource extends DataSource<any> {
       .startWith(null)
       .switchMap(() => {
         this.isLoadingResults = true;
-        return this.connecApiService.fetchEntities('contacts', this.pageSize, this.paginator.pageIndex)
+        return this.connecApiService.fetchEntities(this.select.value, this.pageSize, this.paginator.pageIndex)
       })
       .map(data => {
         this.isLoadingResults = false;
