@@ -13,7 +13,9 @@ import {
   MatIconModule,
   MatTableModule,
   MatPaginatorModule,
-  MatSortModule
+  MatSortModule,
+  MatFormFieldModule,
+  MatInputModule
 } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
@@ -79,7 +81,9 @@ export function RestangularConfigFactory (RestangularProvider) {
     MatSortModule,
     MatSelectModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   providers: [
     ConnecApiService

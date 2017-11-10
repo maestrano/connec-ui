@@ -1,4 +1,4 @@
-<form class="example-form">
+<form>
   <div class="container-fluid">
     <div class="row">
       <mat-toolbar color="primary">
@@ -14,12 +14,26 @@
     <div class="row">
       <div class="col-2">
         <mat-form-field>
-          <mat-select placeholder="Collection">
+          <mat-select #collectionSelector placeholder="Collection">
             <mat-option *ngFor="let collection of collections$ | async" [value]="collection">
               {{ collection }}
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <mat-form-field>
+          <mat-select #attributeSelector placeholder="Attribute">
+            <mat-option *ngFor="let column of dataSource.displayedColumns" [value]="column">
+              {{ column }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input #attributeInput matInput placeholder="Value" value="">
+        </mat-form-field>
+
+        <button #filterButton mat-raised-button color="primary">Filter</button>
       </div>
 
       <div class="col-10">
