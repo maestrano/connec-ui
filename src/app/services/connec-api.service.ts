@@ -24,8 +24,13 @@ export class ConnecApiService {
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0): Observable<EntitiesPage> {
-    return this.restangular.all('org-fbba').customGET(collection, {'$top': pageSize, '$skip': pageSize * (pageNumber)})
+  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC'): Observable<EntitiesPage> {
+    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber)};
+
+    // Order: $orderby=name ASC
+    if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
+
+    return this.restangular.all('org-fbba').customGET(collection, options)
     .map((res: any) => this.extractQueryData(res, collection))
     .catch(error => this.handleError(error));
   }

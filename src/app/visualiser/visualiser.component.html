@@ -6,17 +6,21 @@
           <span>Connec!™ UI</span>
         </div>
         <div class="col-10">
-          <mat-select placeholder="Collection">
-            <mat-option *ngFor="let collection of collections$ | async" [value]="collection">
-              {{ collection }}
-            </mat-option>
-          </mat-select>
+
         </div>
       </mat-toolbar>
     </div>
 
     <div class="row">
-      <div class="col-2"></div>
+      <div class="col-2">
+        <mat-form-field>
+          <mat-select placeholder="Collection">
+            <mat-option *ngFor="let collection of collections$ | async" [value]="collection">
+              {{ collection }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
       <div class="col-10">
         <div class="mat-elevation-z8">
@@ -24,16 +28,16 @@
 
           </mat-paginator>
 
-          <mat-table #table [dataSource]="dataSource" matSort matSortActive="created" matSortDisableClear matSortDirection="asc">
+          <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
             <!-- ID Column -->
             <ng-container matColumnDef="id">
-              <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
               <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
             </ng-container>
 
             <!-- Code Column -->
             <ng-container matColumnDef="code">
-              <mat-header-cell *matHeaderCellDef> Code </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
               <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
             </ng-container>
 
@@ -41,6 +45,12 @@
             <ng-container matColumnDef="name">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
               <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+            </ng-container>
+
+            <!-- Timestamp Column -->
+            <ng-container matColumnDef="created_at">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Created At </mat-header-cell>
+              <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="dataSource.displayedColumns"></mat-header-row>

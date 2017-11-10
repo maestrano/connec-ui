@@ -3,12 +3,11 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatSelect, MatSelectChange } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 
-import { Store } from '@ngrx/store';
+import { Store, ActionReducerMap } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 
-import * as fromRoot from '../reducers/index';
 import { EntitiesPage } from '../models/entities_page';
 import { Entity } from '../models/entity';
 
@@ -29,24 +28,23 @@ export class VisualiserComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private store: Store<fromRoot.State>, private connecApiService: ConnecApiService) {}
+  constructor(private connecApiService: ConnecApiService) {}
 
   ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this.store, this.connecApiService, this.select, this.paginator, this.sort);
+    this.dataSource = new VisualiserDataSource(this.connecApiService, this.select, this.paginator, this.sort);
     this.collections$ = this.connecApiService.collections();
     this.select.value = 'company';
   }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
-  displayedColumns = ['id', 'code', 'name'];
+  displayedColumns = ['id', 'code', 'name', 'created_at'];
 
   pageSize = 100;
   resultsLength = 0;
   isLoadingResults = false;
 
-  constructor(private store: Store<fromRoot.State>,
-              private connecApiService: ConnecApiService,
+  constructor(private connecApiService: ConnecApiService,
               private select: MatSelect,
               private paginator: MatPaginator,
               private sort: MatSort) {
@@ -67,7 +65,7 @@ export class VisualiserDataSource extends DataSource<any> {
       .startWith(null)
       .switchMap(() => {
         this.isLoadingResults = true;
-        return this.connecApiService.fetchEntities(this.select.value, this.pageSize, this.paginator.pageIndex)
+        return this.connecApiService.fetchEntities(this.select.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction)
       })
       .map(data => {
         this.isLoadingResults = false;
