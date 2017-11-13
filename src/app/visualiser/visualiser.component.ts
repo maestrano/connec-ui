@@ -37,37 +37,40 @@ export class VisualiserComponent implements OnInit {
   constructor(private connecApiService: ConnecApiService) {}
 
   ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this.connecApiService, this.collectionSelector, this.attributeSelector, this.attributeInput, this.filterButton, this.paginator, this.sort, this.filterButtonClick$);
+    this.dataSource = new VisualiserDataSource(this.connecApiService, this.collectionSelector, this.attributeSelector, this.filterButton, this.paginator, this.sort, this.filterButtonClick$);
     this.collections$ = this.connecApiService.collections();
-    this.collectionSelector.value = 'company';
-    this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
+    this.collectionSelector.value = 'contacts';
   }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
-  displayedColumns = ['id', 'code', 'name', 'created_at'];
-
+  defaultAttributes = ['id', 'code', 'name', 'created_at'];
+  displayedColumns = this.defaultAttributes;
 
   pageSize = 100;
   resultsLength = 0;
   isLoadingResults = false;
+  attributeValue = undefined;
 
   constructor(private connecApiService: ConnecApiService,
               private collectionSelector: MatSelect,
               private attributeSelector: MatSelect,
-              private attributeInput: MatInput,
               private filterButton: MatButton,
               private paginator: MatPaginator,
               private sort: MatSort,
               private filterButtonClick$: Observable<any>) {
     super();
+
+    this.displayedColumns.push('actions');
+    this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
   }
 
   public connect(): Observable<Entity[]> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
-      this.collectionSelector.valueChange
+      this.collectionSelector.valueChange,
+      this.filterButtonClick$
     ];
 
     // If the user changes the sort order, reset back to the first page.
@@ -77,7 +80,11 @@ export class VisualiserDataSource extends DataSource<any> {
       .startWith(null)
       .switchMap(() => {
         this.isLoadingResults = true;
-        return this.connecApiService.fetchEntities(this.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction)
+        var filter = undefined;
+        if(this.attributeSelector.value && this.attributeValue) {
+          filter = this.attributeSelector.value + " match /" + this.attributeValue + "/";
+        }
+        return this.connecApiService.fetchEntities(this.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
       .map(data => {
         this.isLoadingResults = false;

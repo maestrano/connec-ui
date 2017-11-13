@@ -27,8 +27,7 @@ export class ConnecApiService {
   public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null): Observable<EntitiesPage> {
     var options = {'$top': pageSize, '$skip': pageSize * (pageNumber)};
 
-    // Filter
-    // $filter=code eq 'CT3'
+    // Filter: $filter=code eq 'CT3'
     if(filter) { options['$filter'] = filter; }
 
     // Order: $orderby=name ASC

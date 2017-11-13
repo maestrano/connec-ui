@@ -23,17 +23,20 @@
 
         <mat-form-field>
           <mat-select #attributeSelector placeholder="Attribute">
-            <mat-option *ngFor="let column of dataSource.displayedColumns" [value]="column">
+            <mat-option *ngFor="let column of dataSource.defaultAttributes" [value]="column">
               {{ column }}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field>
-          <input #attributeInput matInput placeholder="Value" value="">
+          <input #attributeInput matInput placeholder="Value">
         </mat-form-field>
 
-        <button #filterButton mat-raised-button color="primary">Filter</button>
+        <!-- <button #filterButton mat-raised-button color="primary" (click)="dataSource.attributeValue = attributeInput.value">Filter</button> -->
+        <button  #filterButton mat-mini-fab color="primary" (click)="dataSource.attributeValue = attributeInput.value">
+          <mat-icon aria-label="Search">search</mat-icon>
+        </button>
       </div>
 
       <div class="col-10">
@@ -55,16 +58,54 @@
               <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
             </ng-container>
 
-            <!-- Name Column -->
+            <!-- Reference Column -->
             <ng-container matColumnDef="name">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
+              <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference}} </mat-cell>
             </ng-container>
 
             <!-- Timestamp Column -->
             <ng-container matColumnDef="created_at">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Created At </mat-header-cell>
               <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-menu #appMenu="matMenu">
+                  <button mat-menu-item>Search similar</button>
+                  <button mat-menu-item [matMenuTriggerFor]="sendToMenu">Send to</button>
+                </mat-menu>
+
+                <mat-menu #sendToMenu="matMenu">
+                  <button mat-menu-item>
+                    <img aria-hidden src="https://seeklogo.com/images/X/xero-logo-150F46D39F-seeklogo.com.png" height="25" />
+                    Xero
+                  </button>
+                  <button mat-menu-item>
+                    <img aria-hidden src="https://seeklogo.com/images/S/salesforce-logo-273F95FE60-seeklogo.com.png" height="25" />
+                    SalesForce
+                  </button>
+                  <button mat-menu-item>
+                    <img aria-hidden src="https://images.g2crowd.com/uploads/product/image/social_landscape/social_landscape_1489702109/unleashed.png" height="25" />
+                    Unleashed
+                  </button>
+                </mat-menu>
+
+                <button color="primary" mat-icon-button title="Details">
+                   <mat-icon>zoom_in</mat-icon>
+                </button>
+
+                <button color="warn" mat-icon-button title="Archive">
+                   <mat-icon>delete</mat-icon>
+                </button>
+
+                <button color="accent" mat-icon-button [matMenuTriggerFor]="appMenu" title="More actions">
+                   <mat-icon>more_vert</mat-icon>
+                </button>
+              </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="dataSource.displayedColumns"></mat-header-row>
