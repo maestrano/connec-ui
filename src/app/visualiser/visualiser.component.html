@@ -90,7 +90,7 @@
             <!-- Reference Column -->
             <ng-container matColumnDef="name">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference}} </mat-cell>
+              <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference || row.transaction_number || row.payment_reference}} </mat-cell>
             </ng-container>
 
             <!-- Timestamp Column -->
@@ -112,8 +112,14 @@
               <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-menu #appMenu="matMenu">
-                  <button mat-menu-item>Search similar</button>
-                  <button mat-menu-item [matMenuTriggerFor]="sendToMenu">Send to</button>
+                  <button mat-menu-item>
+                    <mat-icon>search</mat-icon>
+                    Search similar
+                  </button>
+                  <button mat-menu-item [matMenuTriggerFor]="sendToMenu">
+                    <mat-icon>forward</mat-icon>
+                    Send to
+                  </button>
                 </mat-menu>
 
                 <mat-menu #sendToMenu="matMenu">
