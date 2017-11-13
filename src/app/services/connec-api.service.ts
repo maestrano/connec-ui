@@ -11,7 +11,22 @@ import { Entity } from '../models/entity';
 export class ConnecApiService {
   apiService;
 
-  constructor(private restangular: Restangular) { }
+  constructor(private restangular: Restangular) {
+    this.restangular = this.restangular.withConfig((RestangularProvider) => {
+      RestangularProvider.setBaseUrl('http://localhost:8080/api/v2');
+      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
+      // RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
+      RestangularProvider.setRequestSuffix('.json');
+
+      // Extract collection content
+      RestangularProvider.setResponseExtractor(function(response, operation) {
+        if (operation === 'getList') {
+          return response[Object.keys(response)[0]];
+        }
+        return response;
+      });
+    });
+  }
 
   public collections(): Observable<String[]> {
     return this.restangular.all('/').get('')

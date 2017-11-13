@@ -11,8 +11,10 @@ import 'rxjs/add/observable/fromEvent';
 
 import { EntitiesPage } from '../models/entities_page';
 import { Entity } from '../models/entity';
+import { ProductInstance } from '../models/product_instance';
 
 import { ConnecApiService } from '../services/connec-api.service';
+import { MnoeApiService } from '../services/mnoe-api.service';
 
 @Component({
   selector: 'connec-visualiser',
@@ -22,6 +24,8 @@ import { ConnecApiService } from '../services/connec-api.service';
 })
 export class VisualiserComponent implements OnInit {
   collections$: Observable<any[]>;
+  productInstances$: Observable<ProductInstance[]>;
+  productInstances = [];
 
   dataSource: VisualiserDataSource | null;
 
@@ -34,18 +38,31 @@ export class VisualiserComponent implements OnInit {
 
   filterButtonClick$: Observable<any>;
 
-  constructor(private connecApiService: ConnecApiService) {}
+  constructor(
+    private connecApiService: ConnecApiService,
+    private mnoeApiService: MnoeApiService
+  ) {}
 
   ngOnInit() {
     this.dataSource = new VisualiserDataSource(this.connecApiService, this.collectionSelector, this.attributeSelector, this.filterButton, this.paginator, this.sort, this.filterButtonClick$);
+
     this.collections$ = this.connecApiService.collections();
     this.collectionSelector.value = 'contacts';
+
+    this.productInstances$ = this.mnoeApiService.productInstances();
+
+    // How to extract Observable underlying collection properly?
+    this.productInstances$.forEach((res: any) => {
+      res.forEach((record: any) => {
+        this.productInstances.push(record);
+      })
+    });
   }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
-  defaultAttributes = ['id', 'code', 'name', 'created_at'];
-  displayedColumns = this.defaultAttributes;
+  defaultAttributes = ['code', 'name', 'created_at'];
+  displayedColumns = Object.assign([], this.defaultAttributes);
 
   pageSize = 100;
   resultsLength = 0;
@@ -61,6 +78,7 @@ export class VisualiserDataSource extends DataSource<any> {
               private filterButtonClick$: Observable<any>) {
     super();
 
+    this.displayedColumns.push('applications');
     this.displayedColumns.push('actions');
     this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
   }

@@ -33,10 +33,20 @@
           <input #attributeInput matInput placeholder="Value">
         </mat-form-field>
 
-        <!-- <button #filterButton mat-raised-button color="primary" (click)="dataSource.attributeValue = attributeInput.value">Filter</button> -->
         <button  #filterButton mat-mini-fab color="primary" (click)="dataSource.attributeValue = attributeInput.value">
           <mat-icon aria-label="Search">search</mat-icon>
         </button>
+
+        <section>
+          <div class="row" *ngFor="let productInstance of productInstances$ | async">
+            <div class="col-12">
+                <mat-checkbox>
+                <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                {{ productInstance.name }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </section>
       </div>
 
       <div class="col-10">
@@ -46,12 +56,6 @@
           </mat-paginator>
 
           <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
-            </ng-container>
-
             <!-- Code Column -->
             <ng-container matColumnDef="code">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
@@ -70,6 +74,14 @@
               <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
             </ng-container>
 
+            <!-- Applications Column -->
+            <ng-container matColumnDef="applications">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Applications </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <img aria-hidden src="https://seeklogo.com/images/X/xero-logo-150F46D39F-seeklogo.com.png" height="25" />
+              </mat-cell>
+            </ng-container>
+
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
@@ -80,17 +92,9 @@
                 </mat-menu>
 
                 <mat-menu #sendToMenu="matMenu">
-                  <button mat-menu-item>
-                    <img aria-hidden src="https://seeklogo.com/images/X/xero-logo-150F46D39F-seeklogo.com.png" height="25" />
-                    Xero
-                  </button>
-                  <button mat-menu-item>
-                    <img aria-hidden src="https://seeklogo.com/images/S/salesforce-logo-273F95FE60-seeklogo.com.png" height="25" />
-                    SalesForce
-                  </button>
-                  <button mat-menu-item>
-                    <img aria-hidden src="https://images.g2crowd.com/uploads/product/image/social_landscape/social_landscape_1489702109/unleashed.png" height="25" />
-                    Unleashed
+                  <button mat-menu-item *ngFor="let productInstance of productInstances">
+                    <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                    {{ productInstance.name }}
                   </button>
                 </mat-menu>
 
