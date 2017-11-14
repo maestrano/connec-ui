@@ -52,7 +52,7 @@ export class VisualiserComponent implements OnInit {
     this.productInstances$ = this.mnoeApiService.productInstances();
 
     // How to extract Observable underlying collection properly?
-    this.productInstances$.forEach((res: any) => {
+    this.productInstances$.subscribe((res: any) => {
       res.forEach((record: any) => {
         this.productInstances.push(record);
       })
