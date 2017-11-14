@@ -29,6 +29,7 @@
     "@ngrx/db": "^2.0.2",
     "@ngrx/effects": "^4.1.1",
     "@ngrx/store": "^4.1.1",
+    "angular2-prettyjson": "^2.0.5",
     "core-js": "^2.4.1",
     "ngx-restangular": "^1.0.13",
     "rxjs": "^5.5.2",

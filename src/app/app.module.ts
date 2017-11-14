@@ -29,6 +29,9 @@ import { RestangularModule } from 'ngx-restangular';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { PrettyJsonModule, SafeJsonPipe } from 'angular2-prettyjson';
+import { JsonPipe } from '@angular/common';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -45,11 +48,13 @@ import { EntitiesPageEffects } from './effects/entities_page';
 import * as fromRoot from './reducers/index';
 
 import { schema } from './db';
+import { DetailComponent } from './detail/detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    VisualiserComponent
+    VisualiserComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,
@@ -58,8 +63,8 @@ import { schema } from './db';
     DBModule.provideDB(schema),
     RestangularModule.forRoot(),
     NgbModule.forRoot(),
-    AppRoutingModule,
     BrowserAnimationsModule,
+    PrettyJsonModule,
     MatButtonModule,
     MatCardModule,
     MatMenuModule,
@@ -73,11 +78,13 @@ import { schema } from './db';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    AppRoutingModule
   ],
   providers: [
     ConnecApiService,
-    MnoeApiService
+    MnoeApiService,
+    {provide: JsonPipe, useClass: SafeJsonPipe}
   ],
   bootstrap: [AppComponent]
 })

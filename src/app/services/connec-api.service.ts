@@ -55,6 +55,14 @@ export class ConnecApiService {
     .catch(error => this.handleError(error));
   }
 
+  public fetchEntity(collection: string, id: string): Observable<Entity> {
+    return this.restangular.all(this.channelId).one(collection, id).get()
+    .map(record => {
+      return this.deserializeModel(record[collection])
+    })
+    .catch(error => this.handleError(error));
+  }
+
   public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};

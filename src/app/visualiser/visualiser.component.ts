@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
@@ -39,6 +40,7 @@ export class VisualiserComponent implements OnInit {
   filterButtonClick$: Observable<any>;
 
   constructor(
+    private router: Router,
     private connecApiService: ConnecApiService,
     private mnoeApiService: MnoeApiService
   ) {}
@@ -72,6 +74,11 @@ export class VisualiserComponent implements OnInit {
 
   sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
     this.connecApiService.sendEntityToApplication(entity, productInstance);
+  }
+
+  navigateToDetails(entity: Entity) {
+    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
   }
 }
 

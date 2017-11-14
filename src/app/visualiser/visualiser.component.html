@@ -75,10 +75,10 @@
       </div>
 
       <div class="col-10">
-        <div class="mat-elevation-z8">
-          <mat-paginator [length]="dataSource.resultsLength" [pageSize]="dataSource.pageSize">
+        <router-outlet></router-outlet>
 
-          </mat-paginator>
+        <div class="mat-elevation-z8">
+          <mat-paginator [length]="dataSource.resultsLength" [pageSize]="dataSource.pageSize"></mat-paginator>
 
           <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
             <!-- Code Column -->
@@ -131,7 +131,7 @@
                   </button>
                 </mat-menu>
 
-                <button color="primary" mat-icon-button title="Details">
+                <button color="primary" mat-icon-button title="Details" (click)="navigateToDetails(row)">
                    <mat-icon>zoom_in</mat-icon>
                 </button>
 
