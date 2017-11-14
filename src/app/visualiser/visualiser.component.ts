@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
@@ -10,6 +10,8 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromEvent';
 
+import { ConnecUiComponent } from '../connec-ui/connec-ui.component';
+
 import { EntitiesPage } from '../models/entities_page';
 import { Entity } from '../models/entity';
 import { ProductInstance } from '../models/product_instance';
@@ -18,7 +20,7 @@ import { ConnecApiService } from '../services/connec-api.service';
 import { MnoeApiService } from '../services/mnoe-api.service';
 
 @Component({
-  selector: 'connec-visualiser',
+  selector: 'visualiser',
   templateUrl: './visualiser.component.html',
   styleUrls: ['./visualiser.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -30,10 +32,6 @@ export class VisualiserComponent implements OnInit {
 
   dataSource: VisualiserDataSource | null;
 
-  @ViewChild('collectionSelector') collectionSelector: MatSelect;
-  @ViewChild('attributeSelector') attributeSelector: MatSelect;
-  @ViewChild('attributeInput') attributeInput: MatInput;
-  @ViewChild('filterButton') filterButton: MatButton;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -42,15 +40,14 @@ export class VisualiserComponent implements OnInit {
   constructor(
     private router: Router,
     private connecApiService: ConnecApiService,
-    private mnoeApiService: MnoeApiService
+    private mnoeApiService: MnoeApiService,
+    @Inject(forwardRef(() => ConnecUiComponent)) private _parent:ConnecUiComponent
   ) {}
 
   ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this.connecApiService, this.collectionSelector, this.attributeSelector, this.filterButton, this.paginator, this.sort, this.filterButtonClick$);
+    this.dataSource = new VisualiserDataSource(this.connecApiService, this.paginator, this.sort, this._parent);
 
     this.collections$ = this.connecApiService.collections();
-    this.collectionSelector.value = 'contacts';
-
     this.productInstances$ = this.mnoeApiService.productInstances();
 
     // How to extract Observable underlying collection properly?
@@ -83,8 +80,7 @@ export class VisualiserComponent implements OnInit {
 }
 
 export class VisualiserDataSource extends DataSource<any> {
-  defaultAttributes = ['code', 'name', 'created_at'];
-  displayedColumns = Object.assign([], this.defaultAttributes);
+  displayedColumns = ['code', 'name', 'created_at', 'applications', 'actions'];
 
   pageSize = 100;
   resultsLength = 0;
@@ -92,25 +88,20 @@ export class VisualiserDataSource extends DataSource<any> {
   attributeValue = undefined;
 
   constructor(private connecApiService: ConnecApiService,
-              private collectionSelector: MatSelect,
-              private attributeSelector: MatSelect,
-              private filterButton: MatButton,
               private paginator: MatPaginator,
               private sort: MatSort,
-              private filterButtonClick$: Observable<any>) {
+              private connecUiComponent: ConnecUiComponent) {
     super();
 
-    this.displayedColumns.push('applications');
-    this.displayedColumns.push('actions');
-    this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
+    this.connecUiComponent.filterButtonClick$ = Observable.fromEvent(this.connecUiComponent.filterButton._elementRef.nativeElement, 'click');
   }
 
   public connect(): Observable<Entity[]> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
-      this.collectionSelector.valueChange,
-      this.filterButtonClick$
+      this.connecUiComponent.collectionSelector.valueChange,
+      this.connecUiComponent.filterButtonClick$
     ];
 
     // If the user changes the sort order, reset back to the first page.
@@ -121,10 +112,10 @@ export class VisualiserDataSource extends DataSource<any> {
       .switchMap(() => {
         this.isLoadingResults = true;
         var filter = undefined;
-        if(this.attributeSelector.value && this.attributeValue) {
-          filter = this.attributeSelector.value + " match /" + this.attributeValue + "/";
+        if(this.connecUiComponent.attributeSelector.value && this.attributeValue) {
+          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.attributeValue + "/";
         }
-        return this.connecApiService.fetchEntities(this.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
+        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];

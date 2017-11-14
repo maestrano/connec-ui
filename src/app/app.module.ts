@@ -49,12 +49,14 @@ import * as fromRoot from './reducers/index';
 
 import { schema } from './db';
 import { DetailComponent } from './detail/detail.component';
+import { ConnecUiComponent } from './connec-ui/connec-ui.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     VisualiserComponent,
-    DetailComponent
+    DetailComponent,
+    ConnecUiComponent
   ],
   imports: [
     BrowserModule,

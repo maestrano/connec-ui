@@ -1,155 +1,72 @@
-<form>
-  <div class="container-fluid">
-    <div class="row">
-      <mat-toolbar color="primary">
-        <div class="col-2">
-          <span>Connec!™ UI</span>
-        </div>
-        <div class="col-10">
+<div class="mat-elevation-z8">
+  <mat-paginator [length]="dataSource.resultsLength" [pageSize]="dataSource.pageSize"></mat-paginator>
 
-        </div>
-      </mat-toolbar>
-    </div>
+  <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
+    <!-- Code Column -->
+    <ng-container matColumnDef="code">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+    </ng-container>
 
-    <div class="row">
-      <div class="col-2">
-        <mat-card class="example-card">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Collection</mat-card-title>
-          </mat-card-header>
+    <!-- Reference Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference || row.transaction_number || row.payment_reference}} </mat-cell>
+    </ng-container>
 
-          <mat-card-content>
-            <mat-form-field>
-              <mat-select #collectionSelector>
-                <mat-option *ngFor="let collection of collections$ | async" [value]="collection">
-                  {{ collection }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
+    <!-- Timestamp Column -->
+    <ng-container matColumnDef="created_at">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Created At </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
+    </ng-container>
 
-        <mat-card class="example-card">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Filter by attribute</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-form-field>
-              <mat-select #attributeSelector placeholder="Attribute">
-                <mat-option *ngFor="let column of dataSource.defaultAttributes" [value]="column">
-                  {{ column }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+    <!-- Applications Column -->
+    <ng-container matColumnDef="applications">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Applications </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <span *ngFor="let idMap of idMapFilter(row.id)">
+          <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="25" />
+        </span>
+      </mat-cell>
+    </ng-container>
 
-            <mat-form-field>
-              <input #attributeInput matInput placeholder="Value">
-            </mat-form-field>
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-menu #appMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>search</mat-icon>
+            Search similar
+          </button>
+          <button mat-menu-item [matMenuTriggerFor]="sendToMenu">
+            <mat-icon>forward</mat-icon>
+            Send to
+          </button>
+        </mat-menu>
 
-            <button  #filterButton mat-mini-fab color="primary" (click)="dataSource.attributeValue = attributeInput.value">
-              <mat-icon aria-label="Search">search</mat-icon>
-            </button>
-          </mat-card-content>
-        </mat-card>
+        <mat-menu #sendToMenu="matMenu">
+          <button mat-menu-item *ngFor="let productInstance of productInstances" (click)="sendEntityToApplication(row, productInstance)">
+            <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+            {{ productInstance.name }}
+          </button>
+        </mat-menu>
 
-        <mat-card class="example-card">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Filter by application</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <section>
-              <div class="row" *ngFor="let productInstance of productInstances$ | async">
-                <div class="col-12">
-                    <mat-checkbox>
-                    <img aria-hidden src="{{ productInstance.logo }}" height="25" />
-                    {{ productInstance.name }}
-                  </mat-checkbox>
-                </div>
-              </div>
-            </section>
-          </mat-card-content>
-        </mat-card>
-      </div>
+        <button color="primary" mat-icon-button title="Details" (click)="navigateToDetails(row)">
+           <mat-icon>zoom_in</mat-icon>
+        </button>
 
-      <div class="col-10">
-        <router-outlet></router-outlet>
+        <button color="warn" mat-icon-button title="Archive">
+           <mat-icon>delete</mat-icon>
+        </button>
 
-        <div class="mat-elevation-z8">
-          <mat-paginator [length]="dataSource.resultsLength" [pageSize]="dataSource.pageSize"></mat-paginator>
+        <button color="accent" mat-icon-button [matMenuTriggerFor]="appMenu" title="More actions">
+           <mat-icon>more_vert</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
 
-          <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
-            <!-- Code Column -->
-            <ng-container matColumnDef="code">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
-            </ng-container>
-
-            <!-- Reference Column -->
-            <ng-container matColumnDef="name">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference || row.transaction_number || row.payment_reference}} </mat-cell>
-            </ng-container>
-
-            <!-- Timestamp Column -->
-            <ng-container matColumnDef="created_at">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Created At </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
-            </ng-container>
-
-            <!-- Applications Column -->
-            <ng-container matColumnDef="applications">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Applications </mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <span *ngFor="let idMap of idMapFilter(row.id)">
-                  <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="25" />
-                </span>
-              </mat-cell>
-            </ng-container>
-
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-menu #appMenu="matMenu">
-                  <button mat-menu-item>
-                    <mat-icon>search</mat-icon>
-                    Search similar
-                  </button>
-                  <button mat-menu-item [matMenuTriggerFor]="sendToMenu">
-                    <mat-icon>forward</mat-icon>
-                    Send to
-                  </button>
-                </mat-menu>
-
-                <mat-menu #sendToMenu="matMenu">
-                  <button mat-menu-item *ngFor="let productInstance of productInstances" (click)="sendEntityToApplication(row, productInstance)">
-                    <img aria-hidden src="{{ productInstance.logo }}" height="25" />
-                    {{ productInstance.name }}
-                  </button>
-                </mat-menu>
-
-                <button color="primary" mat-icon-button title="Details" (click)="navigateToDetails(row)">
-                   <mat-icon>zoom_in</mat-icon>
-                </button>
-
-                <button color="warn" mat-icon-button title="Archive">
-                   <mat-icon>delete</mat-icon>
-                </button>
-
-                <button color="accent" mat-icon-button [matMenuTriggerFor]="appMenu" title="More actions">
-                   <mat-icon>more_vert</mat-icon>
-                </button>
-              </mat-cell>
-            </ng-container>
-
-            <mat-header-row *matHeaderRowDef="dataSource.displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: dataSource.displayedColumns;"></mat-row>
-          </mat-table>
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
+    <mat-header-row *matHeaderRowDef="dataSource.displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: dataSource.displayedColumns;"></mat-row>
+  </mat-table>
+</div>
