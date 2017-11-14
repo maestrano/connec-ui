@@ -103,7 +103,9 @@
             <ng-container matColumnDef="applications">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Applications </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <img aria-hidden src="https://seeklogo.com/images/X/xero-logo-150F46D39F-seeklogo.com.png" height="25" />
+                <span *ngFor="let idMap of idMapFilter(row.id)">
+                  <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="25" />
+                </span>
               </mat-cell>
             </ng-container>
 

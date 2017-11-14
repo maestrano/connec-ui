@@ -58,6 +58,16 @@ export class VisualiserComponent implements OnInit {
       })
     });
   }
+
+  // Return IdMaps where record has been pushed to external application
+  idMapFilter(ids: any): any {
+    return ids.filter(idMap => idMap['id'] && idMap['provider']);
+  }
+
+  // Find ProductInstance of an IdMap
+  productInstanceFilter(idMap: any): ProductInstance {
+    return this.productInstances.find(x => x.uid === idMap['group_id']);
+  }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
@@ -104,11 +114,11 @@ export class VisualiserDataSource extends DataSource<any> {
         }
         return this.connecApiService.fetchEntities(this.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
-      .map(data => {
+      .map(entityPage => {
+        this.resultsLength = entityPage.pagination['total'];
         this.isLoadingResults = false;
-        this.resultsLength = data.pagination['total'];
 
-        return data.entities;
+        return entityPage.entities;
       })
       .catch(() => {
         this.isLoadingResults = false;

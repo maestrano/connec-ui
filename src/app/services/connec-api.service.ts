@@ -48,7 +48,7 @@ export class ConnecApiService {
     // Order: $orderby=name ASC
     if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
 
-    return this.restangular.all('org-fbba').customGET(collection, options)
+    return this.restangular.all('org-fbbj').customGET(collection, options)
     .map((res: any) => this.extractQueryData(res, collection))
     .catch(error => this.handleError(error));
   }
