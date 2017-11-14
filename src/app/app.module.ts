@@ -27,8 +27,9 @@ import { DBModule } from '@ngrx/db';
 import { Http, Response } from '@angular/http';
 import { RestangularModule } from 'ngx-restangular';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { ConnecApiService } from './services/connec-api.service';
@@ -57,6 +58,7 @@ import { schema } from './db';
     DBModule.provideDB(schema),
     RestangularModule.forRoot(),
     NgbModule.forRoot(),
+    AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
     MatCardModule,
