@@ -6,16 +6,18 @@ import { RestangularModule, Restangular } from 'ngx-restangular';
 
 import { EntitiesPage } from '../models/entities_page';
 import { Entity } from '../models/entity';
+import { ProductInstance } from '../models/product_instance';
 
 @Injectable()
 export class ConnecApiService {
   apiService;
+  channelId = 'org-fbbj';
+  authorizationHeader = 'Basic MDQ2ZWViMDAtYWFmYS0wMTM1LTExYmYtNzRkNDM1MTBjMzI2OjBXRUlwNXB2TEYyOUdXb3hNLWNXN0E=';
 
   constructor(private restangular: Restangular) {
     this.restangular = this.restangular.withConfig((RestangularProvider) => {
       RestangularProvider.setBaseUrl('http://localhost:8080/api/v2');
-      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
-      // RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
+      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true, 'Authorization': this.authorizationHeader});
       RestangularProvider.setRequestSuffix('.json');
 
       // Extract collection content
@@ -48,8 +50,16 @@ export class ConnecApiService {
     // Order: $orderby=name ASC
     if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
 
-    return this.restangular.all('org-fbbj').customGET(collection, options)
+    return this.restangular.all(this.channelId).customGET(collection, options)
     .map((res: any) => this.extractQueryData(res, collection))
+    .catch(error => this.handleError(error));
+  }
+
+  public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
+    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
+    return this.restangular.all(entity.channel_id).one(entity.resource_type, idMap['id'])
+    .customPUT(data, 'commit')
     .catch(error => this.handleError(error));
   }
 

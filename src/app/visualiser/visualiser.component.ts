@@ -61,12 +61,17 @@ export class VisualiserComponent implements OnInit {
 
   // Return IdMaps where record has been pushed to external application
   idMapFilter(ids: any): any {
+    if(!ids) { return null; }
     return ids.filter(idMap => idMap['id'] && idMap['provider']);
   }
 
   // Find ProductInstance of an IdMap
   productInstanceFilter(idMap: any): ProductInstance {
     return this.productInstances.find(x => x.uid === idMap['group_id']);
+  }
+
+  sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
+    this.connecApiService.sendEntityToApplication(entity, productInstance);
   }
 }
 

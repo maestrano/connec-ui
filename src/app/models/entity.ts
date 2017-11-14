@@ -1,5 +1,5 @@
 export class Entity {
-  id: string;
+  id: any;
 
   // Dynamic attributes
   [key: string]: any

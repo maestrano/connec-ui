@@ -125,7 +125,7 @@
                 </mat-menu>
 
                 <mat-menu #sendToMenu="matMenu">
-                  <button mat-menu-item *ngFor="let productInstance of productInstances">
+                  <button mat-menu-item *ngFor="let productInstance of productInstances" (click)="sendEntityToApplication(row, productInstance)">
                     <img aria-hidden src="{{ productInstance.logo }}" height="25" />
                     {{ productInstance.name }}
                   </button>
