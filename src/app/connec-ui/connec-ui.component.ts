@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -23,6 +24,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ConnecUiComponent implements OnInit {
+  loading = false;
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
@@ -30,6 +32,7 @@ export class ConnecUiComponent implements OnInit {
   filterableAttributes = ['code', 'name', 'created_at'];
   attributeValue = undefined;
 
+  @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionSelector') collectionSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;

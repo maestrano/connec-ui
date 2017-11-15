@@ -92,7 +92,6 @@ export class VisualiserDataSource extends DataSource<any> {
 
   pageSize = 100;
   resultsLength = 0;
-  isLoadingResults = false;
 
   constructor(private visualiserComponent: VisualiserComponent) {
     super();
@@ -119,7 +118,7 @@ export class VisualiserDataSource extends DataSource<any> {
     return Observable.merge(...displayDataChanges)
       .startWith(null)
       .switchMap(() => {
-        this.isLoadingResults = true;
+        this.connecUiComponent.loading = true;
         var filter = undefined;
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
           filter = this.connecUiComponent.attributeSelector.value + " match /" + this.visualiserComponent.collection + "/";
@@ -128,12 +127,12 @@ export class VisualiserDataSource extends DataSource<any> {
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
-        this.isLoadingResults = false;
+        this.connecUiComponent.loading = false;
 
         return entityPage.entities;
       })
       .catch(() => {
-        this.isLoadingResults = false;
+        this.connecUiComponent.loading = false;
         return Observable.of([]);
       });
   }

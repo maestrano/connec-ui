@@ -19,6 +19,8 @@ import {
   MatCheckboxModule
 } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -81,6 +83,8 @@ import { ConnecUiComponent } from './connec-ui/connec-ui.component';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
     AppRoutingModule
   ],
   providers: [

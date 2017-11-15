@@ -1,4 +1,6 @@
   <div class="container-fluid">
+    <mat-spinner #loader *ngIf="loading" style="display: block; position: absolute; top: 50%; left: 50%; z-index: 999;"></mat-spinner>
+
     <div class="row">
       <mat-toolbar color="primary">
         <div class="col-2">
