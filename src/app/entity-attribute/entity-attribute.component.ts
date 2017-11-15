@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
-import { NgPlural } from '@angular/common';
 
 import { ConnecApiService } from '../services/connec-api.service';
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { ConnecApiService } from '../services/connec-api.service';
@@ -19,7 +20,8 @@ export class DetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private connecApiService: ConnecApiService
+    private connecApiService: ConnecApiService,
+    private _location: Location
   ) { }
 
   ngOnInit() {
@@ -28,6 +30,6 @@ export class DetailComponent implements OnInit {
   }
 
   navigateToCollection(collection: string) {
-    this.router.navigate(['/visualiser', collection]);
+    this._location.back();
   }
 }
