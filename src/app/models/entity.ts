@@ -9,4 +9,8 @@ export class Entity {
        this[key] = data[key];
     }
   }
+
+  public friendlyName() {
+    return this.name || this.full_name || this.title || this.reference || this.transaction_number || this.payment_reference
+  }
 }

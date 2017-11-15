@@ -32,6 +32,7 @@
     "angular2-prettyjson": "^2.0.5",
     "core-js": "^2.4.1",
     "ngx-restangular": "^1.0.13",
+    "pluralize": "^7.0.0",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14"
   },

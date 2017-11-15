@@ -52,13 +52,15 @@ import * as fromRoot from './reducers/index';
 import { schema } from './db';
 import { DetailComponent } from './detail/detail.component';
 import { ConnecUiComponent } from './connec-ui/connec-ui.component';
+import { EntityAttributeComponent } from './entity-attribute/entity-attribute.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     VisualiserComponent,
     DetailComponent,
-    ConnecUiComponent
+    ConnecUiComponent,
+    EntityAttributeComponent
   ],
   imports: [
     BrowserModule,

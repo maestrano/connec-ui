@@ -1,6 +1,21 @@
-<a routerLink="/visualiser" routerLinkActive="active">Back</a>
+<div *ngIf="entity$ | async">
+  <div class="row">
+    <div class="col-1">
+      <button mat-icon-button (click)="navigateToCollection(entity.resource_type)">
+        <mat-icon aria-label="Back">chevron_left</mat-icon> Back
+      </button>
+    </div>
+    <div class="col-3">
+      <h2>
+        {{ entity.resource_type }}
+        {{ entity.friendlyName() }}
+      </h2>
+    </div>
+  </div>
 
-Entity
-<pre>
-  {{ entity | json }}
-</pre>
+  <app-entity-attribute [entity]="entity"></app-entity-attribute>
+
+  <pre>
+    {{ entity | json }}
+  </pre>
+</div>

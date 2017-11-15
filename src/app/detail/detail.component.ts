@@ -13,15 +13,21 @@ import { Entity } from '../models/entity';
   encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent implements OnInit {
+  entity$: Observable<Entity>;
   entity: Entity;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private connecApiService: ConnecApiService
   ) { }
 
   ngOnInit() {
-    this.route.params.switchMap((params: Params) => this.connecApiService.fetchEntity(params['collection'], params['id']))
-      .subscribe(entity => this.entity = entity);
+    this.entity$ = this.route.params.switchMap((params: Params) => this.connecApiService.fetchEntity(params['collection'], params['id']));
+    this.entity$.subscribe(entity => this.entity = entity);
+  }
+
+  navigateToCollection(collection: string) {
+    this.router.navigate(['/visualiser', collection]);
   }
 }

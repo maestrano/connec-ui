@@ -11,7 +11,7 @@
     <!-- Reference Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.name || row.full_name || row.title || row.reference || row.transaction_number || row.payment_reference}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.friendlyName()}} </mat-cell>
     </ng-container>
 
     <!-- Timestamp Column -->

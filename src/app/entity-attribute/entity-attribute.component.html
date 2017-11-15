@@ -1,0 +1,21 @@
+<table class="table table-striped">
+  <tbody>
+    <tr *ngFor="let key of properties()">
+      <td>{{ key }}</td>
+      <td *ngIf="entity[key] && isArray(key) && !isIdMap(key)" colspan="2">
+        <app-entity-attribute *ngFor="let element of entity[key]" [entity]="element"></app-entity-attribute>
+      </td>
+      <td *ngIf="entity[key] && !isArray(key) && isObject(key) && !isIdMap(key)" colspan="2">
+        <app-entity-attribute [entity]="entity[key]"></app-entity-attribute>
+      </td>
+      <td *ngIf="entity[key] && isIdMap(key)">
+        <button mat-icon-button (click)="navigateToDetails(key)">
+          <mat-icon aria-label="Go">chevron_right</mat-icon> Go
+        </button>
+      </td>
+      <td *ngIf="entity[key] && !isObject(key)">
+        {{ entity[key] }}
+      </td>
+    </tr>
+  </tbody>
+</table>
