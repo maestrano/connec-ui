@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { ConnecApiService } from '../services/connec-api.service';
 
@@ -21,7 +22,8 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private connecApiService: ConnecApiService,
-    private _location: Location
+    private _location: Location,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
