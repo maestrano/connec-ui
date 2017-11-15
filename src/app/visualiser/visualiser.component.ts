@@ -27,6 +27,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 })
 export class VisualiserComponent implements OnInit {
   collections$: Observable<any[]>;
+  collectionChange$: Observable<any[]>;
   collection = undefined;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
@@ -57,8 +58,11 @@ export class VisualiserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this);
-    this.route.params.switchMap((params: Params) => this.collection = params['collection']);
+    this.route.params.subscribe((params: Params) => {
+      this.collection = params['collection'];
+      this._parent.collectionSelector.value = this.collection;
+      return this.dataSource = new VisualiserDataSource(this);
+    });
   }
 
   // Return IdMaps where record has been pushed to external application
@@ -108,7 +112,6 @@ export class VisualiserDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
-      this.connecUiComponent.collectionSelector.valueChange,
       this.connecUiComponent.filterButtonClick$
     ];
 
@@ -118,12 +121,13 @@ export class VisualiserDataSource extends DataSource<any> {
     return Observable.merge(...displayDataChanges)
       .startWith(null)
       .switchMap(() => {
+        if(!this.visualiserComponent.collection) { return []; }
         this.connecUiComponent.loading = true;
         var filter = undefined;
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
           filter = this.connecUiComponent.attributeSelector.value + " match /" + this.visualiserComponent.collection + "/";
         }
-        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
+        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];

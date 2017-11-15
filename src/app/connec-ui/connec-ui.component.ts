@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -42,14 +42,13 @@ export class ConnecUiComponent implements OnInit {
 
   constructor(
     private router: Router,
+    public route: ActivatedRoute,
     private connecApiService: ConnecApiService,
     private mnoeApiService: MnoeApiService
   ) {}
 
   ngOnInit() {
     this.collections$ = this.connecApiService.collections();
-    this.collectionSelector.value = 'contacts';
-
     this.productInstances$ = this.mnoeApiService.productInstances();
 
     // How to extract Observable underlying collection properly?
