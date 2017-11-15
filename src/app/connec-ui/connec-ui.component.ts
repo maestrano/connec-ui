@@ -24,7 +24,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ConnecUiComponent implements OnInit {
-  loading = false;
+  loading = true;
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];

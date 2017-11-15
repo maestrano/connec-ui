@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, Inject, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
@@ -124,8 +124,9 @@ export class VisualiserDataSource extends DataSource<any> {
         if(!this.visualiserComponent.collection) { return []; }
         this.connecUiComponent.loading = true;
         var filter = undefined;
+        console.log("VALUE", this.connecUiComponent.attributeInput);
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
-          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.visualiserComponent.collection + "/";
+          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
         }
         return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
