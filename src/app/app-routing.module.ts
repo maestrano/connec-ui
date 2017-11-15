@@ -5,9 +5,9 @@ import { VisualiserComponent } from './visualiser/visualiser.component';
 import { DetailComponent } from './detail/detail.component';
 
 const routes: Routes = [
-  { path: 'visualiser', component: VisualiserComponent },
+  { path: 'visualiser/:collection', component: VisualiserComponent },
   { path: 'visualiser/:collection/:id', component: DetailComponent },
-  { path: '**', redirectTo: '/visualiser' }
+  { path: '**', redirectTo: '/visualiser/contacts' }
 ];
 
 @NgModule({

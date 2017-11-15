@@ -28,6 +28,7 @@ export class ConnecUiComponent implements OnInit {
   productInstances = [];
 
   filterableAttributes = ['code', 'name', 'created_at'];
+  attributeValue = undefined;
 
   @ViewChild('collectionSelector') collectionSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
@@ -65,5 +66,9 @@ export class ConnecUiComponent implements OnInit {
   // Find ProductInstance of an IdMap
   productInstanceFilter(idMap: any): ProductInstance {
     return this.productInstances.find(x => x.uid === idMap['group_id']);
+  }
+
+  navigateToCollection(collection: string) {
+    this.router.navigate(['/visualiser', collection]);
   }
 }

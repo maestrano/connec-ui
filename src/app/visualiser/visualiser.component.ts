@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
@@ -27,6 +27,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 })
 export class VisualiserComponent implements OnInit {
   collections$: Observable<any[]>;
+  collection = undefined;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
 
@@ -38,15 +39,12 @@ export class VisualiserComponent implements OnInit {
   filterButtonClick$: Observable<any>;
 
   constructor(
-    private router: Router,
-    private connecApiService: ConnecApiService,
-    private mnoeApiService: MnoeApiService,
-    @Inject(forwardRef(() => ConnecUiComponent)) private _parent:ConnecUiComponent
-  ) {}
-
-  ngOnInit() {
-    this.dataSource = new VisualiserDataSource(this.connecApiService, this.paginator, this.sort, this._parent);
-
+    public route: ActivatedRoute,
+    public router: Router,
+    public connecApiService: ConnecApiService,
+    public mnoeApiService: MnoeApiService,
+    @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
+  ) {
     this.collections$ = this.connecApiService.collections();
     this.productInstances$ = this.mnoeApiService.productInstances();
 
@@ -56,6 +54,11 @@ export class VisualiserComponent implements OnInit {
         this.productInstances.push(record);
       })
     });
+  }
+
+  ngOnInit() {
+    this.dataSource = new VisualiserDataSource(this);
+    this.route.params.switchMap((params: Params) => this.collection = params['collection']);
   }
 
   // Return IdMaps where record has been pushed to external application
@@ -80,18 +83,24 @@ export class VisualiserComponent implements OnInit {
 }
 
 export class VisualiserDataSource extends DataSource<any> {
+  connecUiComponent: ConnecUiComponent;
+  paginator: MatPaginator;
+  sort: MatSort;
+  connecApiService: ConnecApiService;
+
   displayedColumns = ['code', 'name', 'created_at', 'applications', 'actions'];
 
   pageSize = 100;
   resultsLength = 0;
   isLoadingResults = false;
-  attributeValue = undefined;
 
-  constructor(private connecApiService: ConnecApiService,
-              private paginator: MatPaginator,
-              private sort: MatSort,
-              private connecUiComponent: ConnecUiComponent) {
+  constructor(private visualiserComponent: VisualiserComponent) {
     super();
+
+    this.connecUiComponent = visualiserComponent._parent;
+    this.paginator = visualiserComponent.paginator;
+    this.sort = visualiserComponent.sort;
+    this.connecApiService = visualiserComponent.connecApiService;
 
     this.connecUiComponent.filterButtonClick$ = Observable.fromEvent(this.connecUiComponent.filterButton._elementRef.nativeElement, 'click');
   }
@@ -112,8 +121,8 @@ export class VisualiserDataSource extends DataSource<any> {
       .switchMap(() => {
         this.isLoadingResults = true;
         var filter = undefined;
-        if(this.connecUiComponent.attributeSelector.value && this.attributeValue) {
-          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.attributeValue + "/";
+        if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
+          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.visualiserComponent.collection + "/";
         }
         return this.connecApiService.fetchEntities(this.connecUiComponent.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
