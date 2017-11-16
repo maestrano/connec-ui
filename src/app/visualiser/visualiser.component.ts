@@ -59,14 +59,19 @@ export class VisualiserComponent implements OnInit {
 
   ngOnInit() {
     this._parent.currentUser$.subscribe((res: any) => {
+      this.connecApiService.channelId = this._parent.organizationSelector.value;
       this.connecApiService.ssoSession = res['sso_session'];
 
       this.route.params.subscribe((params: Params) => {
         this.collection = params['collection'];
         this._parent.collectionSelector.value = this.collection;
-        return this.dataSource = new VisualiserDataSource(this);
+        return this.reloadData();
       });
     });
+  }
+
+  reloadData() {
+    this.dataSource = new VisualiserDataSource(this);
   }
 
   // Return IdMaps where record has been pushed to external application
@@ -135,6 +140,7 @@ export class VisualiserDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
+      this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.filterButtonClick$
     ];
 
@@ -147,6 +153,7 @@ export class VisualiserDataSource extends DataSource<any> {
         if(!this.visualiserComponent.collection) { return []; }
 
         this.connecUiComponent.loading = true;
+        this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value;
 
         // Apply attribute filter
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {

@@ -15,7 +15,7 @@ export class ConnecApiService {
   apiService;
 
   ssoSession = '';
-  channelId = 'org-fbbj';
+  channelId = '';
 
   constructor(
     private restangular: Restangular

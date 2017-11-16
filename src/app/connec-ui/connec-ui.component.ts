@@ -27,6 +27,9 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 export class ConnecUiComponent implements OnInit {
   loading = false;
   currentUser$: Observable<any>;
+  organizations = [];
+  selectedOrganization = undefined;
+
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
@@ -38,6 +41,7 @@ export class ConnecUiComponent implements OnInit {
 
   @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionSelector') collectionSelector: MatSelect;
+  @ViewChild('organizationSelector') organizationSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
   @ViewChild('filterButton') filterButton: MatButton;
@@ -69,8 +73,11 @@ export class ConnecUiComponent implements OnInit {
   }
 
   initialiseConnecService() {
-    this.currentUser$.subscribe((res: any) => {
-      this.connecApiService.ssoSession = res['sso_session'];
+    this.currentUser$.subscribe((user: any) => {
+      user['organizations'].map(organization => this.organizations.push(organization));
+      this.organizationSelector.value = this.organizations[0]['uid'];
+      this.connecApiService.channelId = this.organizations[0]['uid'];
+      this.connecApiService.ssoSession = user['sso_session'];
       this.collections$ = this.connecApiService.collections();
     });
   }
