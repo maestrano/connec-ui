@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import { ConnecUiComponent } from '../connec-ui/connec-ui.component';
 import { ConnecApiService } from '../services/connec-api.service';
 
 import { Observable } from 'rxjs/Observable';
@@ -28,10 +29,14 @@ export class DetailComponent implements OnInit {
     private router: Router,
     private connecApiService: ConnecApiService,
     private _location: Location,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
   ) { }
 
   ngOnInit() {
+    this.connecApiService.channelId = this._parent.organizationSelector.value;
+    this.connecApiService.ssoSession = this._parent.ssoSession;
+
     // Fetch entity
     this.entity$ = this.route.params.switchMap((params: Params) => this.connecApiService.fetchEntity(params['collection'], params['id']));
     this.entity$.subscribe(entity => {

@@ -27,6 +27,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 export class ConnecUiComponent implements OnInit {
   loading = false;
   currentUser$: Observable<any>;
+  ssoSession: string;
   organizations = [];
   selectedOrganization = undefined;
 
@@ -78,6 +79,7 @@ export class ConnecUiComponent implements OnInit {
       this.organizationSelector.value = this.organizations[0]['uid'];
       this.connecApiService.channelId = this.organizations[0]['uid'];
       this.connecApiService.ssoSession = user['sso_session'];
+      this.ssoSession = user['sso_session'];
       this.collections$ = this.connecApiService.collections();
     });
   }
