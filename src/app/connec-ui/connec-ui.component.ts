@@ -24,13 +24,15 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ConnecUiComponent implements OnInit {
-  loading = true;
+  loading = false;
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
 
   filterableAttributes = ['code', 'name', 'created_at'];
   attributeValue = undefined;
+
+  selectedApplications = {};
 
   @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionSelector') collectionSelector: MatSelect;
@@ -72,5 +74,9 @@ export class ConnecUiComponent implements OnInit {
 
   navigateToCollection(collection: string) {
     this.router.navigate(['/visualiser', collection]);
+  }
+
+  changeSelectedApplications() {
+    console.log("APPS:", this.selectedApplications);
   }
 }

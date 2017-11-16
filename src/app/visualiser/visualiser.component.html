@@ -22,7 +22,7 @@
 
     <!-- Applications Column -->
     <ng-container matColumnDef="applications">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Applications </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> Applications </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span *ngFor="let idMap of idMapFilter(row.id)">
           <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="25" />
@@ -32,7 +32,7 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-menu #appMenu="matMenu">
           <button mat-menu-item>

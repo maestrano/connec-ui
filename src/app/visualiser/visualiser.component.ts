@@ -122,12 +122,24 @@ export class VisualiserDataSource extends DataSource<any> {
       .startWith(null)
       .switchMap(() => {
         if(!this.visualiserComponent.collection) { return []; }
+
         this.connecUiComponent.loading = true;
-        var filter = undefined;
-        console.log("VALUE", this.connecUiComponent.attributeInput);
+
+        // Apply attribute filter
+        var filter = '';
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
           filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
         }
+
+        // Apply applications filter
+        var selectedApplications = this.connecUiComponent.selectedApplications;
+        for (var application in selectedApplications) {
+          if (selectedApplications[application]) {
+            if(filter) { filter += ' AND '; }
+            filter += "id.group_id eq '" + application + "'";
+          }
+        }
+
         return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
       })
       .map(entityPage => {

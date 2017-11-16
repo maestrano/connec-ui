@@ -37,8 +37,11 @@ export class EntityAttributeComponent implements OnInit {
 
   properties() {
     var keys = Object.keys(this.entity);
-    var index = keys.indexOf('id');
-    if (index !== -1) { keys.splice(index, 1); }
+    for(let ignoredKey of ['id', 'matching_records']) {
+      var index = keys.indexOf(ignoredKey);
+      if (index !== -1) { keys.splice(index, 1); }
+    }
+
     return keys;
   }
 

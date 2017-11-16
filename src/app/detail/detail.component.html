@@ -13,5 +13,36 @@
     </div>
   </div>
 
-  <app-entity-attribute [entity]="entity"></app-entity-attribute>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>View details</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <app-entity-attribute [entity]="entity"></app-entity-attribute>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>View matching records</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <table class="table table-striped">
+        <tbody>
+          <tr *ngFor="let matchingRecord of matchingRecords?.entities">
+            <td>
+              {{ matchingRecord.friendlyName() }}
+            </td>
+            <td>
+              <button color="primary" mat-icon-button title="Details" (click)="navigateToDetails(matchingRecord)">
+                <mat-icon>zoom_in</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

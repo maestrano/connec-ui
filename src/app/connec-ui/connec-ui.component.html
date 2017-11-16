@@ -14,9 +14,9 @@
 
     <div class="row">
       <div class="col-2">
-        <mat-card class="example-card">
+        <mat-card>
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
+            <div mat-card-avatar></div>
             <mat-card-title>Collection</mat-card-title>
           </mat-card-header>
 
@@ -31,9 +31,9 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card class="example-card">
+        <mat-card>
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
+            <div mat-card-avatar></div>
             <mat-card-title>Filter by attribute</mat-card-title>
           </mat-card-header>
           <mat-card-content>
@@ -55,16 +55,16 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card class="example-card">
+        <mat-card>
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
+            <div mat-card-avatar></div>
             <mat-card-title>Filter by application</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <section>
               <div class="row" *ngFor="let productInstance of productInstances$ | async">
                 <div class="col-12">
-                    <mat-checkbox>
+                    <mat-checkbox value="{{ productInstance.uid }}" [(ngModel)]="selectedApplications[productInstance.uid]" (change)="changeSelectedApplications()">
                     <img aria-hidden src="{{ productInstance.logo }}" height="25" />
                     {{ productInstance.name }}
                   </mat-checkbox>

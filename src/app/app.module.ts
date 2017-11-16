@@ -21,6 +21,7 @@ import {
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -87,6 +88,7 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatExpansionModule,
     AppRoutingModule
   ],
   providers: [

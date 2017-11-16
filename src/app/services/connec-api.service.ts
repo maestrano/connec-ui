@@ -56,7 +56,7 @@ export class ConnecApiService {
   }
 
   public fetchEntity(collection: string, id: string): Observable<Entity> {
-    return this.restangular.all(this.channelId).one(collection, id).get()
+    return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records'})
     .map(record => {
       return this.deserializeModel(record[collection])
     })
