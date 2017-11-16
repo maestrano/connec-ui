@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, Inject, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
-import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
+import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatDialog } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
@@ -44,6 +44,7 @@ export class VisualiserComponent implements OnInit {
     public router: Router,
     public connecApiService: ConnecApiService,
     public mnoeApiService: MnoeApiService,
+    public dialog: MatDialog,
     @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
   ) {
     this.collections$ = this.connecApiService.collections();
@@ -84,6 +85,23 @@ export class VisualiserComponent implements OnInit {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
   }
+
+  openDialog(entity: Entity) {
+    const dialogRef = this.dialog.open(SearchSimilarDialog);
+    dialogRef.componentInstance.entity = entity;
+    dialogRef.afterClosed().subscribe(result => {
+      var filter = '';
+      var selectedAttributes = dialogRef.componentInstance.selectedAttributes;
+      for(let key of Object.keys(selectedAttributes)) {
+        if(selectedAttributes[key]) {
+          if(filter) { filter += ' and '; }
+          filter += key + ' match /' + entity[key] + '/';
+        }
+      }
+      this.dataSource = new VisualiserDataSource(this);
+      this.dataSource.filter = filter;
+    });
+  }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
@@ -93,6 +111,7 @@ export class VisualiserDataSource extends DataSource<any> {
   connecApiService: ConnecApiService;
 
   displayedColumns = ['code', 'name', 'created_at', 'applications', 'actions'];
+  filter = '';
 
   pageSize = 100;
   resultsLength = 0;
@@ -126,21 +145,20 @@ export class VisualiserDataSource extends DataSource<any> {
         this.connecUiComponent.loading = true;
 
         // Apply attribute filter
-        var filter = '';
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
-          filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
+          this.filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
         }
 
         // Apply applications filter
         var selectedApplications = this.connecUiComponent.selectedApplications;
         for (var application in selectedApplications) {
           if (selectedApplications[application]) {
-            if(filter) { filter += ' AND '; }
-            filter += "id.group_id eq '" + application + "'";
+            if(this.filter) { this.filter += ' AND '; }
+            this.filter += "id.group_id eq '" + application + "'";
           }
         }
 
-        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, filter)
+        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter)
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
@@ -155,4 +173,17 @@ export class VisualiserDataSource extends DataSource<any> {
   }
 
   public disconnect() {}
+}
+
+@Component({
+  selector: 'connec-search-similar-dialog',
+  templateUrl: 'connec-search-similar-dialog.html',
+})
+export class SearchSimilarDialog {
+  entity: Entity;
+  selectedAttributes = {};
+
+  isObject(key) {
+    return typeof this.entity[key] === 'object';
+  }
 }

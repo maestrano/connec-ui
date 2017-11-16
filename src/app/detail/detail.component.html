@@ -5,11 +5,8 @@
         <mat-icon aria-label="Back">chevron_left</mat-icon> Back
       </button>
     </div>
-    <div class="col-3">
-      <h2>
-        {{ entity.resource_type }}
-        {{ entity.friendlyName() }}
-      </h2>
+    <div class="col-11">
+      <h2>{{ entity.friendlyName() }}</h2>
     </div>
   </div>
 
@@ -29,7 +26,9 @@
         <mat-panel-title>View matching records</mat-panel-title>
       </mat-expansion-panel-header>
 
-      <table class="table table-striped">
+      <span *ngIf="matchingRecords?.entities.length == 0">No matching records found</span>
+
+      <table class="table table-striped" *ngIf="matchingRecords?.entities.length > 0">
         <tbody>
           <tr *ngFor="let matchingRecord of matchingRecords?.entities">
             <td>

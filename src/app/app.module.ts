@@ -44,7 +44,7 @@ import { MnoeApiService } from './services/mnoe-api.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { VisualiserComponent } from './visualiser/visualiser.component';
+import { VisualiserComponent, SearchSimilarDialog } from './visualiser/visualiser.component';
 
 import { EntitiesPageEffects } from './effects/entities_page';
 
@@ -59,9 +59,13 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
   declarations: [
     AppComponent,
     VisualiserComponent,
+    SearchSimilarDialog,
     DetailComponent,
     ConnecUiComponent,
     EntityAttributeComponent
+  ],
+  entryComponents: [
+    SearchSimilarDialog
   ],
   imports: [
     BrowserModule,

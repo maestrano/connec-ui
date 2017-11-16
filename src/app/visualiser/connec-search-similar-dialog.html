@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Search similar records</h2>
+
+<mat-dialog-content>
+  <table class="table table-striped connec-details">
+    <tbody>
+      <tr *ngFor="let key of entity.properties()">
+        <div *ngIf="entity[key] && !isObject(key)">
+          <td><mat-checkbox value="{{ entity[key] }}" [(ngModel)]="selectedAttributes[key]">{{ key }}</mat-checkbox></td>
+          <td *ngIf="entity[key]">{{ entity[key] }}</td>
+        </div>
+      </tr>
+    </tbody>
+  </table>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="true" tabindex="1">Search</button>
+  <button mat-button mat-dialog-close tabindex="-1">Cancel</button>
+</mat-dialog-actions>
