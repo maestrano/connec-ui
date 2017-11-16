@@ -91,6 +91,7 @@ export class VisualiserComponent implements OnInit {
     dialogRef.componentInstance.entity = entity;
     dialogRef.afterClosed().subscribe(result => {
       var filter = '';
+      this.paginator.pageIndex = 0;
       var selectedAttributes = dialogRef.componentInstance.selectedAttributes;
       for(let key of Object.keys(selectedAttributes)) {
         if(selectedAttributes[key]) {
