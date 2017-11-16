@@ -26,6 +26,14 @@ export class MnoeApiService {
     });
   }
 
+  public currentUser(): Observable<any> {
+    return this.restangular.one('/current_user').get()
+    .map((res: any) => {
+      return res['current_user'];
+    })
+    .catch(error => this.handleError(error));
+  }
+
   public productInstances(): Observable<ProductInstance[]> {
     return this.restangular.all('/organizations/5/app_instances').customGET()
     .map((res: any) => this.extractQueryData(res, 'app_instances'))

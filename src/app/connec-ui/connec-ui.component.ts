@@ -21,10 +21,12 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   selector: 'connec-ui',
   templateUrl: './connec-ui.component.html',
   styleUrls: ['./connec-ui.component.css'],
+  providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
 export class ConnecUiComponent implements OnInit {
   loading = false;
+  currentUser$: Observable<any>;
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
@@ -50,7 +52,12 @@ export class ConnecUiComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.collections$ = this.connecApiService.collections();
+    this.initialiseMnoeService();
+    this.initialiseConnecService();
+  }
+
+  initialiseMnoeService() {
+    this.currentUser$ = this.mnoeApiService.currentUser();
     this.productInstances$ = this.mnoeApiService.productInstances();
 
     // How to extract Observable underlying collection properly?
@@ -58,6 +65,13 @@ export class ConnecUiComponent implements OnInit {
       res.forEach((record: any) => {
         this.productInstances.push(record);
       })
+    });
+  }
+
+  initialiseConnecService() {
+    this.currentUser$.subscribe((res: any) => {
+      this.connecApiService.ssoSession = res['sso_session'];
+      this.collections$ = this.connecApiService.collections();
     });
   }
 

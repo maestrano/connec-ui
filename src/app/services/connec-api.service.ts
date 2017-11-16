@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable,Inject, forwardRef  } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 import { RestangularModule, Restangular } from 'ngx-restangular';
+
+import { ConnecUiComponent } from '../connec-ui/connec-ui.component';
 
 import { EntitiesPage } from '../models/entities_page';
 import { Entity } from '../models/entity';
@@ -11,13 +13,16 @@ import { ProductInstance } from '../models/product_instance';
 @Injectable()
 export class ConnecApiService {
   apiService;
-  channelId = 'org-fbbj';
-  authorizationHeader = 'Basic MDQ2ZWViMDAtYWFmYS0wMTM1LTExYmYtNzRkNDM1MTBjMzI2OjBXRUlwNXB2TEYyOUdXb3hNLWNXN0E=';
 
-  constructor(private restangular: Restangular) {
+  ssoSession = '';
+  channelId = 'org-fbbj';
+
+  constructor(
+    private restangular: Restangular
+  ) {
     this.restangular = this.restangular.withConfig((RestangularProvider) => {
       RestangularProvider.setBaseUrl('http://localhost:8080/api/v2');
-      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true, 'Authorization': this.authorizationHeader});
+      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
       RestangularProvider.setRequestSuffix('.json');
 
       // Extract collection content
@@ -31,7 +36,7 @@ export class ConnecApiService {
   }
 
   public collections(): Observable<String[]> {
-    return this.restangular.all('/').get('')
+    return this.restangular.all('/').get('', {sso_session: this.ssoSession})
     .map((res: any) => {
       var cols = res._links.map((collection: any) => Object.keys(collection)[0]);
       return cols;
@@ -42,7 +47,7 @@ export class ConnecApiService {
   }
 
   public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null): Observable<EntitiesPage> {
-    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber)};
+    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), sso_session: this.ssoSession};
 
     // Filter: $filter=code eq 'CT3'
     if(filter) { options['$filter'] = filter; }
@@ -56,7 +61,7 @@ export class ConnecApiService {
   }
 
   public fetchEntity(collection: string, id: string): Observable<Entity> {
-    return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records'})
+    return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records', sso_session: this.ssoSession})
     .map(record => {
       return this.deserializeModel(record[collection])
     })
@@ -67,7 +72,7 @@ export class ConnecApiService {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
     return this.restangular.all(entity.channel_id).one(entity.resource_type, idMap['id'])
-    .customPUT(data, 'commit')
+    .customPUT(data, 'commit', {sso_session: this.ssoSession})
     .catch(error => this.handleError(error));
   }
 

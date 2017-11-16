@@ -23,10 +23,10 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   selector: 'visualiser',
   templateUrl: './visualiser.component.html',
   styleUrls: ['./visualiser.component.css'],
+  providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit {
-  collections$: Observable<any[]>;
   collectionChange$: Observable<any[]>;
   collection = undefined;
   productInstances$: Observable<ProductInstance[]>;
@@ -47,7 +47,6 @@ export class VisualiserComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
   ) {
-    this.collections$ = this.connecApiService.collections();
     this.productInstances$ = this.mnoeApiService.productInstances();
 
     // How to extract Observable underlying collection properly?
@@ -59,10 +58,14 @@ export class VisualiserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      this.collection = params['collection'];
-      this._parent.collectionSelector.value = this.collection;
-      return this.dataSource = new VisualiserDataSource(this);
+    this._parent.currentUser$.subscribe((res: any) => {
+      this.connecApiService.ssoSession = res['sso_session'];
+
+      this.route.params.subscribe((params: Params) => {
+        this.collection = params['collection'];
+        this._parent.collectionSelector.value = this.collection;
+        return this.dataSource = new VisualiserDataSource(this);
+      });
     });
   }
 
