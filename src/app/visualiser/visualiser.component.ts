@@ -58,6 +58,9 @@ export class VisualiserComponent implements OnInit {
         this.reloadData();
       });
     });
+
+    // Reset pre-defined filters on new search
+    this._parent.filterButtonClick$.subscribe((res: any) => this.dataSource.filter = '');
   }
 
   reloadData() {
@@ -134,8 +137,6 @@ export class VisualiserDataSource extends DataSource<any> {
     this.paginator = visualiserComponent.paginator;
     this.sort = visualiserComponent.sort;
     this.connecApiService = visualiserComponent.connecApiService;
-
-    this.connecUiComponent.filterButtonClick$ = Observable.fromEvent(this.connecUiComponent.filterButton._elementRef.nativeElement, 'click');
   }
 
   public connect(): Observable<Entity[]> {

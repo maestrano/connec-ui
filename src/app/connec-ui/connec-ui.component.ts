@@ -56,6 +56,8 @@ export class ConnecUiComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
+
     // Fetch current user
     this.currentUser$ = this.mnoeApiService.currentUser();
 
