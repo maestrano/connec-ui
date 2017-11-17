@@ -57,20 +57,34 @@ export class ConnecUiComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Fetch current user
     this.currentUser$ = this.mnoeApiService.currentUser();
+
+    // Reload applications on Organization change
+    this.organizationSelector.change.subscribe((organization: any) => {
+      this.connecApiService.channelId = organization.value['uid'];
+      this.mnoeApiService.organizationId = organization.value['id'];
+
+      // Reload product instances
+      this.productInstances$ = this.mnoeApiService.productInstances();
+    });
 
     this.currentUser$.subscribe((user: any) => {
       user['organizations'].map(organization => this.organizations.push(organization));
-      this.organizationSelector.value = this.organizations[0];
-      this.connecApiService.channelId = this.organizations[0]['uid'];
-      this.mnoeApiService.organizationId = this.organizations[0]['id'];
+      // Store sso session token
       this.connecApiService.ssoSession = user['sso_session'];
       this.ssoSession = user['sso_session'];
 
-      this.collections$ = this.connecApiService.collections();
-      this.productInstances$ = this.mnoeApiService.productInstances();
+      // Select first Organization
+      this.connecApiService.channelId = this.organizations[0]['uid'];
+      this.mnoeApiService.organizationId = this.organizations[0]['id'];
+      this.organizationSelector.value = this.organizations[0];
 
-      // How to extract Observable underlying collection properly?
+      // Available collections
+      this.collections$ = this.connecApiService.collections();
+
+      // Load product instances
+      this.productInstances$ = this.mnoeApiService.productInstances();
       this.productInstances$.subscribe((res: any) => {
         res.forEach((record: any) => {
           this.productInstances.push(record);

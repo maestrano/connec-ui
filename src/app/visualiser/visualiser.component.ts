@@ -27,9 +27,6 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit {
-  collectionChange$: Observable<any[]>;
-  collection = undefined;
-
   dataSource: VisualiserDataSource | null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -54,8 +51,7 @@ export class VisualiserComponent implements OnInit {
       this.connecApiService.ssoSession = this._parent.ssoSession;
 
       this.route.params.subscribe((params: Params) => {
-        this.collection = params['collection'];
-        this._parent.collectionSelector.value = this.collection;
+        this._parent.collectionSelector.value = params['collection'];
         return this.reloadData();
       });
     });
@@ -154,13 +150,13 @@ export class VisualiserDataSource extends DataSource<any> {
     return Observable.merge(...displayDataChanges)
       .startWith(null)
       .switchMap(() => {
-        if(!this.visualiserComponent.collection) { return []; }
+        if(!this.connecUiComponent.collectionSelector.value) { return []; }
 
         this.connecUiComponent.loading = true;
         this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value['uid'];
 
         // Apply attribute filter
-        if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {
+        if(this.connecUiComponent.attributeSelector.value && this.connecUiComponent.collectionSelector.value) {
           this.filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
         }
 
@@ -173,7 +169,7 @@ export class VisualiserDataSource extends DataSource<any> {
           }
         }
 
-        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
+        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
