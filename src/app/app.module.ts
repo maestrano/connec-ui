@@ -22,6 +22,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -93,6 +94,7 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
     MatProgressSpinnerModule,
     MatDialogModule,
     MatExpansionModule,
+    MatTooltipModule,
     AppRoutingModule
   ],
   providers: [

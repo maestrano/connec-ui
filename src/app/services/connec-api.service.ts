@@ -12,8 +12,8 @@ import { ProductInstance } from '../models/product_instance';
 
 @Injectable()
 export class ConnecApiService {
-  // connecHost = 'http://localhost:8080';
-  connecHost = 'https://api-connec-sit.maestrano.io';
+  connecHost = 'http://localhost:8080';
+  // connecHost = 'https://api-connec-sit.maestrano.io';
   apiService;
 
   ssoSession = '';
