@@ -12,6 +12,7 @@ import { ProductInstance } from '../models/product_instance';
 
 @Injectable()
 export class ConnecApiService {
+  connecHost = 'http://localhost:8080';
   apiService;
 
   ssoSession = '';
@@ -21,7 +22,7 @@ export class ConnecApiService {
     private restangular: Restangular
   ) {
     this.restangular = this.restangular.withConfig((RestangularProvider) => {
-      RestangularProvider.setBaseUrl('http://localhost:8080/api/v2');
+      RestangularProvider.setBaseUrl(this.connecHost + '/api/v2');
       RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
       RestangularProvider.setRequestSuffix('.json');
 
