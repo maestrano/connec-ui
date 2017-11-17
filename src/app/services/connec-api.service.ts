@@ -16,7 +16,6 @@ export class ConnecApiService {
   // connecHost = 'https://api-connec-sit.maestrano.io';
   apiService;
 
-  ssoSession = '';
   channelId = '';
 
   constructor(
@@ -38,7 +37,7 @@ export class ConnecApiService {
   }
 
   public collections(): Observable<String[]> {
-    return this.restangular.all('/' + this.channelId).get('', {sso_session: this.ssoSession})
+    return this.restangular.all('/' + this.channelId).get('', {sso_session: sessionStorage.getItem('ssoSession')})
     .map((res: any) => {
       var cols = res._links.map((collection: any) => Object.keys(collection)[0]);
       return cols;
@@ -49,7 +48,7 @@ export class ConnecApiService {
   }
 
   public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, archived=false): Observable<EntitiesPage> {
-    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), sso_session: this.ssoSession};
+    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), sso_session: sessionStorage.getItem('ssoSession')};
 
     var archiveFilter = '';
     if(archived) {
@@ -71,7 +70,7 @@ export class ConnecApiService {
   }
 
   public fetchEntity(collection: string, id: string): Observable<Entity> {
-    return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records', sso_session: this.ssoSession})
+    return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records', sso_session: sessionStorage.getItem('ssoSession')})
     .map(record => {
       return this.deserializeModel(record[collection])
     })
@@ -81,7 +80,7 @@ export class ConnecApiService {
   public updateEntity(entity: Entity, data: any): Observable<Entity> {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     return this.restangular.all(this.channelId).one(entity.resource_type)
-    .customPUT(data, idMap['id'], {sso_session: this.ssoSession})
+    .customPUT(data, idMap['id'], {sso_session: sessionStorage.getItem('ssoSession')})
     .map(record => {
       return this.deserializeModel(record[entity.resource_type])
     })
@@ -92,7 +91,7 @@ export class ConnecApiService {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
     return this.restangular.all(entity.channel_id).one(entity.resource_type, idMap['id'])
-    .customPUT(data, 'commit', {sso_session: this.ssoSession})
+    .customPUT(data, 'commit', {sso_session: sessionStorage.getItem('ssoSession')})
     .catch(error => this.handleError(error));
   }
 

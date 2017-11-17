@@ -35,7 +35,6 @@ export class DetailComponent implements OnInit {
 
   ngOnInit() {
     this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
-    this.connecApiService.ssoSession = this._parent.ssoSession;
 
     // Fetch entity
     this.entity$ = this.route.params.switchMap((params: Params) => {

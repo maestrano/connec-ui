@@ -27,7 +27,6 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 export class ConnecUiComponent implements OnInit {
   loading = false;
   currentUser$: Observable<any>;
-  ssoSession: string;
   organizations = [];
 
   collections$: Observable<any[]>;
@@ -72,8 +71,7 @@ export class ConnecUiComponent implements OnInit {
     this.currentUser$.subscribe((user: any) => {
       user['organizations'].map(organization => this.organizations.push(organization));
       // Store sso session token
-      this.connecApiService.ssoSession = user['sso_session'];
-      this.ssoSession = user['sso_session'];
+      sessionStorage.setItem('ssoSession', user['sso_session']);
 
       // Select first Organization
       this.connecApiService.channelId = this.organizations[0]['uid'];

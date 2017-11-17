@@ -48,7 +48,6 @@ export class VisualiserComponent implements OnInit {
   ngOnInit() {
     this._parent.currentUser$.subscribe((res: any) => {
       this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
-      this.connecApiService.ssoSession = this._parent.ssoSession;
 
       this.route.params.subscribe((params: Params) => {
         this._parent.collectionSelector.value = params['collection'];
