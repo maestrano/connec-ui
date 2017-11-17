@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
-import { MatPaginator, MatSort, MatSelect, MatInput, MatButton } from '@angular/material';
+import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatCheckbox } from '@angular/material';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
@@ -45,6 +45,7 @@ export class ConnecUiComponent implements OnInit {
   @ViewChild('organizationSelector') organizationSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
+  @ViewChild('checkboxArchived') checkboxArchived: MatCheckbox;
   @ViewChild('filterButton') filterButton: MatButton;
 
   filterButtonClick$: Observable<any>;

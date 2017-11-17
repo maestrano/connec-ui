@@ -56,8 +56,12 @@
            <mat-icon>zoom_in</mat-icon>
         </button>
 
-        <button color="warn" mat-icon-button title="Archive">
+        <button *ngIf="row.status != 'ARCHIVED'" color="warn" mat-icon-button title="Archive" (click)="archiveEntity(row)">
            <mat-icon>delete</mat-icon>
+        </button>
+
+        <button *ngIf="row.status == 'ARCHIVED'" color="primary" mat-icon-button title="Restore" (click)="restoreEntity(row)">
+           <mat-icon>restore</mat-icon>
         </button>
 
         <button color="primary" mat-icon-button [matMenuTriggerFor]="appMenu" title="More actions">

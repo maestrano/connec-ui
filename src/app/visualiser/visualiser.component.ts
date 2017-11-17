@@ -89,6 +89,18 @@ export class VisualiserComponent implements OnInit {
     this.connecApiService.sendEntityToApplication(entity, productInstance);
   }
 
+  archiveEntity(entity: Entity) {
+    var data = {};
+    data[entity.resource_type] = {status: 'ARCHIVED'};
+    this.connecApiService.updateEntity(entity, data);
+  }
+
+  restoreEntity(entity: Entity) {
+    var data = {};
+    data[entity.resource_type] = {status: ''};
+    this.connecApiService.updateEntity(entity, data);
+  }
+
   navigateToDetails(entity: Entity) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
@@ -141,6 +153,7 @@ export class VisualiserDataSource extends DataSource<any> {
       this.sort.sortChange,
       this.paginator.page,
       this.connecUiComponent.organizationSelector.change,
+      this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.filterButtonClick$
     ];
 
@@ -169,7 +182,7 @@ export class VisualiserDataSource extends DataSource<any> {
           }
         }
 
-        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter)
+        return this.connecApiService.fetchEntities(this.visualiserComponent.collection, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];

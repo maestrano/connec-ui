@@ -46,11 +46,19 @@ export class ConnecApiService {
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null): Observable<EntitiesPage> {
+  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, archived=false): Observable<EntitiesPage> {
     var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), sso_session: this.ssoSession};
 
+    var archiveFilter = '';
+    if(archived) {
+      archiveFilter = "status eq 'ARCHIVED'";
+    } else {
+      archiveFilter = "status ne 'ARCHIVED'";
+    }
+
     // Filter: $filter=code eq 'CT3'
-    if(filter) { options['$filter'] = filter; }
+    if(filter) { archiveFilter += ' and ' + filter; }
+    options['$filter'] = archiveFilter;
 
     // Order: $orderby=name ASC
     if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
@@ -64,6 +72,16 @@ export class ConnecApiService {
     return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records', sso_session: this.ssoSession})
     .map(record => {
       return this.deserializeModel(record[collection])
+    })
+    .catch(error => this.handleError(error));
+  }
+
+  public updateEntity(entity: Entity, data: any): Observable<Entity> {
+    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    return this.restangular.all(this.channelId).one(entity.resource_type)
+    .customPUT(data, idMap['id'], {sso_session: this.ssoSession})
+    .map(record => {
+      return this.deserializeModel(record[entity.resource_type])
     })
     .catch(error => this.handleError(error));
   }
