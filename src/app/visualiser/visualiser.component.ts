@@ -29,8 +29,6 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 export class VisualiserComponent implements OnInit {
   collectionChange$: Observable<any[]>;
   collection = undefined;
-  productInstances$: Observable<ProductInstance[]>;
-  productInstances = [];
 
   dataSource: VisualiserDataSource | null;
 
@@ -47,19 +45,12 @@ export class VisualiserComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
   ) {
-    this.productInstances$ = this.mnoeApiService.productInstances();
 
-    // How to extract Observable underlying collection properly?
-    this.productInstances$.subscribe((res: any) => {
-      res.forEach((record: any) => {
-        this.productInstances.push(record);
-      })
-    });
   }
 
   ngOnInit() {
     this._parent.currentUser$.subscribe((res: any) => {
-      this.connecApiService.channelId = this._parent.organizationSelector.value;
+      this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
       this.connecApiService.ssoSession = this._parent.ssoSession;
 
       this.route.params.subscribe((params: Params) => {
@@ -82,7 +73,7 @@ export class VisualiserComponent implements OnInit {
 
   // Find ProductInstance of an IdMap
   productInstanceFilter(idMap: any): ProductInstance {
-    return this.productInstances.find(x => x.uid === idMap['group_id']);
+    return this._parent.productInstances.find(x => x.uid === idMap['group_id']);
   }
 
   sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
@@ -166,7 +157,7 @@ export class VisualiserDataSource extends DataSource<any> {
         if(!this.visualiserComponent.collection) { return []; }
 
         this.connecUiComponent.loading = true;
-        this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value;
+        this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value['uid'];
 
         // Apply attribute filter
         if(this.connecUiComponent.attributeSelector.value && this.visualiserComponent.collection) {

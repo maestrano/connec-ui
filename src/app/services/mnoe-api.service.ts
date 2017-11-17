@@ -9,6 +9,7 @@ import { ProductInstance } from '../models/product_instance';
 @Injectable()
 export class MnoeApiService {
   apiService;
+  organizationId = undefined;
 
   constructor(private restangular: Restangular) {
     this.restangular = this.restangular.withConfig((RestangularProvider) => {
@@ -35,7 +36,7 @@ export class MnoeApiService {
   }
 
   public productInstances(): Observable<ProductInstance[]> {
-    return this.restangular.all('/organizations/5/app_instances').customGET()
+    return this.restangular.all('/organizations/' + this.organizationId + '/app_instances').customGET()
     .map((res: any) => this.extractQueryData(res, 'app_instances'))
     .catch(error => this.handleError(error));
   }

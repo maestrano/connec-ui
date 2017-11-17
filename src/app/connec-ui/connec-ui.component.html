@@ -23,7 +23,7 @@
           <mat-card-content>
             <mat-form-field>
               <mat-select #organizationSelector>
-                <mat-option *ngFor="let organization of organizations" [value]="organization.uid">
+                <mat-option *ngFor="let organization of organizations" [value]="organization">
                   {{ organization.name }}
                 </mat-option>
               </mat-select>

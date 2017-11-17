@@ -34,12 +34,17 @@ export class DetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.connecApiService.channelId = this._parent.organizationSelector.value;
+    this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
     this.connecApiService.ssoSession = this._parent.ssoSession;
 
     // Fetch entity
-    this.entity$ = this.route.params.switchMap((params: Params) => this.connecApiService.fetchEntity(params['collection'], params['id']));
+    this.entity$ = this.route.params.switchMap((params: Params) => {
+      this._parent.loading = true;
+      return this.connecApiService.fetchEntity(params['collection'], params['id'])
+    });
+
     this.entity$.subscribe(entity => {
+      this._parent.loading = false;
       this.entity = entity;
 
       // Fetch matching records

@@ -29,7 +29,6 @@ export class ConnecUiComponent implements OnInit {
   currentUser$: Observable<any>;
   ssoSession: string;
   organizations = [];
-  selectedOrganization = undefined;
 
   collections$: Observable<any[]>;
   productInstances$: Observable<ProductInstance[]>;
@@ -58,30 +57,25 @@ export class ConnecUiComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initialiseMnoeService();
-    this.initialiseConnecService();
-  }
-
-  initialiseMnoeService() {
     this.currentUser$ = this.mnoeApiService.currentUser();
-    this.productInstances$ = this.mnoeApiService.productInstances();
 
-    // How to extract Observable underlying collection properly?
-    this.productInstances$.subscribe((res: any) => {
-      res.forEach((record: any) => {
-        this.productInstances.push(record);
-      })
-    });
-  }
-
-  initialiseConnecService() {
     this.currentUser$.subscribe((user: any) => {
       user['organizations'].map(organization => this.organizations.push(organization));
-      this.organizationSelector.value = this.organizations[0]['uid'];
+      this.organizationSelector.value = this.organizations[0];
       this.connecApiService.channelId = this.organizations[0]['uid'];
+      this.mnoeApiService.organizationId = this.organizations[0]['id'];
       this.connecApiService.ssoSession = user['sso_session'];
       this.ssoSession = user['sso_session'];
+
       this.collections$ = this.connecApiService.collections();
+      this.productInstances$ = this.mnoeApiService.productInstances();
+
+      // How to extract Observable underlying collection properly?
+      this.productInstances$.subscribe((res: any) => {
+        res.forEach((record: any) => {
+          this.productInstances.push(record);
+        })
+      });
     });
   }
 

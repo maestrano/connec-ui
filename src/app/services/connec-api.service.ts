@@ -12,7 +12,8 @@ import { ProductInstance } from '../models/product_instance';
 
 @Injectable()
 export class ConnecApiService {
-  connecHost = 'http://localhost:8080';
+  // connecHost = 'http://localhost:8080';
+  connecHost = 'https://api-connec-sit.maestrano.io';
   apiService;
 
   ssoSession = '';
@@ -37,7 +38,7 @@ export class ConnecApiService {
   }
 
   public collections(): Observable<String[]> {
-    return this.restangular.all('/').get('', {sso_session: this.ssoSession})
+    return this.restangular.all('/' + this.channelId).get('', {sso_session: this.ssoSession})
     .map((res: any) => {
       var cols = res._links.map((collection: any) => Object.keys(collection)[0]);
       return cols;
