@@ -54,9 +54,7 @@ export class VisualiserComponent implements OnInit {
 
       // Force selected collection using route
       this.route.params.subscribe((params: Params) => {
-        if(!this._parent.collectionSelector.value) {
-          this._parent.collectionSelector.value = params['collection'];
-        }
+        this._parent.collectionSelector.value = params['collection'];
         this.reloadData();
       });
     });

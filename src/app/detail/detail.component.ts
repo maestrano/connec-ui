@@ -34,29 +34,38 @@ export class DetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
+    this._parent.currentUser$.subscribe((res: any) => {
+      this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
 
-    // Fetch entity
-    this.entity$ = this.route.params.switchMap((params: Params) => {
-      this._parent.loading = true;
-      return this.connecApiService.fetchEntity(params['collection'], params['id'])
-    });
+      // Force selected collection using route
+      this.route.params.subscribe((params: Params) => {
+        this._parent.collectionSelector.value = params['collection'];
 
-    this.entity$.subscribe(entity => {
-      this._parent.loading = false;
-      this.entity = entity;
+        // Fetch entity
+        this.entity$ = this.route.params.switchMap((params: Params) => {
+          this._parent.loading = true;
+          return this.connecApiService.fetchEntity(params['collection'], params['id'])
+        });
 
-      // Fetch matching records
-      if(this.entity.matching_records) {
-        var filter = '_id in ';
-        var ids = this.entity.matching_records.map(record => {
-          return "'" + record.match_id.find(idMap => idMap['provider'] === 'connec')['id'] + "'";
-        }).join(',');
-        filter += '[' + ids + ']';
+        // On entity load, fetch matching records
+        this.entity$.subscribe(entity => {
+          this._parent.loading = false;
+          this.entity = entity;
 
-        this.matchingRecords$ = this.connecApiService.fetchEntities(this.entity.resource_type, 100, 0, 'created_at', 'ASC', filter);
-        this.matchingRecords$.subscribe(matchingRecords => this.matchingRecords = matchingRecords);
-      }
+          // Fetch matching records
+          if(this.entity.matching_records) {
+            var filter = '_id in ';
+            var ids = this.entity.matching_records.map(record => {
+              if(!record.match_id) { return ''; }
+              return "'" + record.match_id.find(idMap => idMap['provider'] === 'connec')['id'] + "'";
+            }).join(',');
+            filter += '[' + ids + ']';
+
+            this.matchingRecords$ = this.connecApiService.fetchEntities(this.entity.resource_type, 100, 0, 'created_at', 'ASC', filter);
+            this.matchingRecords$.subscribe(matchingRecords => this.matchingRecords = matchingRecords);
+          }
+        });
+      });
     });
   }
 
