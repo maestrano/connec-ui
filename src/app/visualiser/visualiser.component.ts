@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, Inject, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatDialog } from '@angular/material';
@@ -46,12 +46,18 @@ export class VisualiserComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.reloadData();
+
+    // Load data after current user has been initialised
     this._parent.currentUser$.subscribe((res: any) => {
       this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
 
+      // Force selected collection using route
       this.route.params.subscribe((params: Params) => {
-        this._parent.collectionSelector.value = params['collection'];
-        return this.reloadData();
+        if(!this._parent.collectionSelector.value) {
+          this._parent.collectionSelector.value = params['collection'];
+        }
+        this.reloadData();
       });
     });
   }
@@ -138,6 +144,7 @@ export class VisualiserDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
+      this.connecUiComponent.collectionSelector.change,
       this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.filterButtonClick$
@@ -152,6 +159,7 @@ export class VisualiserDataSource extends DataSource<any> {
         if(!this.connecUiComponent.collectionSelector.value) { return []; }
 
         this.connecUiComponent.loading = true;
+
         this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value['uid'];
 
         // Apply attribute filter
@@ -173,7 +181,6 @@ export class VisualiserDataSource extends DataSource<any> {
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
         this.connecUiComponent.loading = false;
-
         return entityPage.entities;
       })
       .catch(() => {
