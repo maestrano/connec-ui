@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatCheckbox } from '@angular/material';
@@ -6,6 +7,8 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromEvent';
@@ -30,6 +33,10 @@ export class ConnecUiComponent implements OnInit {
   organizations = [];
 
   collections$: Observable<any[]>;
+  collections: string[] = [];
+  filteredcollections: string[] = [];
+  collectionCtrl: FormControl;
+
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
 
@@ -39,7 +46,7 @@ export class ConnecUiComponent implements OnInit {
   selectedApplications = {};
 
   @ViewChild('loader') loader: MatProgressSpinner;
-  @ViewChild('collectionSelector') collectionSelector: MatSelect;
+  @ViewChild('collectionInput') collectionInput: MatInput;
   @ViewChild('organizationSelector') organizationSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
@@ -53,7 +60,9 @@ export class ConnecUiComponent implements OnInit {
     public route: ActivatedRoute,
     private connecApiService: ConnecApiService,
     private mnoeApiService: MnoeApiService
-  ) {}
+  ) {
+    this.collectionCtrl = new FormControl();
+  }
 
   ngOnInit() {
     this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
@@ -82,6 +91,12 @@ export class ConnecUiComponent implements OnInit {
 
       // Available collections
       this.collections$ = this.connecApiService.collections();
+      this.collections$.subscribe((res: any) => {
+        res.forEach((collection: any) => {
+          this.collections.push(collection);
+          this.filteredcollections.push(collection);
+        })
+      });
 
       // Load product instances
       this.productInstances$ = this.mnoeApiService.productInstances();
@@ -90,6 +105,12 @@ export class ConnecUiComponent implements OnInit {
           this.productInstances.push(record);
         })
       });
+    });
+
+    // Filter autocomplete list
+    this.collectionCtrl.valueChanges
+    .subscribe(collection => {
+      this.filteredcollections = collection ? this.filterCollections(collection) : this.collections.slice();
     });
   }
 
@@ -110,5 +131,10 @@ export class ConnecUiComponent implements OnInit {
 
   changeSelectedApplications() {
     console.log("APPS:", this.selectedApplications);
+  }
+
+  filterCollections(name: string) {
+    return this.collections.filter(collection =>
+      collection.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 }

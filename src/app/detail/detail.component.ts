@@ -43,7 +43,7 @@ export class DetailComponent implements OnInit {
       // Force selected collection using route
       this.route.params.subscribe((params: Params) => {
         this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
-        this._parent.collectionSelector.value = params['collection'];
+        this._parent.collectionCtrl.setValue(params['collection']);
         this.loadEntity();
       });
     });

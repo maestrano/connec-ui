@@ -54,7 +54,7 @@ export class VisualiserComponent implements OnInit {
 
       // Force selected collection using route
       this.route.params.subscribe((params: Params) => {
-        this._parent.collectionSelector.value = params['collection'];
+        this._parent.collectionCtrl.setValue(params['collection']);
         this.reloadData();
       });
     });
@@ -143,7 +143,7 @@ export class VisualiserDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
-      this.connecUiComponent.collectionSelector.change,
+      this.connecUiComponent.collectionCtrl.valueChanges,
       this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.filterButtonClick$
@@ -155,14 +155,14 @@ export class VisualiserDataSource extends DataSource<any> {
     return Observable.merge(...displayDataChanges)
       .startWith(null)
       .switchMap(() => {
-        if(!this.connecUiComponent.collectionSelector.value) { return []; }
+        if(!this.connecUiComponent.collectionCtrl.value) { return []; }
 
         this.connecUiComponent.loading = true;
 
         this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value['uid'];
 
         // Apply attribute filter
-        if(this.connecUiComponent.attributeSelector.value && this.connecUiComponent.collectionSelector.value) {
+        if(this.connecUiComponent.attributeSelector.value && this.connecUiComponent.collectionCtrl.value) {
           this.filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
         }
 
@@ -175,7 +175,7 @@ export class VisualiserDataSource extends DataSource<any> {
           }
         }
 
-        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionSelector.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
+        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
