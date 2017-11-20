@@ -97,7 +97,11 @@ export class DetailComponent implements OnInit {
     var record = formData[collection][0];
     var data = {};
     data[collection] = record;
-    console.log("DATA", data);
-    this.connecApiService.createEntity(collection, data);
+
+    this.connecApiService.createEntity(collection, data)
+      .subscribe(record => {
+        this.router.navigate(['/visualiser', record.resource_type, record.id]);
+        scroll(0,0);
+      });
   }
 }
