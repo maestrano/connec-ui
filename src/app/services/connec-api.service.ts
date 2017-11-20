@@ -71,9 +71,14 @@ export class ConnecApiService {
 
   public fetchEntity(collection: string, id: string): Observable<Entity> {
     return this.restangular.all(this.channelId).one(collection, id).get({'$expand': 'matching_records', sso_session: sessionStorage.getItem('ssoSession')})
-    .map(record => {
-      return this.deserializeModel(record[collection])
-    })
+    .map(record => this.deserializeModel(record[collection]))
+    .catch(error => this.handleError(error));
+  }
+
+  public createEntity(collection: string, data: any): Observable<Entity> {
+    return this.restangular.all(this.channelId).one(collection)
+    .customPOST(data, '', {sso_session: sessionStorage.getItem('ssoSession')}, {'CONNEC-EXTERNAL-IDS': false})
+    .map(record => this.deserializeModel(record[collection]))
     .catch(error => this.handleError(error));
   }
 
@@ -81,9 +86,7 @@ export class ConnecApiService {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     return this.restangular.all(this.channelId).one(entity.resource_type)
     .customPUT(data, idMap['id'], {sso_session: sessionStorage.getItem('ssoSession')})
-    .map(record => {
-      return this.deserializeModel(record[entity.resource_type])
-    })
+    .map(record => this.deserializeModel(record[entity.resource_type]))
     .catch(error => this.handleError(error));
   }
 
@@ -92,6 +95,11 @@ export class ConnecApiService {
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
     return this.restangular.all(entity.channel_id).one(entity.resource_type, idMap['id'])
     .customPUT(data, 'commit', {sso_session: sessionStorage.getItem('ssoSession')})
+    .catch(error => this.handleError(error));
+  }
+
+  public jsonSchema(collection: string): any {
+    return this.restangular.one('json_schema', collection).get()
     .catch(error => this.handleError(error));
   }
 

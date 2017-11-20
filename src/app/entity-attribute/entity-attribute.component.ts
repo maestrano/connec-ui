@@ -6,7 +6,6 @@ import { ConnecApiService } from '../services/connec-api.service';
 import { Observable } from 'rxjs/Observable';
 import { Entity } from '../models/entity';
 
-// import { pluralize } from 'pluralize';
 import * as pluralize from 'pluralize';
 
 @Component({

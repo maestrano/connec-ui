@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -34,8 +34,7 @@ import { RestangularModule } from 'ngx-restangular';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { PrettyJsonModule, SafeJsonPipe } from 'angular2-prettyjson';
-import { JsonPipe } from '@angular/common';
+import { JsonSchemaFormModule } from 'angular2-json-schema-form';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -77,7 +76,6 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
     RestangularModule.forRoot(),
     NgbModule.forRoot(),
     BrowserAnimationsModule,
-    PrettyJsonModule,
     MatButtonModule,
     MatCardModule,
     MatMenuModule,
@@ -97,12 +95,12 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
     MatExpansionModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    JsonSchemaFormModule,
     AppRoutingModule
   ],
   providers: [
     ConnecApiService,
-    MnoeApiService,
-    {provide: JsonPipe, useClass: SafeJsonPipe}
+    MnoeApiService
   ],
   bootstrap: [AppComponent]
 })

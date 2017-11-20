@@ -18,6 +18,8 @@ import { EntitiesPage } from '../models/entities_page';
   encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent implements OnInit {
+  jsonSchema$: Observable<any>;
+  jsonSchema: any;
   entity$: Observable<Entity>;
   entity: Entity;
 
@@ -61,6 +63,10 @@ export class DetailComponent implements OnInit {
       this._parent.loading = false;
       this.entity = entity;
 
+      // Load Json schema
+      this.jsonSchema$ = this.connecApiService.jsonSchema(this.entity.resource_type);
+      this.jsonSchema$.subscribe(schema => this.jsonSchema = schema.plain());
+
       // Fetch matching records
       if(this.entity.matching_records) {
         var filter = '_id in ';
@@ -83,5 +89,15 @@ export class DetailComponent implements OnInit {
   navigateToDetails(entity: Entity) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
+  }
+
+  createRecord(formData) {
+    var keys = Object.keys(formData);
+    var collection = keys[0];
+    var record = formData[collection][0];
+    var data = {};
+    data[collection] = record;
+    console.log("DATA", data);
+    this.connecApiService.createEntity(collection, data);
   }
 }
