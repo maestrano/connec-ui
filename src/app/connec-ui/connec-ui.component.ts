@@ -5,6 +5,8 @@ import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatCheckbox } from '@angular/material';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
+import { MatAutocomplete } from '@angular/material/autocomplete';
+
 import { Store, ActionReducerMap } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
@@ -47,6 +49,8 @@ export class ConnecUiComponent implements OnInit {
 
   @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionInput') collectionInput: MatInput;
+  @ViewChild('auto') autoComplete: MatAutocomplete;
+
   @ViewChild('organizationSelector') organizationSelector: MatSelect;
   @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
@@ -112,6 +116,8 @@ export class ConnecUiComponent implements OnInit {
     .subscribe(collection => {
       this.filteredcollections = collection ? this.filterCollections(collection) : this.collections.slice();
     });
+
+    this.autoComplete.optionSelected.subscribe(collection => { this.navigateToCollection(collection.option.value) });
   }
 
   // Return IdMaps where record has been pushed to external application

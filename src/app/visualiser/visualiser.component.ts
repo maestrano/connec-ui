@@ -143,7 +143,7 @@ export class VisualiserDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.sort.sortChange,
       this.paginator.page,
-      this.connecUiComponent.collectionCtrl.valueChanges,
+      this.connecUiComponent.autoComplete.optionSelected,
       this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.filterButtonClick$
