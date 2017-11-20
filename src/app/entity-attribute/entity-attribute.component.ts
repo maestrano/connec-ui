@@ -28,16 +28,30 @@ export class EntityAttributeComponent implements OnInit {
 
   }
 
+  // Navigate to the association
+  // key: association name (eg: organization_id)
   navigateToDetails(key: string) {
-    var collection = pluralize(key.replace('_id',''));
+    var collection = undefined;
+    if(key.endsWith("_id")) {
+      // Association: {organization_id: '234214'}
+      collection = pluralize(key.replace('_id', ''));
+    } else {
+      // Handle polymorphic links: {class: 'Invoice', id: '8273'}
+      collection = pluralize(this.entity['class'].toLowerCase());
+    }
 
-    var idMap = this.entity[key].find(idMap => idMap['provider'] === 'connec');
+    // Find Connec! IdMap
+    var idMap = this.connecIdMap(this.entity[key]);
     this.router.navigate(['/visualiser', collection, idMap['id']]);
   }
 
   properties() {
+    // Ignore properties id and matching_records
     var keys = Object.keys(this.entity);
-    for(let ignoredKey of ['id', 'matching_records']) {
+    var ignoredKeys = ['matching_records'];
+    if(keys.indexOf('class') == -1) { ignoredKeys.push('id'); }
+
+    for(let ignoredKey of ignoredKeys) {
       var index = keys.indexOf(ignoredKey);
       if (index !== -1) { keys.splice(index, 1); }
     }
@@ -46,7 +60,7 @@ export class EntityAttributeComponent implements OnInit {
   }
 
   isIdMap(key) {
-    return this.isObject(key) && key.endsWith("_id");
+    return this.isObject(key) && (key === "id" || key.endsWith("_id"));
   }
 
   isObject(key) {
@@ -55,5 +69,9 @@ export class EntityAttributeComponent implements OnInit {
 
   isArray(key) {
     return Array.isArray(this.entity[key]);
+  }
+
+  connecIdMap(idMaps: Array<string>) {
+    return idMaps.find(idMap => idMap['provider'] === 'connec');
   }
 }
