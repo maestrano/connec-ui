@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, QueryList, ViewChildren, Inject, forwardRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
@@ -21,6 +21,8 @@ import { ProductInstance } from '../models/product_instance';
 
 import { ConnecApiService } from '../services/connec-api.service';
 import { MnoeApiService } from '../services/mnoe-api.service';
+
+import { VisualiserComponent } from '../visualiser/visualiser.component';
 
 @Component({
   selector: 'connec-ui',
@@ -57,13 +59,15 @@ export class ConnecUiComponent implements OnInit {
   @ViewChild('checkboxArchived') checkboxArchived: MatCheckbox;
   @ViewChild('filterButton') filterButton: MatButton;
 
+  @ViewChildren(MatCheckbox) checkboxApplication: QueryList<MatCheckbox>;
+
   filterButtonClick$: Observable<any>;
 
   constructor(
     private router: Router,
     public route: ActivatedRoute,
     private connecApiService: ConnecApiService,
-    private mnoeApiService: MnoeApiService
+    private mnoeApiService: MnoeApiService,
   ) {
     this.collectionCtrl = new FormControl();
   }
@@ -107,6 +111,7 @@ export class ConnecUiComponent implements OnInit {
       this.productInstances$.subscribe((res: any) => {
         res.forEach((record: any) => {
           this.productInstances.push(record);
+          this.selectedApplications[record['uid']] = true;
         })
       });
     });
@@ -133,10 +138,6 @@ export class ConnecUiComponent implements OnInit {
 
   navigateToCollection(collection: string) {
     this.router.navigate(['/visualiser', collection]);
-  }
-
-  changeSelectedApplications() {
-    console.log("APPS:", this.selectedApplications);
   }
 
   filterCollections(name: string) {

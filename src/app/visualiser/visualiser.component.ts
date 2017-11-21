@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Directive, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatDialog } from '@angular/material';
@@ -26,7 +26,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
-export class VisualiserComponent implements OnInit {
+export class VisualiserComponent implements OnInit, AfterViewInit {
   dataSource: VisualiserDataSource | null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -40,7 +40,7 @@ export class VisualiserComponent implements OnInit {
     public connecApiService: ConnecApiService,
     public mnoeApiService: MnoeApiService,
     public dialog: MatDialog,
-    @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
+    @Inject(forwardRef(() => ConnecUiComponent)) public _parent: ConnecUiComponent
   ) {
 
   }
@@ -61,6 +61,16 @@ export class VisualiserComponent implements OnInit {
 
     // Reset pre-defined filters on new search
     this._parent.filterButtonClick$.subscribe((res: any) => this.dataSource.filter = '');
+  }
+
+  ngAfterViewInit() {
+    // Detect when a checkbox is added to the applications list
+    this._parent.checkboxApplication.changes.subscribe(event => {
+      // Detect clicks on application checkbox
+      this._parent.checkboxApplication.forEach(checkbox => {
+        checkbox.change.subscribe(() => this.reloadData())
+      })
+    })
   }
 
   reloadData() {
@@ -145,7 +155,6 @@ export class VisualiserDataSource extends DataSource<any> {
       this.paginator.page,
       this.connecUiComponent.autoComplete.optionSelected,
       this.connecUiComponent.organizationSelector.change,
-      this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.filterButtonClick$
     ];
 
@@ -167,15 +176,15 @@ export class VisualiserDataSource extends DataSource<any> {
         }
 
         // Apply applications filter
+        const mappings = [];
         var selectedApplications = this.connecUiComponent.selectedApplications;
-        for (var application in selectedApplications) {
-          if (selectedApplications[application]) {
-            if(this.filter) { this.filter += ' AND '; }
-            this.filter += "id.group_id eq '" + application + "'";
+        for (let selectedApplication of Object.keys(selectedApplications)) {
+          if (selectedApplications[selectedApplication]) {
+            mappings.push({group_id: selectedApplication, include: true});
           }
         }
 
-        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked);
+        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked, mappings);
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];

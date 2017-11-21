@@ -1,4 +1,6 @@
 import { Injectable,Inject, forwardRef  } from '@angular/core';
+import { URLSearchParams } from '@angular/http'
+
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
@@ -47,8 +49,12 @@ export class ConnecApiService {
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, archived=false): Observable<EntitiesPage> {
-    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), sso_session: sessionStorage.getItem('ssoSession')};
+  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, archived=false, mappings=[]): Observable<EntitiesPage> {
+    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), "mappings[]": [], sso_session: sessionStorage.getItem('ssoSession')};
+
+    mappings.forEach(m => {
+      options["mappings[]"].push(JSON.stringify({group_id: m['group_id'], include: m['include']}));
+    });
 
     var archiveFilter = '';
     if(archived) {
