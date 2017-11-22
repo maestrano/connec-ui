@@ -55,6 +55,7 @@ import { schema } from './db';
 import { DetailComponent } from './detail/detail.component';
 import { ConnecUiComponent } from './connec-ui/connec-ui.component';
 import { EntityAttributeComponent } from './entity-attribute/entity-attribute.component';
+import { CreateRecordComponent } from './create-record/create-record.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
     SearchSimilarDialog,
     DetailComponent,
     ConnecUiComponent,
-    EntityAttributeComponent
+    EntityAttributeComponent,
+    CreateRecordComponent
   ],
   entryComponents: [
     SearchSimilarDialog

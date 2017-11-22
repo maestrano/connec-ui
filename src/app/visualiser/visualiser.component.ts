@@ -28,6 +28,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
 })
 export class VisualiserComponent implements OnInit, AfterViewInit {
   dataSource: VisualiserDataSource | null;
+  collection: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -48,15 +49,15 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.reloadData();
 
+    // Force selected collection using route
+    this.route.params.subscribe((params: Params) => {
+      this.collection = params['collection'];
+      this._parent.collectionCtrl.setValue(params['collection']);
+    });
+
     // Load data after current user has been initialised
     this._parent.currentUser$.subscribe((res: any) => {
-      this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
-
-      // Force selected collection using route
-      this.route.params.subscribe((params: Params) => {
-        this._parent.collectionCtrl.setValue(params['collection']);
-        this.reloadData();
-      });
+      this.reloadData();
     });
 
     // Reset pre-defined filters on new search
@@ -109,6 +110,10 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
   }
 
+  navigateToCreateRecord() {
+    this.router.navigate(['/visualiser', this.collection, 'new']);
+  }
+
   openDialog(entity: Entity) {
     const dialogRef = this.dialog.open(SearchSimilarDialog);
     dialogRef.componentInstance.entity = entity;
@@ -158,8 +163,10 @@ export class VisualiserDataSource extends DataSource<any> {
       this.connecUiComponent.filterButtonClick$
     ];
 
-    // If the user changes the sort order, reset back to the first page.
+    // If the user changes the sort order, reset back to the first page
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    // If user selects Archived records, reset back to the first page
+    this.connecUiComponent.checkboxArchived.change.subscribe(() => this.paginator.pageIndex = 0);
 
     return Observable.merge(...displayDataChanges)
       .startWith(null)
@@ -167,8 +174,6 @@ export class VisualiserDataSource extends DataSource<any> {
         if(!this.connecUiComponent.collectionCtrl.value) { return []; }
 
         this.connecUiComponent.loading = true;
-
-        this.connecApiService.channelId = this.connecUiComponent.organizationSelector.value['uid'];
 
         // Apply attribute filter
         if(this.connecUiComponent.attributeSelector.value && this.connecUiComponent.collectionCtrl.value) {

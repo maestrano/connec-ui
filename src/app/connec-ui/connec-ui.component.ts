@@ -80,8 +80,8 @@ export class ConnecUiComponent implements OnInit {
 
     // Reload applications on Organization change
     this.organizationSelector.change.subscribe((organization: any) => {
-      this.connecApiService.channelId = organization.value['uid'];
-      this.mnoeApiService.organizationId = organization.value['id'];
+      sessionStorage.setItem('channelId', organization.value['uid']);
+      sessionStorage.setItem('organizationId', organization.value['id']);
 
       // Reload product instances
       this.productInstances$ = this.mnoeApiService.productInstances();
@@ -93,9 +93,15 @@ export class ConnecUiComponent implements OnInit {
       sessionStorage.setItem('ssoSession', user['sso_session']);
 
       // Select first Organization
-      this.connecApiService.channelId = this.organizations[0]['uid'];
-      this.mnoeApiService.organizationId = this.organizations[0]['id'];
-      this.organizationSelector.value = this.organizations[0];
+      if(sessionStorage.getItem('organizationId')) {
+        this.organizationSelector.value = this.organizations.find(organization => organization['id'] === sessionStorage.getItem('organizationId'));
+      } else {
+        this.organizationSelector.value = this.organizations[0];
+      }
+
+      // Store Organization details in session
+      sessionStorage.setItem('channelId', this.organizations[0]['uid']);
+      sessionStorage.setItem('organizationId', this.organizations[0]['id']);
 
       // Available collections
       this.collections$ = this.connecApiService.collections();

@@ -18,8 +18,6 @@ import { EntitiesPage } from '../models/entities_page';
   encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent implements OnInit {
-  jsonSchema$: Observable<any>;
-  jsonSchema: any;
   entity$: Observable<Entity>;
   entity: Entity;
 
@@ -36,15 +34,11 @@ export class DetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(this._parent.organizationSelector.value) {
-      this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
-      this.loadEntity();
-    }
+    this.loadEntity();
 
     this._parent.currentUser$.subscribe((res: any) => {
       // Force selected collection using route
       this.route.params.subscribe((params: Params) => {
-        this.connecApiService.channelId = this._parent.organizationSelector.value['uid'];
         this._parent.collectionCtrl.setValue(params['collection']);
         this.loadEntity();
       });
@@ -63,10 +57,6 @@ export class DetailComponent implements OnInit {
       this._parent.loading = false;
       this.entity = entity;
 
-      // Load Json schema
-      this.jsonSchema$ = this.connecApiService.jsonSchema(this.entity.resource_type);
-      this.jsonSchema$.subscribe(schema => this.jsonSchema = schema.plain());
-
       // Fetch matching records
       if(this.entity.matching_records) {
         var filter = '_id in ';
@@ -83,25 +73,11 @@ export class DetailComponent implements OnInit {
   }
 
   navigateToCollection(collection: string) {
-    this._location.back();
+    this.router.navigate(['/visualiser', collection]);
   }
 
   navigateToDetails(entity: Entity) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
-  }
-
-  createRecord(formData) {
-    var keys = Object.keys(formData);
-    var collection = keys[0];
-    var record = formData[collection][0];
-    var data = {};
-    data[collection] = record;
-
-    this.connecApiService.createEntity(collection, data)
-      .subscribe(record => {
-        this.router.navigate(['/visualiser', record.resource_type, record.id]);
-        scroll(0,0);
-      });
   }
 }

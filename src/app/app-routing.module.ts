@@ -3,9 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { VisualiserComponent } from './visualiser/visualiser.component';
 import { DetailComponent } from './detail/detail.component';
+import { CreateRecordComponent } from './create-record/create-record.component';
 
 const routes: Routes = [
   { path: 'visualiser/:collection', component: VisualiserComponent },
+  { path: 'visualiser/:collection/new', component: CreateRecordComponent },
   { path: 'visualiser/:collection/:id', component: DetailComponent },
   { path: '**', redirectTo: '/visualiser/contacts' }
 ];

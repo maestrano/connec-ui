@@ -1,5 +1,15 @@
 <div class="mat-elevation-z8">
-  <mat-paginator [length]="dataSource?.resultsLength" [pageSize]="dataSource?.pageSize"></mat-paginator>
+  <div class="row">
+    <div class="col-2">
+      <button color="primary" mat-icon-button matTooltip="Create Record" (click)="navigateToCreateRecord()">
+         <mat-icon>add_box</mat-icon> Create Record
+      </button>
+    </div>
+
+    <div class="col-10">
+      <mat-paginator [length]="dataSource?.resultsLength" [pageSize]="dataSource?.pageSize"></mat-paginator>
+    </div>
+  </div>
 
   <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
     <!-- Code Column -->
