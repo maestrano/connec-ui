@@ -161,7 +161,8 @@ export class VisualiserDataSource extends DataSource<any> {
       this.paginator.page,
       this.connecUiComponent.autoComplete.optionSelected,
       this.connecUiComponent.organizationSelector.change,
-      this.connecUiComponent.filterButtonClick$
+      this.connecUiComponent.filterButtonClick$,
+      this.connecUiComponent.clearSearchButtonClick$
     ];
 
     // If the user changes the sort order, reset back to the first page

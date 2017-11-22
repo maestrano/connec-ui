@@ -61,7 +61,11 @@
             </mat-form-field>
 
             <button #filterButton mat-mini-fab color="primary" (click)="attributeValue = attributeInput.value">
-              <mat-icon aria-label="Search">search</mat-icon>
+              <mat-icon aria-label="Search" matTooltip="Search">search</mat-icon>
+            </button>
+
+            <button #clearSearchButton mat-mini-fab color="accent" (click)="attributeValue = ''">
+              <mat-icon aria-label="Clear" matTooltip="Clear">highlight_off</mat-icon>
             </button>
           </mat-card-content>
         </mat-card>

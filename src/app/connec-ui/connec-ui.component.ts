@@ -56,11 +56,14 @@ export class ConnecUiComponent implements OnInit {
   @ViewChild('organizationSelector') organizationSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
   @ViewChild('checkboxArchived') checkboxArchived: MatCheckbox;
+
   @ViewChild('filterButton') filterButton: MatButton;
+  @ViewChild('clearSearchButton') clearSearchButton: MatButton;
 
   @ViewChildren(MatCheckbox) checkboxApplication: QueryList<MatCheckbox>;
 
   filterButtonClick$: Observable<any>;
+  clearSearchButtonClick$: Observable<any>;
 
   constructor(
     private router: Router,
@@ -72,7 +75,9 @@ export class ConnecUiComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Expose search click event
     this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
+    this.clearSearchButtonClick$ = Observable.fromEvent(this.clearSearchButton._elementRef.nativeElement, 'click');
 
     // Fetch current user
     this.currentUser$ = this.mnoeApiService.currentUser();
