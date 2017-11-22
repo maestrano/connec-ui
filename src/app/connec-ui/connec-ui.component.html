@@ -53,17 +53,9 @@
         <mat-card>
           <mat-card-header>
             <div mat-card-avatar></div>
-            <mat-card-title>Filter by attribute</mat-card-title>
+            <mat-card-title>Search</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <mat-form-field>
-              <mat-select #attributeSelector placeholder="Attribute">
-                <mat-option *ngFor="let column of filterableAttributes" [value]="column">
-                  {{ column }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
             <mat-form-field>
               <input #attributeInput matInput placeholder="Value">
             </mat-form-field>

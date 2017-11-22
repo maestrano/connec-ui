@@ -54,7 +54,6 @@ export class ConnecUiComponent implements OnInit {
   @ViewChild('auto') autoComplete: MatAutocomplete;
 
   @ViewChild('organizationSelector') organizationSelector: MatSelect;
-  @ViewChild('attributeSelector') attributeSelector: MatSelect;
   @ViewChild('attributeInput') attributeInput: MatInput;
   @ViewChild('checkboxArchived') checkboxArchived: MatCheckbox;
   @ViewChild('filterButton') filterButton: MatButton;

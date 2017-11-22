@@ -47,7 +47,7 @@ export class ConnecApiService {
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, archived=false, mappings=[]): Observable<EntitiesPage> {
+  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, search=null, archived=false, mappings=[]): Observable<EntitiesPage> {
     var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), "mappings[]": [], sso_session: sessionStorage.getItem('ssoSession')};
 
     mappings.forEach(m => {
@@ -64,6 +64,9 @@ export class ConnecApiService {
     // Filter: $filter=code eq 'CT3'
     if(filter) { archiveFilter += ' and ' + filter; }
     options['$filter'] = archiveFilter;
+
+    // Search
+    if(search) { options['$search'] = search; }
 
     // Order: $orderby=name ASC
     if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }

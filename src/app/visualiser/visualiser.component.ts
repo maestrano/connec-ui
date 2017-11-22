@@ -141,6 +141,7 @@ export class VisualiserDataSource extends DataSource<any> {
 
   displayedColumns = ['code', 'name', 'created_at', 'applications', 'actions'];
   filter = '';
+  search = ''
 
   pageSize = 100;
   resultsLength = 0;
@@ -175,11 +176,6 @@ export class VisualiserDataSource extends DataSource<any> {
 
         this.connecUiComponent.loading = true;
 
-        // Apply attribute filter
-        if(this.connecUiComponent.attributeSelector.value && this.connecUiComponent.collectionCtrl.value) {
-          this.filter = this.connecUiComponent.attributeSelector.value + " match /" + this.connecUiComponent.attributeValue + "/";
-        }
-
         // Apply applications filter
         const mappings = [];
         var selectedApplications = this.connecUiComponent.selectedApplications;
@@ -189,7 +185,7 @@ export class VisualiserDataSource extends DataSource<any> {
           }
         }
 
-        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.checkboxArchived.checked, mappings);
+        return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.attributeValue, this.connecUiComponent.checkboxArchived.checked, mappings);
       })
       .map(entityPage => {
         this.resultsLength = entityPage.pagination['total'];
