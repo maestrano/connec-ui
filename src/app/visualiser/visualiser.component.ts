@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, Directive, ViewEncapsulation, ViewChild, Inject, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Directive, ViewEncapsulation, ViewChild, ViewChildren, QueryList, Inject, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
-import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatDialog } from '@angular/material';
+import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatDialog, MatCheckbox } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
@@ -27,11 +27,19 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit, AfterViewInit {
+  jsonSchema$: Observable<any>;
+  jsonSchema: any;
+
   dataSource: VisualiserDataSource | null;
   collection: string;
 
+  availableAttributes: string[] = [];
+  selectedAttributes: any = {code: true, name: true, created_at: true};
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  @ViewChildren(MatCheckbox) attributeCheckboxes: QueryList<MatCheckbox>;
 
   filterButtonClick$: Observable<any>;
 
@@ -53,6 +61,19 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe((params: Params) => {
       this.collection = params['collection'];
       this._parent.collectionCtrl.setValue(params['collection']);
+
+      // Get collection JSON schema
+      this.jsonSchema$ = this.connecApiService.jsonSchema(this.collection);
+      this.jsonSchema$.subscribe(schema => {
+        this.jsonSchema = schema.plain();
+
+        // Extract list of collection available properties
+        this.availableAttributes = Object.keys(this.jsonSchema['properties'][this.collection]['items']['properties']);
+        ['resource_type', 'channel_id', 'group_id'].forEach(key =>{
+          let index = this.availableAttributes.indexOf(key);
+          if (index > -1) { this.availableAttributes.splice(index, 1); }
+        });
+      });
     });
 
     // Load data after current user has been initialised
@@ -76,6 +97,23 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
 
   reloadData() {
     this.dataSource = new VisualiserDataSource(this);
+  }
+
+  selectAttribute($event, selectedAttribute) {
+    this.selectedAttributes[selectedAttribute] = !this.selectedAttributes[selectedAttribute];
+    if(this.selectedAttributes[selectedAttribute]) {
+      let index = this.dataSource.selectedAttributes.indexOf(selectedAttribute);
+      if(index == -1) { this.dataSource.selectedAttributes.push(selectedAttribute); }
+      index = this.dataSource.displayedAttributes.indexOf(selectedAttribute);
+      if(index == -1) { this.dataSource.displayedAttributes.splice(this.dataSource.displayedAttributes.length - 2, 0, selectedAttribute); }
+    } else {
+      let index = this.dataSource.selectedAttributes.indexOf(selectedAttribute);
+      if(index != -1) { this.dataSource.selectedAttributes.splice(index, 1); }
+      index = this.dataSource.displayedAttributes.indexOf(selectedAttribute);
+      if(index != -1) { this.dataSource.displayedAttributes.splice(index, 1); }
+    }
+
+    $event.stopPropagation();
   }
 
   // Return IdMaps where record has been pushed to external application
@@ -114,6 +152,7 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/visualiser', this.collection, 'new']);
   }
 
+  // Display dialog box to select attributes to match record against
   openDialog(entity: Entity) {
     const dialogRef = this.dialog.open(SearchSimilarDialog);
     dialogRef.componentInstance.entity = entity;
@@ -139,7 +178,9 @@ export class VisualiserDataSource extends DataSource<any> {
   sort: MatSort;
   connecApiService: ConnecApiService;
 
-  displayedColumns = ['code', 'name', 'created_at', 'applications', 'actions'];
+  selectedAttributes: string[] = [];
+  displayedAttributes: string[] = [];
+
   filter = '';
   search = ''
 
@@ -153,6 +194,16 @@ export class VisualiserDataSource extends DataSource<any> {
     this.paginator = visualiserComponent.paginator;
     this.sort = visualiserComponent.sort;
     this.connecApiService = visualiserComponent.connecApiService;
+
+    // Initialise list of columns
+    for(let selectedAttribute in this.visualiserComponent.selectedAttributes) {
+      if(this.visualiserComponent.selectedAttributes[selectedAttribute]) {
+        this.selectedAttributes.push(selectedAttribute);
+        this.displayedAttributes.push(selectedAttribute);
+      }
+    }
+    this.displayedAttributes.push('applications');
+    this.displayedAttributes.push('actions');
   }
 
   public connect(): Observable<Entity[]> {

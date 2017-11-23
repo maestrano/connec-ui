@@ -44,7 +44,6 @@ export class ConnecUiComponent implements OnInit {
   productInstances$: Observable<ProductInstance[]>;
   productInstances = [];
 
-  filterableAttributes = ['code', 'name', 'created_at'];
   attributeValue = undefined;
 
   selectedApplications = {};

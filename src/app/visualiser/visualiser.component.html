@@ -3,6 +3,18 @@
     <button class="menu-top" color="primary" mat-raised-button (click)="navigateToCreateRecord()">
        <mat-icon>add_box</mat-icon> Create Record
     </button>
+
+    <button mat-icon-button matTooltip="Attributes to display" [matMenuTriggerFor]="attributesMenu">
+      <mat-icon>view_list</mat-icon>
+    </button>
+    <mat-menu #attributesMenu="matMenu">
+      <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute)">
+        <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute]">
+          <mat-icon>compare_arrows</mat-icon>
+          {{ availableAttribute }}
+        </mat-checkbox>
+      </button>
+    </mat-menu>
   </div>
 
   <div class="col-10">
@@ -12,22 +24,9 @@
 
 <div class="mat-elevation-z8">
   <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
-    <!-- Code Column -->
-    <ng-container matColumnDef="code">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
-    </ng-container>
-
-    <!-- Reference Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.friendlyName()}} </mat-cell>
-    </ng-container>
-
-    <!-- Timestamp Column -->
-    <ng-container matColumnDef="created_at">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Created At </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
+    <ng-container *ngFor="let attribute of dataSource.selectedAttributes" matColumnDef="{{attribute}}">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ attribute }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row[attribute] }} </mat-cell>
     </ng-container>
 
     <!-- Applications Column -->
@@ -80,7 +79,7 @@
       </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="dataSource?.displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: dataSource?.displayedColumns;"></mat-row>
+    <mat-header-row *matHeaderRowDef="dataSource?.displayedAttributes"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: dataSource?.displayedAttributes;"></mat-row>
   </mat-table>
 </div>
