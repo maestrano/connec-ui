@@ -8,6 +8,8 @@ export class Entity {
     for (let key in data) {
        this[key] = data[key];
     }
+
+    this['friendlyName'] = this.friendlyName();
   }
 
   public friendlyName() {

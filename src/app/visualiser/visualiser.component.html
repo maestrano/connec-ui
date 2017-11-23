@@ -8,10 +8,10 @@
       <mat-icon>view_list</mat-icon>
     </button>
     <mat-menu #attributesMenu="matMenu">
-      <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute)">
-        <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute]">
+      <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute['name'])">
+        <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute['name']]">
           <mat-icon>compare_arrows</mat-icon>
-          {{ availableAttribute }}
+          {{ availableAttribute['name'] }}
         </mat-checkbox>
       </button>
     </mat-menu>

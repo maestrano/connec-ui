@@ -33,8 +33,8 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
   dataSource: VisualiserDataSource | null;
   collection: string;
 
-  availableAttributes: string[] = [];
-  selectedAttributes: any = {code: true, name: true, created_at: true};
+  availableAttributes: any[] = [];
+  selectedAttributes: any = {};
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -68,10 +68,18 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
         this.jsonSchema = schema.plain();
 
         // Extract list of collection available properties
-        this.availableAttributes = Object.keys(this.jsonSchema['properties'][this.collection]['items']['properties']);
-        ['resource_type', 'channel_id', 'group_id'].forEach(key =>{
-          let index = this.availableAttributes.indexOf(key);
-          if (index > -1) { this.availableAttributes.splice(index, 1); }
+        this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name'}];
+        this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
+        let json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
+        let properties = Object.keys(json_properties);
+        properties.forEach(property => {
+          if(['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
+            let propertyHash = json_properties[property];
+            if(['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
+              propertyHash['name'] = property;
+              this.availableAttributes.push(propertyHash);
+            }
+          }
         });
       });
     });
