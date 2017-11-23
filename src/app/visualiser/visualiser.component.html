@@ -13,7 +13,7 @@
       </button>
       <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute['name'])">
         <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute['name']]">
-          <mat-icon>compare_arrows</mat-icon>
+          <mat-icon>{{ availableAttribute['icon'] }}</mat-icon>
           {{ availableAttribute['name'] }}
         </mat-checkbox>
       </button>

@@ -33,7 +33,7 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
   dataSource: VisualiserDataSource | null;
   collection: string;
 
-  availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name'}];
+  availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
   selectedAttributes: any = {code: true, friendlyName: true, created_at: true};
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -68,7 +68,7 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
         this.jsonSchema = schema.plain();
 
         // Extract list of collection available properties
-        this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name'}];
+        this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
         this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
 
         let json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
@@ -78,6 +78,26 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
             let propertyHash = json_properties[property];
             if(['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
               propertyHash['name'] = property;
+
+              // Icon to display
+              if (propertyHash['name'] === "id") {
+                propertyHash['icon'] = 'vpn_key';
+              } else if (propertyHash['name'].endsWith("_id")) {
+                propertyHash['icon'] = 'compare_arrows';
+              } else if (propertyHash['type'] === 'number') {
+                propertyHash['icon'] = 'keyboard';
+              } else if (propertyHash['type'] === 'boolean') {
+                propertyHash['icon'] = 'check_box';
+              } else if(propertyHash['type'] === 'string') {
+                if (propertyHash['format'] === 'date-time') {
+                  propertyHash['icon'] = 'date_range';
+                } else {
+                  propertyHash['icon'] = 'text_format';
+                }
+              } else {
+                propertyHash['icon'] = 'compare_arrows';
+              }
+
               this.availableAttributes.push(propertyHash);
             }
           }
