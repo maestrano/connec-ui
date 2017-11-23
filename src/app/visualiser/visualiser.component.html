@@ -1,13 +1,16 @@
 <div class="row">
-  <div class="col-2">
-    <button class="menu-top" color="primary" mat-raised-button (click)="navigateToCreateRecord()">
-       <mat-icon>add_box</mat-icon> Create Record
+  <div class="col-4">
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Create {{ collection }}" (click)="navigateToCreateRecord()">
+       <mat-icon>add_box</mat-icon>
     </button>
 
-    <button mat-icon-button matTooltip="Attributes to display" [matMenuTriggerFor]="attributesMenu">
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Attributes to display" [matMenuTriggerFor]="attributesMenu">
       <mat-icon>view_list</mat-icon>
     </button>
     <mat-menu #attributesMenu="matMenu">
+      <button mat-menu-item disabled>
+        <span>Attributes to display</span>
+      </button>
       <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute['name'])">
         <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute['name']]">
           <mat-icon>compare_arrows</mat-icon>
@@ -17,7 +20,7 @@
     </mat-menu>
   </div>
 
-  <div class="col-10">
+  <div class="col-8">
     <mat-paginator [length]="dataSource?.resultsLength" [pageSize]="dataSource?.pageSize"></mat-paginator>
   </div>
 </div>

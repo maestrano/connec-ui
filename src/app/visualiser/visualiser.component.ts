@@ -33,8 +33,8 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
   dataSource: VisualiserDataSource | null;
   collection: string;
 
-  availableAttributes: any[] = [];
-  selectedAttributes: any = {};
+  availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name'}];
+  selectedAttributes: any = {code: true, friendlyName: true, created_at: true};
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -70,6 +70,7 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
         // Extract list of collection available properties
         this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name'}];
         this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
+
         let json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
         let properties = Object.keys(json_properties);
         properties.forEach(property => {
