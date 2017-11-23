@@ -1,3 +1,11 @@
+mat-select.select-organization {
+  margin-left: 20px;
+}
+
+mat-select.select-organization, .mat-select-value, .mat-select-arrow {
+  color: white !important;
+}
+
 mat-card-header.menu-section-title mat-card-title {
   font-weight: 800;
 }
