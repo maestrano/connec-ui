@@ -74,10 +74,12 @@ export class DetailComponent implements OnInit {
 
   navigateToCollection(collection: string) {
     this.router.navigate(['/visualiser', collection]);
+    scroll(0,0);
   }
 
   navigateToDetails(entity: Entity) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
+    scroll(0,0);
   }
 }

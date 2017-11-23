@@ -155,10 +155,12 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
   navigateToDetails(entity: Entity) {
     var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
+    scroll(0,0);
   }
 
   navigateToCreateRecord() {
     this.router.navigate(['/visualiser', this.collection, 'new']);
+    scroll(0,0);
   }
 
   // Display dialog box to select attributes to match record against
