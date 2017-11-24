@@ -9,6 +9,7 @@ import { MatAutocomplete } from '@angular/material/autocomplete';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/merge';
@@ -48,6 +49,10 @@ export class ConnecUiComponent implements OnInit {
 
   selectedApplications = {};
 
+  jsonSchema$: Observable<any>;
+  jsonSchema: any;
+  availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
+
   @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionInput') collectionInput: MatInput;
   @ViewChild('auto') autoComplete: MatAutocomplete;
@@ -59,10 +64,9 @@ export class ConnecUiComponent implements OnInit {
   @ViewChild('filterButton') filterButton: MatButton;
   @ViewChild('clearSearchButton') clearSearchButton: MatButton;
 
-  @ViewChildren(MatCheckbox) checkboxApplication: QueryList<MatCheckbox>;
-
   filterButtonClick$: Observable<any>;
   clearSearchButtonClick$: Observable<any>;
+  reloadDataTrigger = new Subject();
 
   constructor(
     private router: Router,
@@ -112,7 +116,8 @@ export class ConnecUiComponent implements OnInit {
         res.forEach((collection: any) => {
           this.collections.push(collection);
           this.filteredcollections.push(collection);
-        })
+        });
+        this.loadJsonSchemaAttributes();
       });
 
       // Load product instances
@@ -131,7 +136,10 @@ export class ConnecUiComponent implements OnInit {
       this.filteredcollections = collection ? this.filterCollections(collection) : this.collections.slice();
     });
 
-    this.autoComplete.optionSelected.subscribe(collection => { this.navigateToCollection(collection.option.value) });
+    this.autoComplete.optionSelected.subscribe(collection => {
+      this.navigateToCollection(collection.option.value);
+      this.loadJsonSchemaAttributes();
+    });
   }
 
   // Return IdMaps where record has been pushed to external application
@@ -152,5 +160,52 @@ export class ConnecUiComponent implements OnInit {
   filterCollections(name: string) {
     return this.collections.filter(collection =>
       collection.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  }
+
+  applicationSelectionChange() {
+    this.reloadDataTrigger.next();
+  }
+
+  loadJsonSchemaAttributes() {
+    this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
+
+    // Get collection JSON schema
+    let collection = this.collectionCtrl.value;
+    this.jsonSchema$ = this.connecApiService.jsonSchema(collection);
+    this.jsonSchema$.subscribe(schema => {
+      this.jsonSchema = schema.plain();
+
+      let json_properties = this.jsonSchema['properties'][collection]['items']['properties'];
+      let properties = Object.keys(json_properties);
+      properties.forEach(property => {
+        if(['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
+          let propertyHash = json_properties[property];
+          if(['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
+            propertyHash['name'] = property;
+
+            // Icon to display
+            if (propertyHash['name'] === "id") {
+              propertyHash['icon'] = 'vpn_key';
+            } else if (propertyHash['name'].endsWith("_id")) {
+              propertyHash['icon'] = 'compare_arrows';
+            } else if (propertyHash['type'] === 'number') {
+              propertyHash['icon'] = 'keyboard';
+            } else if (propertyHash['type'] === 'boolean') {
+              propertyHash['icon'] = 'check_box';
+            } else if(propertyHash['type'] === 'string') {
+              if (propertyHash['format'] === 'date-time') {
+                propertyHash['icon'] = 'date_range';
+              } else {
+                propertyHash['icon'] = 'text_format';
+              }
+            } else {
+              propertyHash['icon'] = 'compare_arrows';
+            }
+
+            this.availableAttributes.push(propertyHash);
+          }
+        }
+      });
+    });
   }
 }

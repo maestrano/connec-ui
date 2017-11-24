@@ -26,7 +26,7 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
-export class VisualiserComponent implements OnInit, AfterViewInit {
+export class VisualiserComponent implements OnInit {
   jsonSchema$: Observable<any>;
   jsonSchema: any;
 
@@ -112,16 +112,6 @@ export class VisualiserComponent implements OnInit, AfterViewInit {
 
     // Reset pre-defined filters on new search
     this._parent.filterButtonClick$.subscribe((res: any) => this.dataSource.filter = '');
-  }
-
-  ngAfterViewInit() {
-    // Detect when a checkbox is added to the applications list
-    this._parent.checkboxApplication.changes.subscribe(event => {
-      // Detect clicks on application checkbox
-      this._parent.checkboxApplication.forEach(checkbox => {
-        checkbox.change.subscribe(() => this.reloadData())
-      })
-    })
   }
 
   reloadData() {
@@ -244,7 +234,8 @@ export class VisualiserDataSource extends DataSource<any> {
       this.connecUiComponent.autoComplete.optionSelected,
       this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.filterButtonClick$,
-      this.connecUiComponent.clearSearchButtonClick$
+      this.connecUiComponent.clearSearchButtonClick$,
+      this.connecUiComponent.reloadDataTrigger
     ];
 
     // If the user changes the sort order, reset back to the first page

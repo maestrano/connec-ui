@@ -73,6 +73,12 @@
               <mat-panel-title>Search by Attribute</mat-panel-title>
             </mat-expansion-panel-header>
 
+            <div *ngFor="let availableAttribute of availableAttributes">
+              <mat-checkbox>
+                <mat-icon>{{ availableAttribute['icon']}}</mat-icon>
+                {{ availableAttribute['name']}}
+              </mat-checkbox>
+            </div>
           </mat-expansion-panel>
 
           <mat-expansion-panel>
@@ -82,7 +88,7 @@
 
             <div class="row" *ngFor="let productInstance of productInstances$ | async">
               <div class="col-12">
-                <mat-checkbox value="{{ productInstance.uid }}" [(ngModel)]="selectedApplications[productInstance.uid]">
+                <mat-checkbox value="{{ productInstance.uid }}" (click)="applicationSelectionChange()" [(ngModel)]="selectedApplications[productInstance.uid]">
                 <img aria-hidden src="{{ productInstance.logo }}" height="25" />
                 {{ productInstance.name }}
                 </mat-checkbox>
