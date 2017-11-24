@@ -16,7 +16,8 @@ import {
   MatSortModule,
   MatFormFieldModule,
   MatInputModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatNativeDateModule
 } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -24,6 +25,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -97,6 +100,9 @@ import { CreateRecordComponent } from './create-record/create-record.component';
     MatExpansionModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRadioModule,
     JsonSchemaFormModule,
     AppRoutingModule
   ],

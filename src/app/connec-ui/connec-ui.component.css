@@ -13,3 +13,16 @@ mat-card-header.menu-section-title mat-card-title {
 .left-menu .mat-expansion-panel-body {
   overflow: visible;
 }
+
+.attribute-filter {
+  font-size: 0.85em;
+}
+
+.attribute-icon {
+  vertical-align: middle;
+  font-size: 1.8em;
+}
+
+.attribute-filter-options {
+  margin-left: 15px;
+}

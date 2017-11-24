@@ -73,11 +73,35 @@
               <mat-panel-title>Search by Attribute</mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div *ngFor="let availableAttribute of availableAttributes">
-              <mat-checkbox>
-                <mat-icon>{{ availableAttribute['icon']}}</mat-icon>
-                {{ availableAttribute['name']}}
-              </mat-checkbox>
+            <div *ngFor="let availableAttribute of availableAttributes" class="attribute-filter">
+              <div *ngIf="attributeFilters[availableAttribute['name']]">
+                <mat-checkbox [(ngModel)]="attributeFilters[availableAttribute['name']]['enabled']">
+                  <mat-icon class="attribute-icon">{{ availableAttribute['icon']}}</mat-icon>
+                  {{ availableAttribute['name']}}
+                </mat-checkbox>
+                <div *ngIf="attributeFilters[availableAttribute['name']]['enabled']" class="attribute-filter-options">
+                  <div *ngIf="availableAttribute['type'] == 'string'">
+                    <div *ngIf="availableAttribute['format'] == 'date-time'">
+                      <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']">
+                        <mat-radio-button value="lte">Before</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="gte">After</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="attributeFilters[availableAttribute['name']]['value']">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div *ngIf="availableAttribute['type'] == 'number'">
+                    Number
+                  </div>
+                  <div *ngIf="availableAttribute['type'] == 'boolean'">
+                    Boolean
+                  </div>
+                </div>
+              </div>
             </div>
           </mat-expansion-panel>
 

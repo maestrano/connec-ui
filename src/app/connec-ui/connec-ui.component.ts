@@ -4,7 +4,6 @@ import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { MatPaginator, MatSort, MatSelect, MatInput, MatButton, MatCheckbox } from '@angular/material';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-
 import { MatAutocomplete } from '@angular/material/autocomplete';
 
 import { Store, ActionReducerMap } from '@ngrx/store';
@@ -51,7 +50,8 @@ export class ConnecUiComponent implements OnInit {
 
   jsonSchema$: Observable<any>;
   jsonSchema: any;
-  availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
+  availableAttributes: any[] = [];
+  attributeFilters: any = {};
 
   @ViewChild('loader') loader: MatProgressSpinner;
   @ViewChild('collectionInput') collectionInput: MatInput;
@@ -206,6 +206,8 @@ export class ConnecUiComponent implements OnInit {
           }
         }
       });
+
+      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] = {enabled: false, value: null, operator: null});
     });
   }
 }
