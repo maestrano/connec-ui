@@ -263,11 +263,11 @@ export class VisualiserDataSource extends DataSource<any> {
                 break;
               }
               case 'empty': {
-                filters.push(key + " eq nil");
+                filters.push(key + " eq null");
                 break;
               }
               case 'not_empty': {
-                filters.push(key + " ne nil");
+                filters.push(key + " ne null");
                 break;
               }
               default: {
