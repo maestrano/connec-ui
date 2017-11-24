@@ -162,7 +162,13 @@ export class ConnecUiComponent implements OnInit {
       collection.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
-  applicationSelectionChange() {
+  triggerAttributeFilterChange(attributeFilter) {
+    if(!attributeFilter['enabled'] || (attributeFilter['enabled'] && attributeFilter['value'] && attributeFilter['operator'])) {
+      this.triggerDataReload();
+    }
+  }
+
+  triggerDataReload() {
     this.reloadDataTrigger.next();
   }
 
@@ -207,7 +213,7 @@ export class ConnecUiComponent implements OnInit {
         }
       });
 
-      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] = {enabled: false, value: null, operator: null});
+      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] = {enabled: false, value: null, operator: 'eq'});
     });
   }
 }

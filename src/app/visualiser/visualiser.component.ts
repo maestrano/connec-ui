@@ -250,6 +250,17 @@ export class VisualiserDataSource extends DataSource<any> {
 
         this.connecUiComponent.loading = true;
 
+        // Apply attributes filters
+        let filters: string[] = [];
+        let keys = Object.keys(this.connecUiComponent.attributeFilters);
+        keys.forEach(key => {
+          let attributeFilter = this.connecUiComponent.attributeFilters[key];
+          if(attributeFilter['enabled']) {
+            filters.push(key + ' ' + attributeFilter['operator'] + " '" + attributeFilter['value'] + "'");
+          }
+        })
+        this.filter = filters.join(' AND ');
+
         // Apply applications filter
         const mappings = [];
         var selectedApplications = this.connecUiComponent.selectedApplications;
