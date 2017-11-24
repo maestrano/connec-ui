@@ -162,10 +162,16 @@ export class ConnecUiComponent implements OnInit {
       collection.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
+  // Workaround as the mat-select change events is triggered before the value gets set on the model
+  changeAttributeValue(name, $event) {
+    this.attributeFilters[name]['value'] = $event.value;
+    this.triggerAttributeFilterChange(this.attributeFilters[name]);
+  }
+
   triggerAttributeFilterChange(attributeFilter) {
-    if(!attributeFilter['enabled'] || (attributeFilter['enabled'] && attributeFilter['value'] && attributeFilter['operator'])) {
-      this.triggerDataReload();
-    }
+    if(!attributeFilter['enabled']) { return this.triggerDataReload(); }
+    if((attributeFilter['value'] || attributeFilter['value'] == 0) && attributeFilter['operator']) { return this.triggerDataReload(); }
+    if(['empty', 'not_empty'].indexOf(attributeFilter['operator']) != -1) { return this.triggerDataReload(); }
   }
 
   triggerDataReload() {
@@ -173,7 +179,7 @@ export class ConnecUiComponent implements OnInit {
   }
 
   loadJsonSchemaAttributes() {
-    this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
+    this.availableAttributes = [];
 
     // Get collection JSON schema
     let collection = this.collectionCtrl.value;
@@ -213,7 +219,16 @@ export class ConnecUiComponent implements OnInit {
         }
       });
 
-      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] = {enabled: false, value: null, operator: 'eq'});
+      // Build list of filterable attributes
+      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] =
+        {
+          enabled: false,
+          value: null,
+          operator: 'eq',
+          type: availableAttribute['type'],
+          enum: availableAttribute['enum']
+        }
+       );
     });
   }
 }

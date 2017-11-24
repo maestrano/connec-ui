@@ -13,7 +13,7 @@ export class Entity {
   }
 
   public friendlyName() {
-    return this.name || this.full_name || this.title || this.reference || this.transaction_number || this.payment_reference || this.number
+    return this.transaction_number || this.payment_reference || this.name || this.full_name || this.reference || this.number || this.title
   }
 
   public properties() {

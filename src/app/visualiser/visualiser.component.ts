@@ -118,6 +118,7 @@ export class VisualiserComponent implements OnInit {
     this.dataSource = new VisualiserDataSource(this);
   }
 
+  // Selection of attributes to display as table columns
   selectAttribute($event, selectedAttribute) {
     this.selectedAttributes[selectedAttribute] = !this.selectedAttributes[selectedAttribute];
     if(this.selectedAttributes[selectedAttribute]) {
@@ -256,7 +257,28 @@ export class VisualiserDataSource extends DataSource<any> {
         keys.forEach(key => {
           let attributeFilter = this.connecUiComponent.attributeFilters[key];
           if(attributeFilter['enabled']) {
-            filters.push(key + ' ' + attributeFilter['operator'] + " '" + attributeFilter['value'] + "'");
+            switch(attributeFilter['operator']) {
+              case 'match': {
+                filters.push(key + ' ' + attributeFilter['operator'] + " /" + attributeFilter['value'] + "/");
+                break;
+              }
+              case 'empty': {
+                filters.push(key + " eq nil");
+                break;
+              }
+              case 'not_empty': {
+                filters.push(key + " ne nil");
+                break;
+              }
+              default: {
+                // Escape string with single quote
+                let value = attributeFilter['value'];
+                if(attributeFilter['type'] === 'string') { value = "'" + value + "'"; }
+
+                filters.push(key + ' ' + attributeFilter['operator'] + ' ' + value);
+                break;
+              }
+            }
           }
         })
         this.filter = filters.join(' AND ');

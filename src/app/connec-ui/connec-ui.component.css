@@ -2,7 +2,7 @@ mat-select.select-organization {
   margin-left: 20px;
 }
 
-mat-select.select-organization, .mat-select-value, .mat-select-arrow {
+mat-select.select-organization .mat-select-value, mat-select.select-organization .mat-select-arrow {
   color: white !important;
 }
 

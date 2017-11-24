@@ -93,10 +93,41 @@
                         <mat-datepicker #picker></mat-datepicker>
                       </mat-form-field>
                     </div>
+
+                    <div *ngIf="attributeFilters[availableAttribute['name']]['enum']">
+                      <mat-form-field>
+                        <mat-select (change)="changeAttributeValue(availableAttribute['name'], $event)">
+                          <mat-option *ngFor="let value of attributeFilters[availableAttribute['name']]['enum']" [value]="value">
+                            {{ value }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <div *ngIf="!attributeFilters[availableAttribute['name']]['enum'] && availableAttribute['format'] != 'date-time'">
+                      <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-radio-button value="match">Contains</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="not_empty">Not Empty</mat-radio-button>
+                        <mat-radio-button value="empty">Empty</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="attributeFilters[availableAttribute['name']]['value']" (input)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      </mat-form-field>
+                    </div>
                   </div>
+
                   <div *ngIf="availableAttribute['type'] == 'number'">
-                    Number
+                    <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-radio-button value="lt">Less than</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="gt">Greater than</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput type="number" [(ngModel)]="attributeFilters[availableAttribute['name']]['value']" (input)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      </mat-form-field>
                   </div>
+
                   <div *ngIf="availableAttribute['type'] == 'boolean'">
                     Boolean
                   </div>
