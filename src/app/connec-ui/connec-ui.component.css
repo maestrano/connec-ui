@@ -9,3 +9,7 @@ mat-select.select-organization, .mat-select-value, .mat-select-arrow {
 mat-card-header.menu-section-title mat-card-title {
   font-weight: 800;
 }
+
+.left-menu .mat-expansion-panel-body {
+  overflow: visible;
+}

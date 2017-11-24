@@ -20,7 +20,7 @@
     </div>
 
     <div class="row">
-      <div class="col-2">
+      <div class="col-2 left-menu">
         <mat-card>
           <mat-card-header class="menu-section-title">
             <mat-card-title>Collection</mat-card-title>
@@ -39,11 +39,12 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card>
-          <mat-card-header class="menu-section-title">
-            <mat-card-title>Global Search</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <mat-accordion multi="true">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Global Search</mat-panel-title>
+            </mat-expansion-panel-header>
+
             <mat-form-field>
               <input #attributeInput matInput placeholder="Value">
             </mat-form-field>
@@ -55,37 +56,40 @@
             <button #clearSearchButton mat-mini-fab color="accent" (click)="attributeInput.value = attributeValue = ''">
               <mat-icon aria-label="Clear" matTooltip="Clear">clear</mat-icon>
             </button>
-          </mat-card-content>
-        </mat-card>
+          </mat-expansion-panel>
 
-        <mat-card>
-          <mat-card-header class="menu-section-title">
-            <mat-card-title>Filter by status</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Filter by status</mat-panel-title>
+            </mat-expansion-panel-header>
+
             <div class="col-12">
               <mat-checkbox #checkboxArchived value="true">Archived</mat-checkbox>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </mat-expansion-panel>
 
-        <mat-card>
-          <mat-card-header class="menu-section-title">
-            <mat-card-title>Filter by application</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <section>
-              <div class="row" *ngFor="let productInstance of productInstances$ | async">
-                <div class="col-12">
-                    <mat-checkbox value="{{ productInstance.uid }}" [(ngModel)]="selectedApplications[productInstance.uid]">
-                    <img aria-hidden src="{{ productInstance.logo }}" height="25" />
-                    {{ productInstance.name }}
-                  </mat-checkbox>
-                </div>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Search by Attribute</mat-panel-title>
+            </mat-expansion-panel-header>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Filter by Application</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="row" *ngFor="let productInstance of productInstances$ | async">
+              <div class="col-12">
+                <mat-checkbox value="{{ productInstance.uid }}" [(ngModel)]="selectedApplications[productInstance.uid]">
+                <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                {{ productInstance.name }}
+                </mat-checkbox>
               </div>
-            </section>
-          </mat-card-content>
-        </mat-card>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
 
       <div class="col-10">
