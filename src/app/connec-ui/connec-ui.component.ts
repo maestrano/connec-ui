@@ -203,7 +203,7 @@ export class ConnecUiComponent implements OnInit {
             } else if (propertyHash['type'] === 'number') {
               propertyHash['icon'] = 'keyboard';
             } else if (propertyHash['type'] === 'boolean') {
-              propertyHash['icon'] = 'check_box';
+              propertyHash['icon'] = 'remove';
             } else if(propertyHash['type'] === 'string') {
               if (propertyHash['format'] === 'date-time') {
                 propertyHash['icon'] = 'date_range';
@@ -220,15 +220,16 @@ export class ConnecUiComponent implements OnInit {
       });
 
       // Build list of filterable attributes
-      this.availableAttributes.forEach(availableAttribute => this.attributeFilters[availableAttribute['name']] =
-        {
+      this.availableAttributes.forEach(availableAttribute => {
+        let value = availableAttribute['type'] === 'boolean' ? true : null;
+        this.attributeFilters[availableAttribute['name']] = {
           enabled: false,
-          value: null,
+          value: value,
           operator: 'eq',
           type: availableAttribute['type'],
           enum: availableAttribute['enum']
-        }
-       );
+        };
+     });
     });
   }
 }

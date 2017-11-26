@@ -129,7 +129,10 @@
                   </div>
 
                   <div *ngIf="availableAttribute['type'] == 'boolean'">
-                    Boolean
+                     <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      <mat-radio-button value="eq">Include</mat-radio-button>
+                      <mat-radio-button value="ne">Exclude</mat-radio-button>
+                    </mat-radio-group>
                   </div>
                 </div>
               </div>
@@ -144,8 +147,8 @@
             <div class="row" *ngFor="let productInstance of productInstances$ | async">
               <div class="col-12">
                 <mat-checkbox value="{{ productInstance.uid }}" (click)="triggerDataReload()" [(ngModel)]="selectedApplications[productInstance.uid]">
-                <img aria-hidden src="{{ productInstance.logo }}" height="25" />
-                {{ productInstance.name }}
+                  <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                  {{ productInstance.name }}
                 </mat-checkbox>
               </div>
             </div>

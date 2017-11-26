@@ -87,7 +87,7 @@ export class VisualiserComponent implements OnInit {
               } else if (propertyHash['type'] === 'number') {
                 propertyHash['icon'] = 'keyboard';
               } else if (propertyHash['type'] === 'boolean') {
-                propertyHash['icon'] = 'check_box';
+                propertyHash['icon'] = 'remove';
               } else if(propertyHash['type'] === 'string') {
                 if (propertyHash['format'] === 'date-time') {
                   propertyHash['icon'] = 'date_range';
