@@ -47,7 +47,7 @@
       <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-menu #appMenu="matMenu">
-          <button mat-menu-item (click)="openDialog(row)">
+          <button mat-menu-item (click)="openSearchSimilarDialog(row)">
             <mat-icon>search</mat-icon>
             Search similar
           </button>

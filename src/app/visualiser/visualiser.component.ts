@@ -175,21 +175,24 @@ export class VisualiserComponent implements OnInit {
   }
 
   // Display dialog box to select attributes to match record against
-  openDialog(entity: Entity) {
+  openSearchSimilarDialog(entity: Entity) {
     const dialogRef = this.dialog.open(SearchSimilarDialog);
     dialogRef.componentInstance.entity = entity;
+
+    // On Dialog close
     dialogRef.afterClosed().subscribe(result => {
-      var filter = '';
+      // Get back to results first page
       this.paginator.pageIndex = 0;
       var selectedAttributes = dialogRef.componentInstance.selectedAttributes;
+      // Set attributes filters based on selected values
       for(let key of Object.keys(selectedAttributes)) {
         if(selectedAttributes[key]) {
-          if(filter) { filter += ' and '; }
-          filter += key + ' match /' + entity[key] + '/';
+          this._parent.attributeFilters[key]['enabled'] = true;
+          this._parent.attributeFilters[key]['operator'] = 'eq';
+          this._parent.attributeFilters[key]['value'] = entity[key];
         }
       }
       this.dataSource = new VisualiserDataSource(this);
-      this.dataSource.filter = filter;
     });
   }
 }
