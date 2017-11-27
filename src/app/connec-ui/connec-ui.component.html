@@ -46,7 +46,7 @@
             </mat-expansion-panel-header>
 
             <mat-form-field>
-              <input #attributeInput matInput placeholder="Value">
+              <input #attributeInput matInput placeholder="Search text">
             </mat-form-field>
 
             <button #filterButton mat-mini-fab color="primary" (click)="attributeValue = attributeInput.value">
@@ -64,7 +64,10 @@
             </mat-expansion-panel-header>
 
             <div class="col-12">
-              <mat-checkbox #checkboxArchived value="true">Archived</mat-checkbox>
+              <mat-checkbox #checkboxArchived value="true">
+                <mat-icon class="attribute-icon">delete_forever</mat-icon>
+                Archived
+              </mat-checkbox>
             </div>
           </mat-expansion-panel>
 

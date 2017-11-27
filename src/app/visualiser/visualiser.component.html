@@ -69,11 +69,11 @@
         </button>
 
         <button *ngIf="row.status != 'ARCHIVED'" color="warn" mat-icon-button matTooltip="Archive" (click)="archiveEntity(row)">
-           <mat-icon>delete</mat-icon>
+           <mat-icon>archive</mat-icon>
         </button>
 
         <button *ngIf="row.status == 'ARCHIVED'" color="primary" mat-icon-button matTooltip="Restore" (click)="restoreEntity(row)">
-           <mat-icon>restore</mat-icon>
+           <mat-icon>unarchive</mat-icon>
         </button>
 
         <button color="primary" mat-icon-button [matMenuTriggerFor]="appMenu" matTooltip="More actions">

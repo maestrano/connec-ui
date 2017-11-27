@@ -239,6 +239,7 @@ export class VisualiserDataSource extends DataSource<any> {
       this.connecUiComponent.organizationSelector.change,
       this.connecUiComponent.filterButtonClick$,
       this.connecUiComponent.clearSearchButtonClick$,
+      this.connecUiComponent.checkboxArchived.change,
       this.connecUiComponent.reloadDataTrigger
     ];
 
