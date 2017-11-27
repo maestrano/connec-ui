@@ -210,7 +210,10 @@ export class VisualiserComponent implements OnInit {
   }
 
   mergeRecords() {
-    console.log("selectedRecords", this.selectedRecords);
+    let keys = Object.keys(this.selectedRecords);
+    let records = keys.filter(key => this.selectedRecords[key]).map(key => key);
+    this.router.navigate(['/visualiser', this.collection, 'merge', {records: records}]);
+    scroll(0,0);
   }
 }
 

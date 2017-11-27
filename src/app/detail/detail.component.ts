@@ -30,7 +30,7 @@ export class DetailComponent implements OnInit {
     private connecApiService: ConnecApiService,
     private _location: Location,
     public dialog: MatDialog,
-    @Inject(forwardRef(() => ConnecUiComponent)) public _parent:ConnecUiComponent
+    @Inject(forwardRef(() => ConnecUiComponent)) public _parent: ConnecUiComponent
   ) { }
 
   ngOnInit() {
