@@ -195,6 +195,10 @@ export class VisualiserComponent implements OnInit {
       this.dataSource = new VisualiserDataSource(this);
     });
   }
+
+  mergePrimeRecord(entity: Entity) {
+
+  }
 }
 
 export class VisualiserDataSource extends DataSource<any> {
@@ -291,9 +295,8 @@ export class VisualiserDataSource extends DataSource<any> {
         const mappings = [];
         var selectedApplications = this.connecUiComponent.selectedApplications;
         for (let selectedApplication of Object.keys(selectedApplications)) {
-          if (selectedApplications[selectedApplication]) {
-            mappings.push({group_id: selectedApplication, include: true});
-          }
+          if (selectedApplications[selectedApplication] == 'include') { mappings.push({group_id: selectedApplication, include: true}); };
+          if (selectedApplications[selectedApplication] == 'exclude') { mappings.push({group_id: selectedApplication, exclude: true}); };
         }
 
         return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.attributeValue, this.connecUiComponent.checkboxArchived.checked, mappings);

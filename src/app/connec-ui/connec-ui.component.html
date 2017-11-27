@@ -149,10 +149,15 @@
 
             <div class="row" *ngFor="let productInstance of productInstances$ | async">
               <div class="col-12">
-                <mat-checkbox value="{{ productInstance.uid }}" (click)="triggerDataReload()" [(ngModel)]="selectedApplications[productInstance.uid]">
-                  <img aria-hidden src="{{ productInstance.logo }}" height="25" />
-                  {{ productInstance.name }}
-                </mat-checkbox>
+                <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                <span class="application-filter-title">{{ productInstance.name }}</span>
+              </div>
+              <div class="col-11 offset-md-1">
+                <mat-radio-group [(ngModel)]="selectedApplications[productInstance.uid]" (change)="triggerDataReload()">
+                  <mat-radio-button value="any">Any</mat-radio-button>
+                  <mat-radio-button value="include">Include</mat-radio-button>
+                  <mat-radio-button value="exclude">Exclude</mat-radio-button>
+                </mat-radio-group>
               </div>
             </div>
           </mat-expansion-panel>

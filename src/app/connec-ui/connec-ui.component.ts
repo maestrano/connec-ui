@@ -125,7 +125,7 @@ export class ConnecUiComponent implements OnInit {
       this.productInstances$.subscribe((res: any) => {
         res.forEach((record: any) => {
           this.productInstances.push(record);
-          this.selectedApplications[record['uid']] = true;
+          this.selectedApplications[record['uid']] = 'any';
         })
       });
     });

@@ -27,6 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -103,6 +104,7 @@ import { CreateRecordComponent } from './create-record/create-record.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
+    MatTabsModule,
     JsonSchemaFormModule,
     AppRoutingModule
   ],

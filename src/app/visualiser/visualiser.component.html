@@ -51,6 +51,10 @@
             <mat-icon>search</mat-icon>
             Search similar
           </button>
+          <button mat-menu-item (click)="mergePrimeRecord(row)">
+            <mat-icon>call_merge</mat-icon>
+            Merge...
+          </button>
           <button mat-menu-item [matMenuTriggerFor]="sendToMenu">
             <mat-icon>forward</mat-icon>
             Send to

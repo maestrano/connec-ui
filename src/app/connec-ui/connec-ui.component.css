@@ -26,3 +26,7 @@ mat-card-header.menu-section-title mat-card-title {
 .attribute-filter-options {
   margin-left: 15px;
 }
+
+.application-filter-title {
+  font-weight: 800;
+}

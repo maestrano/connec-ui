@@ -50,9 +50,7 @@ export class ConnecApiService {
   public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, search=null, archived=false, mappings=[]): Observable<EntitiesPage> {
     var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), "mappings[]": [], sso_session: sessionStorage.getItem('ssoSession')};
 
-    mappings.forEach(m => {
-      options["mappings[]"].push(JSON.stringify({group_id: m['group_id'], include: m['include']}));
-    });
+    mappings.forEach(m => options["mappings[]"].push(JSON.stringify(m)));
 
     var archiveFilter = '';
     if(archived) {
