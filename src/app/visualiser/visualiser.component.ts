@@ -36,6 +36,9 @@ export class VisualiserComponent implements OnInit {
   availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
   selectedAttributes: any = {code: true, friendlyName: true, created_at: true};
 
+  selectedRecords: any = {};
+  numberRecordsSelected: number = 0;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -164,7 +167,7 @@ export class VisualiserComponent implements OnInit {
   }
 
   navigateToDetails(entity: Entity) {
-    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    var idMap = entity.connecId();
     this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
     scroll(0,0);
   }
@@ -196,8 +199,18 @@ export class VisualiserComponent implements OnInit {
     });
   }
 
-  mergePrimeRecord(entity: Entity) {
+  unselectAll() {
+    this.selectedRecords = {};
+    this.numberRecordsSelected = 0;
+  }
 
+  recordSelectionChange() {
+    let keys = Object.keys(this.selectedRecords);
+    this.numberRecordsSelected = keys.filter(key => this.selectedRecords[key]).length;
+  }
+
+  mergeRecords() {
+    console.log("selectedRecords", this.selectedRecords);
   }
 }
 

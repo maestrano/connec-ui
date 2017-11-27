@@ -88,7 +88,7 @@ export class ConnecApiService {
   }
 
   public updateEntity(entity: Entity, data: any): Observable<Entity> {
-    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    var idMap = entity.connecId();
     return this.restangular.all(sessionStorage.getItem('channelId')).one(entity.resource_type)
     .customPUT(data, idMap['id'], {sso_session: sessionStorage.getItem('ssoSession')})
     .map(record => this.deserializeModel(record[entity.resource_type]))
@@ -96,7 +96,7 @@ export class ConnecApiService {
   }
 
   public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
-    var idMap = entity.id.find(idMap => idMap['provider'] === 'connec');
+    var idMap = entity.connecId();
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
     return this.restangular.all(entity.channel_id).one(entity.resource_type, idMap['id'])
     .customPUT(data, 'commit', {sso_session: sessionStorage.getItem('ssoSession')})

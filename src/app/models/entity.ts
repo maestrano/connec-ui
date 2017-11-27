@@ -9,7 +9,12 @@ export class Entity {
        this[key] = data[key];
     }
 
+    this['connecId'] = this.connecId()['id'];
     this['friendlyName'] = this.friendlyName();
+  }
+
+  public connecId() {
+    return this.id.find(idMap => idMap['provider'] === 'connec');
   }
 
   public friendlyName() {
