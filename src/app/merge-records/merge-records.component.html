@@ -1,3 +1,48 @@
-<div class="col-md-6" *ngFor="let element of records.entities">
-  <app-entity-attribute [entity]="element"></app-entity-attribute>
+<div class="row menu-header">
+  <div class="col-1">
+    <button mat-icon-button (click)="navigateToCollection()">
+      <mat-icon aria-label="Back">chevron_left</mat-icon> Back
+    </button>
+  </div>
+
+  <div class="col-3">
+    <h2>Merge {{ collection }}</h2>
+  </div>
+
+  <div class="col-2">
+    <button mat-raised-button color="primary" (click)="mergeRecords()" [disabled]="!selectedAttributes['id']">
+      <mat-icon aria-label="Back">call_merge</mat-icon> Merge
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-1">
+    <span class="merge-attribute-name">Prime Record</span>
+  </div>
+
+  <div class="col-11 merge-attribute-value">
+    <mat-radio-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes['id']">
+      <div class="col-{{12/numberRecords}}" *ngFor="let entity of records.entities">
+        <mat-radio-button value="{{entity['connecId']}}"></mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+</div>
+
+<div class="row" *ngFor="let attribute of attributes">
+  <div class="col-1 merge-attribute-name">
+    {{ attribute }}
+  </div>
+
+  <div class="col-11">
+    <mat-button-toggle-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes[attribute]">
+      <div class="col-{{12/numberRecords}} merge-attribute-value" *ngFor="let recordsAttribute of recordsAttributes[attribute]">
+        <mat-button-toggle value="{{recordsAttribute}}">
+          <span *ngIf="!isObject(recordsAttribute)" style="width: 100%">{{ recordsAttribute }}</span>
+          <span *ngIf="isObject(recordsAttribute)" style="width: 100%">{{ recordsAttribute | json }}</span>
+        </mat-button-toggle>
+      </div>
+    </mat-button-toggle-group>
+  </div>
 </div>

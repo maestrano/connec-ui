@@ -21,8 +21,8 @@ export class Entity {
     return this.transaction_number || this.payment_reference || this.name || this.full_name || this.reference || this.number || this.title
   }
 
-  public properties() {
-    var keys = Object.keys(this);
+  public properties() : string[] {
+    var keys: string[] = Object.keys(this);
     for(let ignoredKey of ['id', 'matching_records']) {
       var index = keys.indexOf(ignoredKey);
       if (index !== -1) { keys.splice(index, 1); }

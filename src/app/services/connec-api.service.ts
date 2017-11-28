@@ -95,6 +95,14 @@ export class ConnecApiService {
     .catch(error => this.handleError(error));
   }
 
+  public mergeRecords(primeRecord: Entity, mergedRecords: Entity[], selectedAttributes: any) {
+    var data = {ids: mergedRecords.map(entity => entity['connecId'])};
+    data[primeRecord.resource_type] = selectedAttributes;
+    return this.restangular.all(primeRecord.channel_id).one(primeRecord.resource_type, primeRecord['connecId'])
+    .customPUT(data, 'merge', {sso_session: sessionStorage.getItem('ssoSession')}, {'CONNEC-EXTERNAL-IDS': false})
+    .catch(error => this.handleError(error));
+  }
+
   public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
     var idMap = entity.connecId();
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};

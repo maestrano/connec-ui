@@ -28,6 +28,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -107,6 +108,7 @@ import { MergeRecordsComponent } from './merge-records/merge-records.component';
     MatNativeDateModule,
     MatRadioModule,
     MatTabsModule,
+    MatButtonToggleModule,
     JsonSchemaFormModule,
     AppRoutingModule
   ],
