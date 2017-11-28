@@ -89,7 +89,7 @@ export class ConnecApiService {
 
   public updateEntity(entity: Entity, data: any): Observable<Entity> {
     return this.restangular.all(sessionStorage.getItem('channelId')).one(entity.resource_type)
-    .customPUT(data, entity.connecId(), {sso_session: sessionStorage.getItem('ssoSession')})
+    .customPUT(data, entity['connecId'], {sso_session: sessionStorage.getItem('ssoSession')})
     .map(record => this.deserializeModel(record[entity.resource_type]))
     .catch(error => this.handleError(error));
   }
@@ -107,7 +107,7 @@ export class ConnecApiService {
 
   public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
     var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
-    return this.restangular.all(entity.channel_id).one(entity.resource_type, entity.connecId())
+    return this.restangular.all(entity.channel_id).one(entity.resource_type, entity['connecId'])
     .customPUT(data, 'commit', {sso_session: sessionStorage.getItem('ssoSession')})
     .catch(error => this.handleError(error));
   }

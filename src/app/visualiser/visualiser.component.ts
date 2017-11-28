@@ -167,7 +167,7 @@ export class VisualiserComponent implements OnInit {
   }
 
   navigateToDetails(entity: Entity) {
-    this.router.navigate(['/visualiser', entity.resource_type, entity.connecId()]);
+    this.router.navigate(['/visualiser', entity.resource_type, entity['connecId']]);
     scroll(0,0);
   }
 
