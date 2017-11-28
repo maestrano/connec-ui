@@ -75,8 +75,12 @@ export class MergeRecordsComponent implements OnInit {
   mergeRecords() {
     let primeRecord: Entity = this.records.entities.find(entity => entity['connecId'] == this.selectedAttributes['id']);
     let mergedRecords: Entity[] = this.records.entities.filter(entity => entity['connecId'] != this.selectedAttributes['id']);
-    this.connecApiService.mergeRecords(primeRecord, mergedRecords, this.selectedAttributes);
-    this.navigateToDetails(primeRecord);
+
+    this.connecApiService.mergeRecords(primeRecord, mergedRecords, this.selectedAttributes)
+      .subscribe(record => {
+        this.navigateToDetails(record);
+        scroll(0,0);
+      });
   }
 
   navigateToCollection() {

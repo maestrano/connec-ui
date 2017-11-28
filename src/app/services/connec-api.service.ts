@@ -100,6 +100,7 @@ export class ConnecApiService {
     data[primeRecord.resource_type] = selectedAttributes;
     return this.restangular.all(primeRecord.channel_id).one(primeRecord.resource_type, primeRecord['connecId'])
     .customPUT(data, 'merge', {sso_session: sessionStorage.getItem('ssoSession')}, {'CONNEC-EXTERNAL-IDS': false})
+    .map(record => this.deserializeModel(record[primeRecord.resource_type]))
     .catch(error => this.handleError(error));
   }
 
