@@ -9,12 +9,12 @@ export class Entity {
        this[key] = data[key];
     }
 
-    this['connecId'] = this.connecId()['id'];
+    this['connecId'] = this.connecId();
     this['friendlyName'] = this.friendlyName();
   }
 
   public connecId() {
-    return this.id.find(idMap => idMap['provider'] === 'connec');
+    return this.isString(this.id) ? this.id : this.id.find(idMap => idMap['provider'] === 'connec')['id'];
   }
 
   public friendlyName() {
@@ -29,5 +29,9 @@ export class Entity {
     }
 
     return keys;
+  }
+
+  private isString(value) {
+    return typeof value === 'string' || value instanceof String;
   }
 }

@@ -78,8 +78,7 @@ export class DetailComponent implements OnInit {
   }
 
   navigateToDetails(entity: Entity) {
-    var idMap = entity.connecId();
-    this.router.navigate(['/visualiser', entity.resource_type, idMap['id']]);
+    this.router.navigate(['/visualiser', entity.resource_type, entity.connecId()]);
     scroll(0,0);
   }
 }

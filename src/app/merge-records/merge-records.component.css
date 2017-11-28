@@ -1,3 +1,7 @@
+mat-icon {
+  vertical-align: middle;
+}
+
 .merge-attribute-name {
   font-weight: 800;
 }
@@ -26,4 +30,17 @@
 .menu-header {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.merge-record {
+  display: block;
+  padding: 5px;
+}
+
+.merge-record-keep {
+
+}
+
+.merge-record-delete {
+
 }

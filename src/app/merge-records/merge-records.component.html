@@ -23,8 +23,20 @@
 
   <div class="col-11 merge-attribute-value">
     <mat-radio-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes['id']">
-      <div class="col-{{12/numberRecords}}" *ngFor="let entity of records.entities">
-        <mat-radio-button value="{{entity['connecId']}}"></mat-radio-button>
+      <div class="col-{{12/numberRecords}} merge-record" *ngFor="let entity of records.entities">
+        <mat-radio-button value="{{entity['connecId']}}">
+          <span class="merge-record-keep" *ngIf="!selectedAttributes['id']">
+            Select record to keep
+          </span>
+          <span class="merge-record-keep" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] == entity['connecId']">
+            <mat-icon color="primary">done</mat-icon>
+            Record will be kept
+          </span>
+          <span class="merge-record-delete" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] != entity['connecId']">
+            <mat-icon color="warn">delete_sweep</mat-icon>
+            Record will be deleted
+          </span>
+        </mat-radio-button>
       </div>
     </mat-radio-group>
   </div>
