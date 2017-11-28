@@ -157,13 +157,13 @@ export class VisualiserComponent implements OnInit {
   archiveEntity(entity: Entity) {
     var data = {};
     data[entity.resource_type] = {status: 'ARCHIVED'};
-    this.connecApiService.updateEntity(entity, data);
+    this.connecApiService.updateEntity(entity, data).subscribe(res => this._parent.triggerDataReload());
   }
 
   restoreEntity(entity: Entity) {
     var data = {};
     data[entity.resource_type] = {status: ''};
-    this.connecApiService.updateEntity(entity, data);
+    this.connecApiService.updateEntity(entity, data).subscribe(res => this._parent.triggerDataReload());
   }
 
   navigateToDetails(entity: Entity) {
