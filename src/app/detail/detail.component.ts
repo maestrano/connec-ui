@@ -20,9 +20,13 @@ import { EntitiesPage } from '../models/entities_page';
 export class DetailComponent implements OnInit {
   entity$: Observable<Entity>;
   entity: Entity;
+  editEntityData: any = {};
 
   matchingRecords$: Observable<EntitiesPage>;
   matchingRecords: EntitiesPage;
+
+  jsonSchema$: Observable<any>;
+  jsonSchema: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +45,10 @@ export class DetailComponent implements OnInit {
       this.route.params.subscribe((params: Params) => {
         this._parent.collectionCtrl.setValue(params['collection']);
         this.loadEntity();
+        this.jsonSchema$ = this.connecApiService.jsonSchema(params['collection']);
+        this.jsonSchema$.subscribe(schema => {
+          this.jsonSchema = schema.plain();
+        });
       });
     });
   }
@@ -56,6 +64,7 @@ export class DetailComponent implements OnInit {
     this.entity$.subscribe(entity => {
       this._parent.loading = false;
       this.entity = entity;
+      this.editEntityData[this.entity.resource_type] = [this.entity];
 
       // Fetch matching records
       if(this.entity.matching_records) {
@@ -70,6 +79,12 @@ export class DetailComponent implements OnInit {
         this.matchingRecords$.subscribe(matchingRecords => this.matchingRecords = matchingRecords);
       }
     });
+  }
+
+  updateEntity($event) {
+    let data = {};
+    data[this.entity.resource_type] = this.editEntityData[this.entity.resource_type][0];
+    this.connecApiService.updateEntity(this.entity, data);
   }
 
   navigateToCollection(collection: string) {

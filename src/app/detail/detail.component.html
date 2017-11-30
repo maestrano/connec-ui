@@ -15,6 +15,16 @@
       <app-entity-attribute [entity]="entity"></app-entity-attribute>
     </mat-tab>
 
+    <mat-tab label="Edit Details">
+      <json-schema-form
+        [schema]="jsonSchema"
+        [(data)]="editEntityData"
+        framework="material-design"
+        loadExternalAssets="true"
+        (onSubmit)="updateEntity($event)">
+      </json-schema-form>
+    </mat-tab>
+
     <mat-tab label="View matching records">
       <span *ngIf="matchingRecords?.entities.length == 0">No matching records found</span>
 
