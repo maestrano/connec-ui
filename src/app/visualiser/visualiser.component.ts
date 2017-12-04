@@ -23,7 +23,6 @@ import { MnoeApiService } from '../services/mnoe-api.service';
   selector: 'visualiser',
   templateUrl: './visualiser.component.html',
   styleUrls: ['./visualiser.component.css'],
-  providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
 export class VisualiserComponent implements OnInit {

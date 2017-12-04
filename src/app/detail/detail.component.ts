@@ -14,7 +14,6 @@ import { EntitiesPage } from '../models/entities_page';
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css'],
-  providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent implements OnInit {

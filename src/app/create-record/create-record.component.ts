@@ -9,8 +9,7 @@ import { ConnecApiService } from '../services/connec-api.service';
   selector: 'app-create-record',
   templateUrl: './create-record.component.html',
   styleUrls: ['./create-record.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  providers: [ConnecApiService]
+  encapsulation: ViewEncapsulation.None
 })
 export class CreateRecordComponent implements OnInit {
   jsonSchema$: Observable<any>;

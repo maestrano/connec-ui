@@ -28,12 +28,12 @@ import { VisualiserComponent } from '../visualiser/visualiser.component';
   selector: 'connec-ui',
   templateUrl: './connec-ui.component.html',
   styleUrls: ['./connec-ui.component.css'],
-  providers: [ConnecApiService],
   encapsulation: ViewEncapsulation.None
 })
 export class ConnecUiComponent implements OnInit {
   loading = false;
   currentUser$: Observable<any>;
+  config: Observable<any>;
   organizations = [];
 
   collections$: Observable<any[]>;
@@ -82,6 +82,17 @@ export class ConnecUiComponent implements OnInit {
     this.filterButtonClick$ = Observable.fromEvent(this.filterButton._elementRef.nativeElement, 'click');
     this.clearSearchButtonClick$ = Observable.fromEvent(this.clearSearchButton._elementRef.nativeElement, 'click');
 
+    // Available collections
+console.log("FETCHING COLLECTIONS");
+    this.collections$ = this.connecApiService.collections();
+    this.collections$.subscribe((res: any) => {
+      res.forEach((collection: any) => {
+        this.collections.push(collection);
+        this.filteredcollections.push(collection);
+      });
+      this.loadJsonSchemaAttributes();
+    });
+
     // Fetch current user
     this.currentUser$ = this.mnoeApiService.currentUser();
 
@@ -109,16 +120,6 @@ export class ConnecUiComponent implements OnInit {
       // Store Organization details in session
       sessionStorage.setItem('channelId', this.organizations[0]['uid']);
       sessionStorage.setItem('organizationId', this.organizations[0]['id']);
-
-      // Available collections
-      this.collections$ = this.connecApiService.collections();
-      this.collections$.subscribe((res: any) => {
-        res.forEach((collection: any) => {
-          this.collections.push(collection);
-          this.filteredcollections.push(collection);
-        });
-        this.loadJsonSchemaAttributes();
-      });
 
       // Load product instances
       this.productInstances$ = this.mnoeApiService.productInstances();

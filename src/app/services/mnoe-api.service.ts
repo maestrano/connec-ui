@@ -26,6 +26,36 @@ export class MnoeApiService {
     });
   }
 
+  // Fetch current user and store session tokens and organizations
+  public configure(): Promise<any> {
+    const promise = new Promise((resolve, reject) => {
+      this.currentUser().subscribe((user: any) => {
+        // Store sso session token
+        sessionStorage.setItem('ssoSession', user['sso_session']);
+
+        // User organizations
+        let organizations: any[] = [];
+        user['organizations'].map(organization => organizations.push(organization));
+
+        // Select Organization
+        sessionStorage.setItem('organizationId', organizations[0]['id']);
+        sessionStorage.setItem('channelId', organizations[0]['uid']);
+
+        resolve();
+      });
+    });
+
+    return promise;
+  }
+
+  public systemIdentity(): Observable<any> {
+    return this.restangular.one('/system_identity').get()
+    .map((res: any) => {
+      return res['system_identity'];
+    })
+    .catch(error => this.handleError(error));
+  }
+
   public currentUser(): Observable<any> {
     return this.restangular.one('/current_user').get()
     .map((res: any) => {

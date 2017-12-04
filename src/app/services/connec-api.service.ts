@@ -6,6 +6,8 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 import { RestangularModule, Restangular } from 'ngx-restangular';
 
+import { MnoeApiService } from '../services/mnoe-api.service';
+
 import { ConnecUiComponent } from '../connec-ui/connec-ui.component';
 
 import { EntitiesPage } from '../models/entities_page';
@@ -14,26 +16,43 @@ import { ProductInstance } from '../models/product_instance';
 
 @Injectable()
 export class ConnecApiService {
-  connecHost = 'http://localhost:8080';
-  // connecHost = 'https://api-connec-sit.maestrano.io';
+  config$: Observable<any>;
+  config: any;
   apiService;
 
   constructor(
-    private restangular: Restangular
+    private restangular: Restangular,
+    private mnoeApiService: MnoeApiService,
   ) {
-    this.restangular = this.restangular.withConfig((RestangularProvider) => {
-      RestangularProvider.setBaseUrl(this.connecHost + '/api/v2');
-      RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
-      RestangularProvider.setRequestSuffix('.json');
+    this.configure();
+  }
 
-      // Extract collection content
-      RestangularProvider.setResponseExtractor(function(response, operation) {
-        if (operation === 'getList') {
-          return response[Object.keys(response)[0]];
-        }
-        return response;
+  // Fetch environment settings (Connec! endpoint)
+  public configure(): Promise<any> {
+    const promise = new Promise((resolve, reject) => {
+      // Fetch Config
+      this.config$ = this.mnoeApiService.systemIdentity();
+      this.config$.subscribe(res => {
+        this.config = res;
+        this.restangular = this.restangular.withConfig((RestangularProvider) => {
+          RestangularProvider.setBaseUrl(this.config['connec_endpoint'] + '/api/v2');
+          RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json', 'CONNEC-EXTERNAL-IDS': true});
+          RestangularProvider.setRequestSuffix('.json');
+
+          // Extract collection content
+          RestangularProvider.setResponseExtractor(function(response, operation) {
+            if (operation === 'getList') {
+              return response[Object.keys(response)[0]];
+            }
+            return response;
+          });
+        });
+
+        resolve();
       });
     });
+
+    return promise;
   }
 
   public collections(): Observable<String[]> {

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -63,6 +63,14 @@ import { EntityAttributeComponent } from './entity-attribute/entity-attribute.co
 import { CreateRecordComponent } from './create-record/create-record.component';
 import { MergeRecordsComponent } from './merge-records/merge-records.component';
 
+export function initConnecApiService(connecApiService: ConnecApiService) {
+  return () => connecApiService.configure();
+}
+
+export function initMnoeApiService(mnoeApiService: MnoeApiService) {
+  return () => mnoeApiService.configure();
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,7 +122,9 @@ import { MergeRecordsComponent } from './merge-records/merge-records.component';
   ],
   providers: [
     ConnecApiService,
-    MnoeApiService
+    MnoeApiService,
+    {provide: APP_INITIALIZER, useFactory: initConnecApiService, deps: [ConnecApiService], multi: true},
+    {provide: APP_INITIALIZER, useFactory: initMnoeApiService, deps: [MnoeApiService], multi: true}
   ],
   bootstrap: [AppComponent]
 })
