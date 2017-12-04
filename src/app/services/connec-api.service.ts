@@ -131,7 +131,7 @@ export class ConnecApiService {
     .catch(error => this.handleError(error));
   }
 
-  public jsonSchema(collection: string): any {
+  public jsonSchema(collection: string): Observable<any> {
     return this.restangular.one('json_schema', collection).get()
     .catch(error => this.handleError(error));
   }

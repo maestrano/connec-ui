@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, Inject, forwardRef } from '@angul
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 
 import { ConnecUiComponent } from '../connec-ui/connec-ui.component';
 import { ConnecApiService } from '../services/connec-api.service';
@@ -25,6 +26,9 @@ export class MergeRecordsComponent implements OnInit {
   recordsAttributes: any = {};
   selectedAttributes: any = {};
 
+  jsonSchema$: Observable<any>;
+  jsonSchema: any;
+
   constructor(
     public route: ActivatedRoute,
     public router: Router,
@@ -42,18 +46,27 @@ export class MergeRecordsComponent implements OnInit {
       this.collection = params['collection'];
       this.records = params['records'];
 
-      // Load records
       var filter = '_id in [' + params['records'] + ']';
-      this.records$ = this.connecApiService.fetchEntities(this.collection, 100, 0, 'created_at', 'ASC', filter);
-      this.records$.subscribe(records => {
-        this.records = records;
-        this.numberRecords = records.entities.length;
+      Observable.forkJoin(
+        // Load json schema
+        this.jsonSchema$ = this.connecApiService.jsonSchema(this.collection),
+        // Load records
+        this.records$ = this.connecApiService.fetchEntities(this.collection, 100, 0, 'created_at', 'ASC', filter)
+      ).subscribe(res => {
+        // Process Json Schema
+        this.jsonSchema = res[0].plain();
+        let jsonProperties = this.jsonSchema['properties'][this.collection]['items']['properties'];
+        this.attributes = Object.keys(jsonProperties);
+
+        // Process records
+        this.records = res[1];
+        this.numberRecords = this.records.entities.length;
 
         // Build an array of properties values
-        records.entities.forEach(entity => {
-          // Take union of properties
-          this.attributes = this.attributes.concat(entity.properties()).filter((v, i, a) => a.indexOf(v) === i);
-        });
+        // this.records.entities.forEach(entity => {
+        //   // Take union of properties
+        //   this.attributes = this.attributes.concat(entity.properties()).filter((v, i, a) => a.indexOf(v) === i);
+        // });
 
         // Remove non modifiable properties
         for(let ignoredKey of ['id', 'matching_records', 'group_id', 'channel_id', 'resource_type', 'connecId', 'friendlyName', 'created_at', 'updated_at']) {
@@ -63,8 +76,9 @@ export class MergeRecordsComponent implements OnInit {
 
         // Build array of records attributes values
         this.attributes.forEach(attribute => {
-          this.recordsAttributes[attribute] = records.entities.map(record => record[attribute]);
-          this.selectedAttributes[attribute] = records.entities[0][attribute];
+          this.recordsAttributes[attribute] = this.records.entities.map(record => record[attribute]);
+          // Select first non-empty value
+          this.selectedAttributes[attribute] = this.records.entities.map(entity => entity[attribute]).find(value => value);
         });
       });
     });
