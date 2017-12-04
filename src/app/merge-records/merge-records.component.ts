@@ -34,10 +34,8 @@ export class MergeRecordsComponent implements OnInit {
 
   ngOnInit() {
     // Force selected collection using route
-    this._parent.currentUser$.subscribe((res: any) => {
-      this.route.params.subscribe((params: Params) => {
-        this._parent.collectionCtrl.setValue(params['collection']);
-      });
+    this.route.params.subscribe((params: Params) => {
+      this._parent.collectionCtrl.setValue(params['collection']);
     });
 
     this.route.params.subscribe((params: Params) => {

@@ -32,7 +32,6 @@ import { VisualiserComponent } from '../visualiser/visualiser.component';
 })
 export class ConnecUiComponent implements OnInit {
   loading = false;
-  currentUser$: Observable<any>;
   config: Observable<any>;
   organizations = [];
 
@@ -83,7 +82,6 @@ export class ConnecUiComponent implements OnInit {
     this.clearSearchButtonClick$ = Observable.fromEvent(this.clearSearchButton._elementRef.nativeElement, 'click');
 
     // Available collections
-console.log("FETCHING COLLECTIONS");
     this.collections$ = this.connecApiService.collections();
     this.collections$.subscribe((res: any) => {
       res.forEach((collection: any) => {
@@ -92,9 +90,6 @@ console.log("FETCHING COLLECTIONS");
       });
       this.loadJsonSchemaAttributes();
     });
-
-    // Fetch current user
-    this.currentUser$ = this.mnoeApiService.currentUser();
 
     // Reload applications on Organization change
     this.organizationSelector.change.subscribe((organization: any) => {
@@ -105,21 +100,15 @@ console.log("FETCHING COLLECTIONS");
       this.productInstances$ = this.mnoeApiService.productInstances();
     });
 
-    this.currentUser$.subscribe((user: any) => {
+    // Current user organizations
+    this.mnoeApiService.currentUser().subscribe((user: any) => {
       user['organizations'].map(organization => this.organizations.push(organization));
-      // Store sso session token
-      sessionStorage.setItem('ssoSession', user['sso_session']);
-
       // Select first Organization
       if(sessionStorage.getItem('organizationId')) {
         this.organizationSelector.value = this.organizations.find(organization => organization['id'] === sessionStorage.getItem('organizationId'));
       } else {
         this.organizationSelector.value = this.organizations[0];
       }
-
-      // Store Organization details in session
-      sessionStorage.setItem('channelId', this.organizations[0]['uid']);
-      sessionStorage.setItem('organizationId', this.organizations[0]['id']);
 
       // Load product instances
       this.productInstances$ = this.mnoeApiService.productInstances();

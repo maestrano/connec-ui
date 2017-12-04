@@ -39,15 +39,13 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
     this.loadEntity();
 
-    this._parent.currentUser$.subscribe((res: any) => {
-      // Force selected collection using route
-      this.route.params.subscribe((params: Params) => {
-        this._parent.collectionCtrl.setValue(params['collection']);
-        this.loadEntity();
-        this.jsonSchema$ = this.connecApiService.jsonSchema(params['collection']);
-        this.jsonSchema$.subscribe(schema => {
-          this.jsonSchema = schema.plain();
-        });
+    // Force selected collection using route
+    this.route.params.subscribe((params: Params) => {
+      this._parent.collectionCtrl.setValue(params['collection']);
+      this.loadEntity();
+      this.jsonSchema$ = this.connecApiService.jsonSchema(params['collection']);
+      this.jsonSchema$.subscribe(schema => {
+        this.jsonSchema = schema.plain();
       });
     });
   }

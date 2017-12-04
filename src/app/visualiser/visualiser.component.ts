@@ -107,11 +107,6 @@ export class VisualiserComponent implements OnInit {
       });
     });
 
-    // Load data after current user has been initialised
-    this._parent.currentUser$.subscribe((res: any) => {
-      this.reloadData();
-    });
-
     // Reset pre-defined filters on new search
     this._parent.filterButtonClick$.subscribe((res: any) => this.dataSource.filter = '');
   }
