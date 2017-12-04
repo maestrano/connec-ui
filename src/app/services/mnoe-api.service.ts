@@ -12,7 +12,7 @@ export class MnoeApiService {
 
   constructor(private restangular: Restangular) {
     this.restangular = this.restangular.withConfig((RestangularProvider) => {
-      RestangularProvider.setBaseUrl('http://localhost:8081/mnoe/jpi/v1');
+      RestangularProvider.setBaseUrl('/mnoe/jpi/v1');
       RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
       RestangularProvider.setRequestSuffix('.json');
 
