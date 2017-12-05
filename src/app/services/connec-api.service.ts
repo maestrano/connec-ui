@@ -66,7 +66,7 @@ export class ConnecApiService {
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, search=null, archived=false, mappings=[]): Observable<EntitiesPage> {
+  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, search=null, archived=false, mappings=[], externalIds=true): Observable<EntitiesPage> {
     var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), "mappings[]": [], sso_session: sessionStorage.getItem('ssoSession')};
 
     mappings.forEach(m => options["mappings[]"].push(JSON.stringify(m)));
@@ -88,7 +88,7 @@ export class ConnecApiService {
     // Order: $orderby=name ASC
     if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
 
-    return this.restangular.all(sessionStorage.getItem('channelId')).customGET(collection, options)
+    return this.restangular.all(sessionStorage.getItem('channelId')).customGET(collection, options, {'CONNEC-EXTERNAL-IDS': externalIds})
     .map((res: any) => this.extractQueryData(res, collection))
     .catch(error => this.handleError(error));
   }

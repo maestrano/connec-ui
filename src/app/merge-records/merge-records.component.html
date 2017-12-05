@@ -21,7 +21,7 @@
     <span class="merge-attribute-name">Prime Record</span>
   </div>
 
-  <div class="col-11 merge-attribute-value">
+  <div class="col-11 merge-attribute-value" *ngIf="records">
     <mat-radio-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes['id']">
       <div class="col-{{12/numberRecords}} merge-record" *ngFor="let entity of records.entities">
         <mat-radio-button value="{{entity['connecId']}}">
@@ -29,11 +29,11 @@
             Select record to keep
           </span>
           <span class="merge-record-keep" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] == entity['connecId']">
-            <mat-icon color="primary">done</mat-icon>
+            <mat-icon color="primary">save</mat-icon>
             Record will be kept
           </span>
           <span class="merge-record-delete" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] != entity['connecId']">
-            <mat-icon color="warn">delete_sweep</mat-icon>
+            <mat-icon color="warn">delete</mat-icon>
             Record will be deleted
           </span>
         </mat-radio-button>
@@ -42,19 +42,7 @@
   </div>
 </div>
 
-<div class="row" *ngFor="let attribute of attributes">
-  <div class="col-1 merge-attribute-name">
-    {{ attribute }}
-  </div>
-
-  <div class="col-11">
-    <mat-button-toggle-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes[attribute]">
-      <div class="col-{{12/numberRecords}} merge-attribute-value" *ngFor="let recordsAttribute of recordsAttributes[attribute]">
-        <mat-button-toggle value="{{recordsAttribute}}">
-          <span *ngIf="!isObject(recordsAttribute)" style="width: 100%">{{ recordsAttribute }}</span>
-          <span *ngIf="isObject(recordsAttribute)" style="width: 100%">{{ recordsAttribute | json }}</span>
-        </mat-button-toggle>
-      </div>
-    </mat-button-toggle-group>
-  </div>
-</div>
+<app-merge-attributes *ngIf="records"
+  [jsonProperties]="jsonProperties"
+  [records]="records.entities">
+</app-merge-attributes>

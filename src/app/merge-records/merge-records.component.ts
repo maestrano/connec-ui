@@ -22,12 +22,12 @@ export class MergeRecordsComponent implements OnInit {
   records: EntitiesPage;
   numberRecords: number;
 
-  attributes: string[] = [];
-  recordsAttributes: any = {};
+  recordsAttributes: any[] = [];
   selectedAttributes: any = {};
 
   jsonSchema$: Observable<any>;
   jsonSchema: any;
+  jsonProperties: any;
 
   constructor(
     public route: ActivatedRoute,
@@ -44,42 +44,19 @@ export class MergeRecordsComponent implements OnInit {
 
     this.route.params.subscribe((params: Params) => {
       this.collection = params['collection'];
-      this.records = params['records'];
-
       var filter = '_id in [' + params['records'] + ']';
       Observable.forkJoin(
         // Load json schema
         this.jsonSchema$ = this.connecApiService.jsonSchema(this.collection),
         // Load records
-        this.records$ = this.connecApiService.fetchEntities(this.collection, 100, 0, 'created_at', 'ASC', filter)
+        this.records$ = this.connecApiService.fetchEntities(this.collection, 100, 0, 'created_at', 'ASC', filter, null, false, [], false)
       ).subscribe(res => {
         // Process Json Schema
         this.jsonSchema = res[0].plain();
-        let jsonProperties = this.jsonSchema['properties'][this.collection]['items']['properties'];
-        this.attributes = Object.keys(jsonProperties);
+        this.jsonProperties = this.jsonSchema['properties'][this.collection]['items']['properties'];
 
         // Process records
         this.records = res[1];
-        this.numberRecords = this.records.entities.length;
-
-        // Build an array of properties values
-        // this.records.entities.forEach(entity => {
-        //   // Take union of properties
-        //   this.attributes = this.attributes.concat(entity.properties()).filter((v, i, a) => a.indexOf(v) === i);
-        // });
-
-        // Remove non modifiable properties
-        for(let ignoredKey of ['id', 'matching_records', 'group_id', 'channel_id', 'resource_type', 'connecId', 'friendlyName', 'created_at', 'updated_at']) {
-          var index = this.attributes.indexOf(ignoredKey);
-          if (index !== -1) { this.attributes.splice(index, 1); }
-        }
-
-        // Build array of records attributes values
-        this.attributes.forEach(attribute => {
-          this.recordsAttributes[attribute] = this.records.entities.map(record => record[attribute]);
-          // Select first non-empty value
-          this.selectedAttributes[attribute] = this.records.entities.map(entity => entity[attribute]).find(value => value);
-        });
       });
     });
   }
@@ -103,9 +80,5 @@ export class MergeRecordsComponent implements OnInit {
   navigateToDetails(entity: Entity) {
     this.router.navigate(['/visualiser', entity.resource_type, entity['connecId']]);
     scroll(0,0);
-  }
-
-  isObject(value) {
-    return typeof value === 'object';
   }
 }

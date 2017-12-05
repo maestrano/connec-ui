@@ -62,6 +62,7 @@ import { ConnecUiComponent } from './connec-ui/connec-ui.component';
 import { EntityAttributeComponent } from './entity-attribute/entity-attribute.component';
 import { CreateRecordComponent } from './create-record/create-record.component';
 import { MergeRecordsComponent } from './merge-records/merge-records.component';
+import { MergeAttributesComponent } from './merge-attributes/merge-attributes.component';
 
 export function initConnecApiService(connecApiService: ConnecApiService) {
   return () => connecApiService.configure();
@@ -80,7 +81,8 @@ export function initMnoeApiService(mnoeApiService: MnoeApiService) {
     ConnecUiComponent,
     EntityAttributeComponent,
     CreateRecordComponent,
-    MergeRecordsComponent
+    MergeRecordsComponent,
+    MergeAttributesComponent
   ],
   entryComponents: [
     SearchSimilarDialog
