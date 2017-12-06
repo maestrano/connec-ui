@@ -23,16 +23,16 @@
 
   <div class="col-11 merge-attribute-value" *ngIf="records">
     <mat-radio-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes['id']">
-      <div class="col-{{12/numberRecords}} merge-record" *ngFor="let entity of records.entities">
+      <div class="col-{{12/numberRecords}} merge-record {{selectedAttributes['id'] == entity['connecId'] ? 'merge-record-keep' : 'merge-record-delete'}}" *ngFor="let entity of records.entities">
         <mat-radio-button value="{{entity['connecId']}}">
-          <span class="merge-record-keep" *ngIf="!selectedAttributes['id']">
+          <span *ngIf="!selectedAttributes['id']">
             Select record to keep
           </span>
-          <span class="merge-record-keep" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] == entity['connecId']">
+          <span *ngIf="selectedAttributes['id'] && selectedAttributes['id'] == entity['connecId']">
             <mat-icon color="primary">save</mat-icon>
             Record will be kept
           </span>
-          <span class="merge-record-delete" *ngIf="selectedAttributes['id'] && selectedAttributes['id'] != entity['connecId']">
+          <span *ngIf="selectedAttributes['id'] && selectedAttributes['id'] != entity['connecId']">
             <mat-icon color="warn">delete</mat-icon>
             Record will be deleted
           </span>
@@ -44,5 +44,6 @@
 
 <app-merge-attributes *ngIf="records"
   [jsonProperties]="jsonProperties"
-  [records]="records.entities">
+  [records]="records.entities"
+  [selectedAttributes]="selectedAttributes">
 </app-merge-attributes>

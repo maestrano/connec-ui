@@ -29,10 +29,16 @@ mat-icon {
   padding: 5px;
 }
 
-.merge-record-keep {
-
+.merge-record mat-radio-button {
+  display: block;
+  padding: 5px;
 }
 
-.merge-record-delete {
+.merge-record-keep mat-radio-button {
+  background: #874ac7;
+  color: rgba(255,255,255,.87);
+}
+
+.merge-record-delete mat-radio-button {
 
 }

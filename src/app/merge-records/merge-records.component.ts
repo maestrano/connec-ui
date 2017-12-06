@@ -57,6 +57,7 @@ export class MergeRecordsComponent implements OnInit {
 
         // Process records
         this.records = res[1];
+        this.numberRecords = this.records.entities.length;
       });
     });
   }

@@ -1,21 +1,25 @@
 <div class="row" *ngFor="let attribute of properties()">
-  <div class="col-1">
+  <div class="col-2" *ngIf="!hasNestedProperties[attribute]">
     <span class="merge-attribute-name">{{ attribute }}</span>
   </div>
 
-  <div class="col-11" *ngIf="!hasNestedProperties[attribute]">
+  <div class="col-10" *ngIf="!hasNestedProperties[attribute]">
     <mat-button-toggle-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes[attribute]">
       <div class="col-{{12/numberRecords}} merge-attribute-value" *ngFor="let record of records">
-        <mat-button-toggle value="{{record[attribute]}}">
+        <mat-button-toggle value="{{copyValue(record[attribute])}}">
           <span style="width: 100%">{{ record[attribute] }}</span>
         </mat-button-toggle>
       </div>
     </mat-button-toggle-group>
   </div>
 
-  <div class="col-11" *ngIf="hasNestedProperties[attribute]">
-    <app-merge-attributes
-      [records]="subRecords(attribute)">
-    </app-merge-attributes>
+  <div class="col-12" *ngIf="hasNestedProperties[attribute]">
+    <span class="merge-attribute-name">{{ attribute }}</span>
+    <div class="merge-attribute-name-nested">
+      <app-merge-attributes
+        [records]="subRecords(attribute)"
+        [selectedAttributes]="selectedAttributes[attribute]">
+      </app-merge-attributes>
+    </div>
   </div>
 </div>

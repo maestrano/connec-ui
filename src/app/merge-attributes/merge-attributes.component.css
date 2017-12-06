@@ -6,6 +6,10 @@ app-merge-attributes {
   font-weight: 800;
 }
 
+.merge-attribute-name-nested span.merge-attribute-name {
+  margin-left: 10px;
+}
+
 .merge-attribute-row {
   width: 100%;
 }
