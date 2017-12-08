@@ -1,5 +1,6 @@
 mat-select.select-organization {
   margin-left: 20px;
+  font-size: 0.8em;
 }
 
 mat-select.select-organization .mat-select-value, mat-select.select-organization .mat-select-arrow {

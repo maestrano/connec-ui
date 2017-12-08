@@ -65,7 +65,7 @@
 
             <div class="col-12">
               <mat-checkbox #checkboxArchived value="true">
-                <mat-icon class="attribute-icon">delete_forever</mat-icon>
+                <mat-icon class="attribute-icon" color="primary">delete_forever</mat-icon>
                 Archived
               </mat-checkbox>
             </div>
@@ -79,7 +79,7 @@
             <div *ngFor="let availableAttribute of availableAttributes" class="attribute-filter">
               <div *ngIf="attributeFilters[availableAttribute['name']]">
                 <mat-checkbox [(ngModel)]="attributeFilters[availableAttribute['name']]['enabled']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
-                  <mat-icon class="attribute-icon">{{ availableAttribute['icon']}}</mat-icon>
+                  <mat-icon class="attribute-icon" color="primary">{{ availableAttribute['icon']}}</mat-icon>
                   {{ availableAttribute['name']}}
                 </mat-checkbox>
                 <div *ngIf="attributeFilters[availableAttribute['name']]['enabled']" class="attribute-filter-options">
