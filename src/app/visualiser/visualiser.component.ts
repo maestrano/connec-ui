@@ -276,7 +276,9 @@ export class VisualiserDataSource extends DataSource<any> {
           if(attributeFilter['enabled']) {
             switch(attributeFilter['operator']) {
               case 'match': {
-                filters.push(key + ' ' + attributeFilter['operator'] + " /" + attributeFilter['value'] + "/");
+                if(attributeFilter['value'] && attributeFilter['value'].length > 0) {
+                  filters.push(key + ' ' + attributeFilter['operator'] + " /" + attributeFilter['value'] + "/");
+                }
                 break;
               }
               case 'empty': {
