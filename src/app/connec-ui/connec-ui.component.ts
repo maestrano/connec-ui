@@ -98,6 +98,13 @@ export class ConnecUiComponent implements OnInit {
 
       // Reload product instances
       this.productInstances$ = this.mnoeApiService.productInstances();
+      this.productInstances$.subscribe((res: any) => {
+        this.productInstances = [];
+        res.forEach((record: any) => {
+          this.productInstances.push(record);
+          this.selectedApplications[record['uid']] = 'any';
+        })
+      });
     });
 
     // Current user organizations
@@ -113,6 +120,7 @@ export class ConnecUiComponent implements OnInit {
       // Load product instances
       this.productInstances$ = this.mnoeApiService.productInstances();
       this.productInstances$.subscribe((res: any) => {
+        this.productInstances = [];
         res.forEach((record: any) => {
           this.productInstances.push(record);
           this.selectedApplications[record['uid']] = 'any';

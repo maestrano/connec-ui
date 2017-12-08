@@ -47,7 +47,7 @@
       <mat-header-cell *matHeaderCellDef> Applications </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span *ngFor="let idMap of idMapFilter(row.id)">
-          <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="25" matTooltip="{{ productInstanceFilter(idMap).name }}"/>
+          <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="35" matTooltip="{{ productInstanceFilter(idMap).name }}"/>
         </span>
       </mat-cell>
     </ng-container>
@@ -69,7 +69,7 @@
 
         <mat-menu #sendToMenu="matMenu">
           <button mat-menu-item *ngFor="let productInstance of _parent.productInstances" (click)="sendEntityToApplication(row, productInstance)">
-            <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+            <img aria-hidden src="{{ productInstance.logo }}" height="30" />
             {{ productInstance.name }}
           </button>
         </mat-menu>
