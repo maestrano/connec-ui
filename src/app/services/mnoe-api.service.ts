@@ -38,8 +38,8 @@ export class MnoeApiService {
         user['organizations'].map(organization => organizations.push(organization));
 
         // Select Organization
-        sessionStorage.setItem('organizationId', organizations[0]['id']);
-        sessionStorage.setItem('channelId', organizations[0]['uid']);
+        if(!sessionStorage.getItem('organizationId')) { sessionStorage.setItem('organizationId', organizations[0]['id']); }
+        if(!sessionStorage.getItem('channelId')) { sessionStorage.setItem('channelId', organizations[0]['uid']); }
 
         resolve();
       });
