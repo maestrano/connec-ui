@@ -33,7 +33,7 @@ export class VisualiserComponent implements OnInit {
   collection: string;
 
   availableAttributes: any[] = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
-  selectedAttributes: any = {code: true, friendlyName: true, created_at: true};
+  selectedAttributes: any;
 
   selectedRecords: any = {};
   numberRecordsSelected: number = 0;
@@ -53,7 +53,12 @@ export class VisualiserComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(forwardRef(() => ConnecUiComponent)) public _parent: ConnecUiComponent
   ) {
-
+    // Set pre-selected attributes
+    if(sessionStorage.getItem('connec-selected-attributes-' + this.collection)) {
+      this.selectedAttributes = JSON.parse(sessionStorage.getItem('connec-selected-attributes-' + this.collection));
+    } else {
+      this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
+    }
   }
 
   ngOnInit() {
@@ -71,7 +76,6 @@ export class VisualiserComponent implements OnInit {
 
         // Extract list of collection available properties
         this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
-        this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
 
         let json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
         let properties = Object.keys(json_properties);
@@ -130,13 +134,23 @@ export class VisualiserComponent implements OnInit {
       if(index != -1) { this.dataSource.displayedAttributes.splice(index, 1); }
     }
 
+    // Store in session
+    // sessionStorage.setItem('connec-selected-attributes-' + this.collection, JSON.stringify(this.selectedAttributes));
+
     $event.stopPropagation();
   }
 
   // Return IdMaps where record has been pushed to external application
+  // Keep only 1 IdMap per group_id
   idMapFilter(ids: any): any {
     if(!ids) { return null; }
-    return ids.filter(idMap => idMap['id'] && idMap['provider']);
+    let filteredIds = [];
+    ids.filter(idMap => idMap['id'] && idMap['provider']).forEach(idMap => {
+      if(!filteredIds.some(filteredId => filteredId['group_id'] === idMap['group_id'])) {
+        filteredIds.push(idMap);
+      }
+    });
+    return filteredIds;
   }
 
   // Find ProductInstance of an IdMap
