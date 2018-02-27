@@ -1,0 +1,33 @@
+mat-select.select-organization {
+  margin-left: 20px;
+  font-size: 0.8em;
+}
+
+mat-select.select-organization .mat-select-value, mat-select.select-organization .mat-select-arrow {
+  color: white !important;
+}
+
+mat-card-header.menu-section-title mat-card-title {
+  font-weight: 800;
+}
+
+.left-menu .mat-expansion-panel-body {
+  overflow: visible;
+}
+
+.attribute-filter {
+  font-size: 0.85em;
+}
+
+.attribute-icon {
+  vertical-align: middle;
+  font-size: 1.8em;
+}
+
+.attribute-filter-options {
+  margin-left: 15px;
+}
+
+.application-filter-title {
+  font-weight: 800;
+}

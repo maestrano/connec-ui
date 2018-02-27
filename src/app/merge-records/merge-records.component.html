@@ -1,0 +1,49 @@
+<div class="row menu-header">
+  <div class="col-2">
+    <button mat-icon-button (click)="navigateToCollection()">
+      <mat-icon aria-label="Back">chevron_left</mat-icon> Back
+    </button>
+  </div>
+
+  <div class="col-4">
+    <h2>Merge {{ collection }}</h2>
+  </div>
+
+  <div class="col-2">
+    <button mat-raised-button color="primary" (click)="mergeRecords()" [disabled]="!selectedAttributes['id']">
+      <mat-icon aria-label="Back">call_merge</mat-icon> Merge
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-2">
+    <span class="merge-attribute-name">Prime Record</span>
+  </div>
+
+  <div class="col-10 merge-attribute-value" *ngIf="records">
+    <mat-radio-group class="row merge-attribute-row" [(ngModel)]="selectedAttributes['id']">
+      <div class="col-{{12/numberRecords}} merge-record {{selectedAttributes['id'] == entity['connecId'] ? 'merge-record-keep' : 'merge-record-delete'}}" *ngFor="let entity of records.entities">
+        <mat-radio-button value="{{entity['connecId']}}">
+          <span *ngIf="!selectedAttributes['id']">
+            Select record to keep
+          </span>
+          <span *ngIf="selectedAttributes['id'] && selectedAttributes['id'] == entity['connecId']">
+            <mat-icon color="warn">save</mat-icon>
+            Record will be kept
+          </span>
+          <span *ngIf="selectedAttributes['id'] && selectedAttributes['id'] != entity['connecId']">
+            <mat-icon color="warn">delete</mat-icon>
+            Record will be deleted
+          </span>
+        </mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </div>
+</div>
+
+<app-merge-attributes *ngIf="records"
+  [jsonProperties]="jsonProperties"
+  [records]="records.entities"
+  [selectedAttributes]="selectedAttributes">
+</app-merge-attributes>

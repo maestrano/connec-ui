@@ -1,0 +1,171 @@
+  <div class="container-fluid">
+    <mat-spinner #loader [hidden]="!loading" style="display: block; position: absolute; top: 50%; left: 50%; z-index: 999;"></mat-spinner>
+
+    <div class="row">
+      <mat-toolbar color="primary">
+        <div class="col-2">
+          <span>Connec!™ UI</span>
+
+          <mat-select #organizationSelector class="select-organization">
+            <mat-option *ngFor="let organization of organizations" [value]="organization">
+              {{ organization.name }}
+            </mat-option>
+          </mat-select>
+        </div>
+
+        <div class="col-10">
+
+        </div>
+      </mat-toolbar>
+    </div>
+
+    <div class="row">
+      <div class="col-2 left-menu">
+        <mat-card>
+          <mat-card-header class="menu-section-title">
+            <mat-card-title>Collection</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <mat-form-field color="primary">
+              <input type="text" matInput #collectionInput [formControl]="collectionCtrl" [matAutocomplete]="auto">
+
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let collection of filteredcollections" [value]="collection">
+                  {{ collection }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-accordion multi="true">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Global Search</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-form-field>
+              <input #attributeInput matInput placeholder="Search text">
+            </mat-form-field>
+
+            <button #filterButton mat-mini-fab color="primary" (click)="attributeValue = attributeInput.value">
+              <mat-icon aria-label="Search" matTooltip="Search">search</mat-icon>
+            </button>
+
+            <button #clearSearchButton mat-mini-fab color="accent" (click)="attributeInput.value = attributeValue = ''">
+              <mat-icon aria-label="Clear" matTooltip="Clear">clear</mat-icon>
+            </button>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Filter by status</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="col-12">
+              <mat-checkbox #checkboxArchived value="true">
+                <mat-icon class="attribute-icon" color="primary">delete_forever</mat-icon>
+                Archived
+              </mat-checkbox>
+            </div>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Search by Attribute</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div *ngFor="let availableAttribute of availableAttributes" class="attribute-filter">
+              <div *ngIf="attributeFilters[availableAttribute['name']]">
+                <mat-checkbox [(ngModel)]="attributeFilters[availableAttribute['name']]['enabled']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                  <mat-icon class="attribute-icon" color="primary">{{ availableAttribute['icon']}}</mat-icon>
+                  {{ availableAttribute['name']}}
+                </mat-checkbox>
+                <div *ngIf="attributeFilters[availableAttribute['name']]['enabled']" class="attribute-filter-options">
+                  <div *ngIf="availableAttribute['type'] == 'string'">
+                    <div *ngIf="availableAttribute['format'] == 'date-time'">
+                      <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-radio-button value="lte">Before</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="gte">After</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="attributeFilters[availableAttribute['name']]['value']" (dateChange)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+                    <div *ngIf="attributeFilters[availableAttribute['name']]['enum']">
+                      <mat-form-field>
+                        <mat-select (change)="changeAttributeValue(availableAttribute['name'], $event)">
+                          <mat-option *ngFor="let value of attributeFilters[availableAttribute['name']]['enum']" [value]="value">
+                            {{ value }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+
+                    <div *ngIf="!attributeFilters[availableAttribute['name']]['enum'] && availableAttribute['format'] != 'date-time'">
+                      <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-radio-button value="match">Contains</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="not_empty">Not Empty</mat-radio-button>
+                        <mat-radio-button value="empty">Empty</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="attributeFilters[availableAttribute['name']]['value']" (input)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div *ngIf="availableAttribute['type'] == 'number'">
+                    <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                        <mat-radio-button value="lt">Less than</mat-radio-button>
+                        <mat-radio-button value="eq">Equals</mat-radio-button>
+                        <mat-radio-button value="gt">Greater than</mat-radio-button>
+                      </mat-radio-group>
+                      <mat-form-field>
+                        <input matInput type="number" [(ngModel)]="attributeFilters[availableAttribute['name']]['value']" (input)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      </mat-form-field>
+                  </div>
+
+                  <div *ngIf="availableAttribute['type'] == 'boolean'">
+                     <mat-radio-group [(ngModel)]="attributeFilters[availableAttribute['name']]['operator']" (change)="triggerAttributeFilterChange(attributeFilters[availableAttribute['name']])">
+                      <mat-radio-button value="eq">Include</mat-radio-button>
+                      <mat-radio-button value="ne">Exclude</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Filter by Application</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="row" *ngFor="let productInstance of productInstances$ | async">
+              <div class="col-12">
+                <img aria-hidden src="{{ productInstance.logo }}" height="25" />
+                <span class="application-filter-title">{{ productInstance.name }}</span>
+              </div>
+              <div class="col-11 offset-md-1">
+                <mat-radio-group [(ngModel)]="selectedApplications[productInstance.uid]" (change)="triggerDataReload()">
+                  <mat-radio-button value="any">Any</mat-radio-button>
+                  <mat-radio-button value="include">Include</mat-radio-button>
+                  <mat-radio-button value="exclude">Exclude</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+
+      <div class="col-10">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>

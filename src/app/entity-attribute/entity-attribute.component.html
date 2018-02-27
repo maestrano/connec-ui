@@ -1,0 +1,22 @@
+<table class="table table-striped connec-details">
+  <tbody>
+    <tr *ngFor="let key of properties()">
+      <td>{{ key }}</td>
+      <td *ngIf="!entity[key]"></td>
+      <td *ngIf="entity[key] && isArray(key) && !isIdMap(key)" colspan="2">
+        <app-entity-attribute *ngFor="let element of entity[key]" [entity]="element"></app-entity-attribute>
+      </td>
+      <td *ngIf="entity[key] && !isArray(key) && isObject(key) && !isIdMap(key)" colspan="2">
+        <app-entity-attribute [entity]="entity[key]"></app-entity-attribute>
+      </td>
+      <td *ngIf="entity[key] && isIdMap(key)">
+        <button mat-icon-button (click)="navigateToDetails(key)">
+          <mat-icon aria-label="View">zoom_in</mat-icon>View {{ connecIdMap(entity[key])['id'] }}
+        </button>
+      </td>
+      <td *ngIf="entity[key] && !isObject(key)">
+        {{ entity[key] }}
+      </td>
+    </tr>
+  </tbody>
+</table>

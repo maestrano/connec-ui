@@ -1,0 +1,44 @@
+mat-icon {
+  vertical-align: middle;
+}
+
+.mat-button-toggle {
+  width: 100%;
+  height: 100%;
+}
+
+.mat-button-toggle-label {
+  width: 100%;
+}
+
+.mat-button-toggle-checked {
+  background: #874ac7;
+  color: rgba(255,255,255,.87);
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.menu-header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.merge-record {
+  display: block;
+  padding: 5px;
+}
+
+.merge-record mat-radio-button {
+  display: block;
+  padding: 5px;
+}
+
+.merge-record-keep mat-radio-button {
+  background: #874ac7;
+  color: rgba(255,255,255,.87);
+}
+
+.merge-record-delete mat-radio-button {
+
+}

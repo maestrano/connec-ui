@@ -1,0 +1,100 @@
+<div class="row">
+  <div class="col-2">
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Create {{ collection }}" (click)="navigateToCreateRecord()">
+       <mat-icon>add_box</mat-icon>
+    </button>
+
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Attributes to display" [matMenuTriggerFor]="attributesMenu">
+      <mat-icon>view_list</mat-icon>
+    </button>
+    <mat-menu #attributesMenu="matMenu">
+      <button mat-menu-item disabled>
+        <span>Attributes to display</span>
+      </button>
+      <button mat-menu-item *ngFor="let availableAttribute of availableAttributes" (click)="selectAttribute($event, availableAttribute['name'])">
+        <mat-checkbox value="true" [(ngModel)]="selectedAttributes[availableAttribute['name']]">
+          <mat-icon>{{ availableAttribute['icon'] }}</mat-icon>
+          {{ availableAttribute['name'] }}
+        </mat-checkbox>
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="col-2">
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Unselect All" (click)="unselectAll()" [disabled]="numberRecordsSelected < 1">
+       <mat-icon>check_box_outline_blank</mat-icon>
+    </button>
+
+    <button class="menu-top" color="primary" mat-raised-button matTooltip="Merge" (click)="mergeRecords()" [disabled]="numberRecordsSelected < 2">
+       <mat-icon>call_merge</mat-icon>
+    </button>
+  </div>
+
+  <div class="col-8">
+    <mat-paginator [length]="dataSource?.resultsLength" [pageSize]="dataSource?.pageSize"></mat-paginator>
+  </div>
+</div>
+
+<div class="mat-elevation-z8">
+  <mat-table #table [dataSource]="dataSource" matSort matSortDisableClear>
+    <ng-container *ngFor="let attribute of dataSource.selectedAttributes" matColumnDef="{{attribute}}">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> {{ attribute }} </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row[attribute] }} </mat-cell>
+    </ng-container>
+
+    <!-- Applications Column -->
+    <ng-container matColumnDef="applications">
+      <mat-header-cell *matHeaderCellDef> Applications </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <span *ngFor="let idMap of idMapFilter(row.id)">
+          <img *ngIf="productInstanceFilter(idMap)" aria-hidden src="{{ productInstanceFilter(idMap).logo }}" height="35" matTooltip="{{ productInstanceFilter(idMap).name }}"/>
+        </span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-menu #appMenu="matMenu">
+          <button mat-menu-item (click)="openSearchSimilarDialog(row)">
+            <mat-icon>search</mat-icon>
+            Search similar
+          </button>
+          <button mat-menu-item [matMenuTriggerFor]="sendToMenu">
+            <mat-icon>forward</mat-icon>
+            Send to
+          </button>
+        </mat-menu>
+
+        <mat-menu #sendToMenu="matMenu">
+          <button mat-menu-item *ngFor="let productInstance of _parent.productInstances" (click)="sendEntityToApplication(row, productInstance)">
+            <img aria-hidden src="{{ productInstance.logo }}" height="30" />
+            {{ productInstance.name }}
+          </button>
+        </mat-menu>
+
+        <button color="primary" mat-icon-button matTooltip="Details" (click)="navigateToDetails(row)">
+           <mat-icon>zoom_in</mat-icon>
+        </button>
+
+        <button *ngIf="row.status != 'ARCHIVED'" color="warn" mat-icon-button matTooltip="Archive" (click)="archiveEntity(row)">
+           <mat-icon>archive</mat-icon>
+        </button>
+
+        <button *ngIf="row.status == 'ARCHIVED'" color="primary" mat-icon-button matTooltip="Restore" (click)="restoreEntity(row)">
+           <mat-icon>unarchive</mat-icon>
+        </button>
+
+        <button color="primary" mat-icon-button [matMenuTriggerFor]="appMenu" matTooltip="More actions">
+           <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-checkbox [(ngModel)]="selectedRecords[row['connecId']]" (change)="recordSelectionChange()"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="dataSource?.displayedAttributes"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: dataSource?.displayedAttributes;"></mat-row>
+  </mat-table>
+</div>
