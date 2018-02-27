@@ -54,7 +54,7 @@ export class DetailComponent implements OnInit {
     // Fetch entity
     this.entity$ = this.route.params.switchMap((params: Params) => {
       this._parent.loading = true;
-      return this.connecApiService.fetchEntity(params['collection'], params['id'])
+      return this.connecApiService.fetchEntity(params['collection'], params['id']);
     });
 
     // On entity load, fetch matching records
@@ -64,11 +64,11 @@ export class DetailComponent implements OnInit {
       this.editEntityData[this.entity.resource_type] = [this.entity];
 
       // Fetch matching records
-      if(this.entity.matching_records) {
-        var filter = '_id in ';
-        var ids = this.entity.matching_records.map(record => {
-          if(!record.match_id) { return ''; }
-          return "'" + record.match_id.find(idMap => idMap['provider'] === 'connec')['id'] + "'";
+      if (this.entity.matching_records) {
+        let filter = '_id in ';
+        const ids = this.entity.matching_records.map(record => {
+          if (!record.match_id) { return ''; }
+          return '\'' + record.match_id.find(idMap => idMap['provider'] === 'connec')['id'] + '\'';
         }).join(',');
         filter += '[' + ids + ']';
 
@@ -79,18 +79,18 @@ export class DetailComponent implements OnInit {
   }
 
   updateEntity($event) {
-    let data = {};
+    const data = {};
     data[this.entity.resource_type] = this.editEntityData[this.entity.resource_type][0];
     this.connecApiService.updateEntity(this.entity, data);
   }
 
   navigateToCollection(collection: string) {
     this.router.navigate(['/visualiser', collection]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 
   navigateToDetails(entity: Entity) {
     this.router.navigate(['/visualiser', entity.resource_type, entity['connecId']]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 }

@@ -1,5 +1,5 @@
-import { Injectable,Inject, forwardRef  } from '@angular/core';
-import { URLSearchParams } from '@angular/http'
+import { Injectable, Inject, forwardRef  } from '@angular/core';
+import { URLSearchParams } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
@@ -58,35 +58,35 @@ export class ConnecApiService {
   public collections(): Observable<String[]> {
     return this.restangular.all('/' + sessionStorage.getItem('channelId')).get('', {sso_session: sessionStorage.getItem('ssoSession')})
     .map((res: any) => {
-      var cols = res._links.map((collection: any) => Object.keys(collection)[0]);
+      const cols = res._links.map((collection: any) => Object.keys(collection)[0]);
       return cols;
      })
     .catch(error => {
-      this.handleError(error)
+      this.handleError(error);
     });
   }
 
-  public fetchEntities(collection: string, pageSize=100, pageNumber=0, sortColumn=null, sortOrder='ASC', filter=null, search=null, archived=false, mappings=[], externalIds=true): Observable<EntitiesPage> {
-    var options = {'$top': pageSize, '$skip': pageSize * (pageNumber), "mappings[]": [], sso_session: sessionStorage.getItem('ssoSession')};
+  public fetchEntities(collection: string, pageSize= 100, pageNumber= 0, sortColumn= null, sortOrder= 'ASC', filter= null, search= null, archived= false, mappings= [], externalIds= true): Observable<EntitiesPage> {
+    const options = {'$top': pageSize, '$skip': pageSize * (pageNumber), 'mappings[]': [], sso_session: sessionStorage.getItem('ssoSession')};
 
-    mappings.forEach(m => options["mappings[]"].push(JSON.stringify(m)));
+    mappings.forEach(m => options['mappings[]'].push(JSON.stringify(m)));
 
-    var archiveFilter = '';
-    if(archived) {
-      archiveFilter = "status eq 'ARCHIVED'";
+    let archiveFilter = '';
+    if (archived) {
+      archiveFilter = 'status eq \'ARCHIVED\'';
     } else {
-      archiveFilter = "status ne 'ARCHIVED'";
+      archiveFilter = 'status ne \'ARCHIVED\'';
     }
 
     // Filter: $filter=code eq 'CT3'
-    if(filter) { archiveFilter += ' and ' + filter; }
+    if (filter) { archiveFilter += ' and ' + filter; }
     options['$filter'] = archiveFilter;
 
     // Search
-    if(search) { options['$search'] = search; }
+    if (search) { options['$search'] = search; }
 
     // Order: $orderby=name ASC
-    if(sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
+    if (sortColumn) { options['$orderby'] = sortColumn + ' ' + sortOrder; }
 
     return this.restangular.all(sessionStorage.getItem('channelId')).customGET(collection, options, {'CONNEC-EXTERNAL-IDS': externalIds})
     .map((res: any) => this.extractQueryData(res, collection))
@@ -114,18 +114,18 @@ export class ConnecApiService {
   }
 
   public mergeRecords(primeRecord: Entity, mergedRecords: Entity[], selectedAttributes: any) {
-    var data = {ids: mergedRecords.map(entity => entity['connecId'])};
+    const data = {ids: mergedRecords.map(entity => entity['connecId'])};
     data[primeRecord.resource_type] = selectedAttributes;
     return this.restangular.all(primeRecord.channel_id).one(primeRecord.resource_type, primeRecord['connecId'])
     .customPUT(data, 'merge', {sso_session: sessionStorage.getItem('ssoSession')}, {'CONNEC-EXTERNAL-IDS': false})
     .map(record => {
-      return this.deserializeModel(record[primeRecord.resource_type])
+      return this.deserializeModel(record[primeRecord.resource_type]);
     })
     .catch(error => this.handleError(error));
   }
 
   public sendEntityToApplication(entity: Entity, productInstance: ProductInstance) {
-    var data = {mappings: [{group_id: productInstance.uid, commit: true}]};
+    const data = {mappings: [{group_id: productInstance.uid, commit: true}]};
     return this.restangular.all(entity.channel_id).one(entity.resource_type, entity['connecId'])
     .customPUT(data, 'commit', {sso_session: sessionStorage.getItem('ssoSession')})
     .catch(error => this.handleError(error));
@@ -139,7 +139,7 @@ export class ConnecApiService {
   private extractQueryData(res: any, collection: string): EntitiesPage {
     const entitiesPage: EntitiesPage = new EntitiesPage([], res['pagination']);
 
-    if(res[collection].constructor == Array) {
+    if (res[collection].constructor == Array) {
       res[collection].forEach((record: any) => {
         const entity: Entity = this.deserializeModel(record);
         entitiesPage.entities.push(entity);

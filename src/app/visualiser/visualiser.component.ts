@@ -36,7 +36,7 @@ export class VisualiserComponent implements OnInit {
   selectedAttributes: any;
 
   selectedRecords: any = {};
-  numberRecordsSelected: number = 0;
+  numberRecordsSelected = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -54,7 +54,7 @@ export class VisualiserComponent implements OnInit {
     @Inject(forwardRef(() => ConnecUiComponent)) public _parent: ConnecUiComponent
   ) {
     // Set pre-selected attributes
-    if(sessionStorage.getItem('connec-selected-attributes-' + this.collection)) {
+    if (sessionStorage.getItem('connec-selected-attributes-' + this.collection)) {
       this.selectedAttributes = JSON.parse(sessionStorage.getItem('connec-selected-attributes-' + this.collection));
     } else {
       this.selectedAttributes = {code: true, friendlyName: true, created_at: true};
@@ -77,24 +77,24 @@ export class VisualiserComponent implements OnInit {
         // Extract list of collection available properties
         this.availableAttributes = [{name: 'friendlyName', type: 'string', description: 'Friendly name', icon: 'text_format'}];
 
-        let json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
-        let properties = Object.keys(json_properties);
+        const json_properties = this.jsonSchema['properties'][this.collection]['items']['properties'];
+        const properties = Object.keys(json_properties);
         properties.forEach(property => {
-          if(['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
-            let propertyHash = json_properties[property];
-            if(['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
+          if (['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
+            const propertyHash = json_properties[property];
+            if (['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
               propertyHash['name'] = property;
 
               // Icon to display
-              if (propertyHash['name'] === "id") {
+              if (propertyHash['name'] === 'id') {
                 propertyHash['icon'] = 'vpn_key';
-              } else if (propertyHash['name'].endsWith("_id")) {
+              } else if (propertyHash['name'].endsWith('_id')) {
                 propertyHash['icon'] = 'compare_arrows';
               } else if (propertyHash['type'] === 'number') {
                 propertyHash['icon'] = 'keyboard';
               } else if (propertyHash['type'] === 'boolean') {
                 propertyHash['icon'] = 'remove';
-              } else if(propertyHash['type'] === 'string') {
+              } else if (propertyHash['type'] === 'string') {
                 if (propertyHash['format'] === 'date-time') {
                   propertyHash['icon'] = 'date_range';
                 } else {
@@ -122,16 +122,16 @@ export class VisualiserComponent implements OnInit {
   // Selection of attributes to display as table columns
   selectAttribute($event, selectedAttribute) {
     this.selectedAttributes[selectedAttribute] = !this.selectedAttributes[selectedAttribute];
-    if(this.selectedAttributes[selectedAttribute]) {
+    if (this.selectedAttributes[selectedAttribute]) {
       let index = this.dataSource.selectedAttributes.indexOf(selectedAttribute);
-      if(index == -1) { this.dataSource.selectedAttributes.push(selectedAttribute); }
+      if (index == -1) { this.dataSource.selectedAttributes.push(selectedAttribute); }
       index = this.dataSource.displayedAttributes.indexOf(selectedAttribute);
-      if(index == -1) { this.dataSource.displayedAttributes.splice(this.dataSource.displayedAttributes.length - 2, 0, selectedAttribute); }
+      if (index == -1) { this.dataSource.displayedAttributes.splice(this.dataSource.displayedAttributes.length - 2, 0, selectedAttribute); }
     } else {
       let index = this.dataSource.selectedAttributes.indexOf(selectedAttribute);
-      if(index != -1) { this.dataSource.selectedAttributes.splice(index, 1); }
+      if (index != -1) { this.dataSource.selectedAttributes.splice(index, 1); }
       index = this.dataSource.displayedAttributes.indexOf(selectedAttribute);
-      if(index != -1) { this.dataSource.displayedAttributes.splice(index, 1); }
+      if (index != -1) { this.dataSource.displayedAttributes.splice(index, 1); }
     }
 
     // Store in session
@@ -143,10 +143,10 @@ export class VisualiserComponent implements OnInit {
   // Return IdMaps where record has been pushed to external application
   // Keep only 1 IdMap per group_id
   idMapFilter(ids: any): any {
-    if(!ids) { return null; }
-    let filteredIds = [];
+    if (!ids) { return null; }
+    const filteredIds = [];
     ids.filter(idMap => idMap['id'] && idMap['provider']).forEach(idMap => {
-      if(!filteredIds.some(filteredId => filteredId['group_id'] === idMap['group_id'])) {
+      if (!filteredIds.some(filteredId => filteredId['group_id'] === idMap['group_id'])) {
         filteredIds.push(idMap);
       }
     });
@@ -163,25 +163,25 @@ export class VisualiserComponent implements OnInit {
   }
 
   archiveEntity(entity: Entity) {
-    var data = {};
+    const data = {};
     data[entity.resource_type] = {status: 'ARCHIVED'};
     this.connecApiService.updateEntity(entity, data).subscribe(res => this._parent.triggerDataReload());
   }
 
   restoreEntity(entity: Entity) {
-    var data = {};
+    const data = {};
     data[entity.resource_type] = {status: ''};
     this.connecApiService.updateEntity(entity, data).subscribe(res => this._parent.triggerDataReload());
   }
 
   navigateToDetails(entity: Entity) {
     this.router.navigate(['/visualiser', entity.resource_type, entity['connecId']]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 
   navigateToCreateRecord() {
     this.router.navigate(['/visualiser', this.collection, 'new']);
-    scroll(0,0);
+    scroll(0, 0);
   }
 
   // Display dialog box to select attributes to match record against
@@ -193,10 +193,10 @@ export class VisualiserComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       // Get back to results first page
       this.paginator.pageIndex = 0;
-      var selectedAttributes = dialogRef.componentInstance.selectedAttributes;
+      const selectedAttributes = dialogRef.componentInstance.selectedAttributes;
       // Set attributes filters based on selected values
-      for(let key of Object.keys(selectedAttributes)) {
-        if(selectedAttributes[key]) {
+      for (const key of Object.keys(selectedAttributes)) {
+        if (selectedAttributes[key]) {
           this._parent.attributeFilters[key]['enabled'] = true;
           this._parent.attributeFilters[key]['operator'] = 'eq';
           this._parent.attributeFilters[key]['value'] = entity[key];
@@ -212,15 +212,15 @@ export class VisualiserComponent implements OnInit {
   }
 
   recordSelectionChange() {
-    let keys = Object.keys(this.selectedRecords);
+    const keys = Object.keys(this.selectedRecords);
     this.numberRecordsSelected = keys.filter(key => this.selectedRecords[key]).length;
   }
 
   mergeRecords() {
-    let keys = Object.keys(this.selectedRecords);
-    let records = keys.filter(key => this.selectedRecords[key]).map(key => key);
+    const keys = Object.keys(this.selectedRecords);
+    const records = keys.filter(key => this.selectedRecords[key]).map(key => key);
     this.router.navigate(['/visualiser', this.collection, 'merge', {records: records}]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 }
 
@@ -234,7 +234,7 @@ export class VisualiserDataSource extends DataSource<any> {
   displayedAttributes: string[] = [];
 
   filter = '';
-  search = ''
+  search = '';
 
   pageSize = 100;
   resultsLength = 0;
@@ -248,8 +248,8 @@ export class VisualiserDataSource extends DataSource<any> {
     this.connecApiService = visualiserComponent.connecApiService;
 
     // Initialise list of columns
-    for(let selectedAttribute in this.visualiserComponent.selectedAttributes) {
-      if(this.visualiserComponent.selectedAttributes[selectedAttribute]) {
+    for (const selectedAttribute in this.visualiserComponent.selectedAttributes) {
+      if (this.visualiserComponent.selectedAttributes[selectedAttribute]) {
         this.selectedAttributes.push(selectedAttribute);
         this.displayedAttributes.push(selectedAttribute);
       }
@@ -278,50 +278,50 @@ export class VisualiserDataSource extends DataSource<any> {
     return Observable.merge(...displayDataChanges)
       .startWith(null)
       .switchMap(() => {
-        if(!this.connecUiComponent.collectionCtrl.value) { return []; }
+        if (!this.connecUiComponent.collectionCtrl.value) { return []; }
 
         this.connecUiComponent.loading = true;
 
         // Apply attributes filters
-        let filters: string[] = [];
-        let keys = Object.keys(this.connecUiComponent.attributeFilters);
+        const filters: string[] = [];
+        const keys = Object.keys(this.connecUiComponent.attributeFilters);
         keys.forEach(key => {
-          let attributeFilter = this.connecUiComponent.attributeFilters[key];
-          if(attributeFilter['enabled']) {
-            switch(attributeFilter['operator']) {
+          const attributeFilter = this.connecUiComponent.attributeFilters[key];
+          if (attributeFilter['enabled']) {
+            switch (attributeFilter['operator']) {
               case 'match': {
-                if(attributeFilter['value'] && attributeFilter['value'].length > 0) {
-                  filters.push(key + ' ' + attributeFilter['operator'] + " /" + attributeFilter['value'] + "/");
+                if (attributeFilter['value'] && attributeFilter['value'].length > 0) {
+                  filters.push(key + ' ' + attributeFilter['operator'] + ' /' + attributeFilter['value'] + '/');
                 }
                 break;
               }
               case 'empty': {
-                filters.push(key + " eq null");
+                filters.push(key + ' eq null');
                 break;
               }
               case 'not_empty': {
-                filters.push(key + " ne null");
+                filters.push(key + ' ne null');
                 break;
               }
               default: {
                 // Escape string with single quote
                 let value = attributeFilter['value'];
-                if(attributeFilter['type'] === 'string') { value = "'" + value + "'"; }
+                if (attributeFilter['type'] === 'string') { value = '\'' + value + '\''; }
 
                 filters.push(key + ' ' + attributeFilter['operator'] + ' ' + value);
                 break;
               }
             }
           }
-        })
+        });
         this.filter = filters.join(' AND ');
 
         // Apply applications filter
         const mappings = [];
-        var selectedApplications = this.connecUiComponent.selectedApplications;
-        for (let selectedApplication of Object.keys(selectedApplications)) {
-          if (selectedApplications[selectedApplication] == 'include') { mappings.push({group_id: selectedApplication, include: true}); };
-          if (selectedApplications[selectedApplication] == 'exclude') { mappings.push({group_id: selectedApplication, exclude: true}); };
+        const selectedApplications = this.connecUiComponent.selectedApplications;
+        for (const selectedApplication of Object.keys(selectedApplications)) {
+          if (selectedApplications[selectedApplication] == 'include') { mappings.push({group_id: selectedApplication, include: true}); }
+          if (selectedApplications[selectedApplication] == 'exclude') { mappings.push({group_id: selectedApplication, exclude: true}); }
         }
 
         return this.connecApiService.fetchEntities(this.connecUiComponent.collectionCtrl.value, this.pageSize, this.paginator.pageIndex, this.sort.active, this.sort.direction, this.filter, this.connecUiComponent.attributeValue, this.connecUiComponent.checkboxArchived.checked, mappings);

@@ -32,16 +32,16 @@ export class CreateRecordComponent implements OnInit {
   }
 
   createRecord(formData) {
-    var keys = Object.keys(formData);
-    var collection = keys[0];
-    var record = formData[collection][0];
-    var data = {};
+    const keys = Object.keys(formData);
+    const collection = keys[0];
+    const record = formData[collection][0];
+    const data = {};
     data[collection] = record;
 
     this.connecApiService.createEntity(collection, data)
       .subscribe(record => {
         this.router.navigate(['/visualiser', record.resource_type, record.id]);
-        scroll(0,0);
+        scroll(0, 0);
       });
   }
 

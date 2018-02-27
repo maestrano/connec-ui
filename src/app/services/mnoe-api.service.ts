@@ -34,12 +34,12 @@ export class MnoeApiService {
         sessionStorage.setItem('ssoSession', user['sso_session']);
 
         // User organizations
-        let organizations: any[] = [];
+        const organizations: any[] = [];
         user['organizations'].map(organization => organizations.push(organization));
 
         // Select Organization
-        if(!sessionStorage.getItem('organizationId')) { sessionStorage.setItem('organizationId', organizations[0]['id']); }
-        if(!sessionStorage.getItem('channelId')) { sessionStorage.setItem('channelId', organizations[0]['uid']); }
+        if (!sessionStorage.getItem('organizationId')) { sessionStorage.setItem('organizationId', organizations[0]['id']); }
+        if (!sessionStorage.getItem('channelId')) { sessionStorage.setItem('channelId', organizations[0]['uid']); }
 
         resolve();
       });
@@ -71,11 +71,11 @@ export class MnoeApiService {
   }
 
   private extractQueryData(res: any, elementName: string): ProductInstance[] {
-    var elements = [];
-    var data = res[elementName];
-    if(!data) { return []; }
-    var keys = Object.keys(data);
-    var values = keys.map(function(v) { return data[v]; });
+    const elements = [];
+    const data = res[elementName];
+    if (!data) { return []; }
+    const keys = Object.keys(data);
+    const values = keys.map(function(v) { return data[v]; });
 
     values.forEach((record: any) => {
       const product: ProductInstance = this.deserializeModel(record);

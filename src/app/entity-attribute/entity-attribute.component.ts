@@ -30,8 +30,8 @@ export class EntityAttributeComponent implements OnInit {
   // Navigate to the association
   // key: association name (eg: organization_id)
   navigateToDetails(key: string) {
-    var collection = undefined;
-    if(key.endsWith("_id")) {
+    let collection;
+    if (key.endsWith('_id')) {
       // Association: {organization_id: '234214'}
       collection = pluralize(key.replace('_id', ''));
     } else {
@@ -40,18 +40,18 @@ export class EntityAttributeComponent implements OnInit {
     }
 
     // Find Connec! IdMap
-    var idMap = this.connecIdMap(this.entity[key]);
+    const idMap = this.connecIdMap(this.entity[key]);
     this.router.navigate(['/visualiser', collection, idMap['id']]);
   }
 
   properties() {
     // Ignore properties id and matching_records
-    var keys = Object.keys(this.entity);
-    var ignoredKeys = ['matching_records'];
-    if(keys.indexOf('class') == -1) { ignoredKeys.push('id'); }
+    const keys = Object.keys(this.entity);
+    const ignoredKeys = ['matching_records'];
+    if (keys.indexOf('class') == -1) { ignoredKeys.push('id'); }
 
-    for(let ignoredKey of ignoredKeys) {
-      var index = keys.indexOf(ignoredKey);
+    for (const ignoredKey of ignoredKeys) {
+      const index = keys.indexOf(ignoredKey);
       if (index !== -1) { keys.splice(index, 1); }
     }
 
@@ -59,7 +59,7 @@ export class EntityAttributeComponent implements OnInit {
   }
 
   isIdMap(key) {
-    return this.isObject(key) && (key === "id" || key.endsWith("_id"));
+    return this.isObject(key) && (key === 'id' || key.endsWith('_id'));
   }
 
   isObject(key) {

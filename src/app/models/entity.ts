@@ -5,7 +5,7 @@ export class Entity {
   [key: string]: any
 
   constructor(data: any) {
-    for (let key in data) {
+    for (const key in data) {
        this[key] = data[key];
     }
 
@@ -18,13 +18,13 @@ export class Entity {
   }
 
   public friendlyName() {
-    return this.transaction_number || this.payment_reference || this.name || this.full_name || this.reference || this.number || this.title
+    return this.transaction_number || this.payment_reference || this.name || this.full_name || this.reference || this.number || this.title;
   }
 
-  public properties() : string[] {
-    var keys: string[] = Object.keys(this);
-    for(let ignoredKey of ['id', 'matching_records']) {
-      var index = keys.indexOf(ignoredKey);
+  public properties(): string[] {
+    const keys: string[] = Object.keys(this);
+    for (const ignoredKey of ['id', 'matching_records']) {
+      const index = keys.indexOf(ignoredKey);
       if (index !== -1) { keys.splice(index, 1); }
     }
 

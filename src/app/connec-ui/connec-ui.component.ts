@@ -103,7 +103,7 @@ export class ConnecUiComponent implements OnInit {
         res.forEach((record: any) => {
           this.productInstances.push(record);
           this.selectedApplications[record['uid']] = 'any';
-        })
+        });
       });
     });
 
@@ -111,7 +111,7 @@ export class ConnecUiComponent implements OnInit {
     this.mnoeApiService.currentUser().subscribe((user: any) => {
       user['organizations'].map(organization => this.organizations.push(organization));
       // Select first Organization
-      if(sessionStorage.getItem('organizationId')) {
+      if (sessionStorage.getItem('organizationId')) {
         this.organizationSelector.value = this.organizations.find(organization => organization['id'] === sessionStorage.getItem('organizationId'));
       } else {
         this.organizationSelector.value = this.organizations[0];
@@ -124,7 +124,7 @@ export class ConnecUiComponent implements OnInit {
         res.forEach((record: any) => {
           this.productInstances.push(record);
           this.selectedApplications[record['uid']] = 'any';
-        })
+        });
       });
     });
 
@@ -142,7 +142,7 @@ export class ConnecUiComponent implements OnInit {
 
   // Return IdMaps where record has been pushed to external application
   idMapFilter(ids: any): any {
-    if(!ids) { return null; }
+    if (!ids) { return null; }
     return ids.filter(idMap => idMap['id'] && idMap['provider']);
   }
 
@@ -167,9 +167,9 @@ export class ConnecUiComponent implements OnInit {
   }
 
   triggerAttributeFilterChange(attributeFilter) {
-    if(!attributeFilter['enabled']) { return this.triggerDataReload(); }
-    if((attributeFilter['value'] || attributeFilter['value'] == 0) && attributeFilter['operator']) { return this.triggerDataReload(); }
-    if(['empty', 'not_empty'].indexOf(attributeFilter['operator']) != -1) { return this.triggerDataReload(); }
+    if (!attributeFilter['enabled']) { return this.triggerDataReload(); }
+    if ((attributeFilter['value'] || attributeFilter['value'] == 0) && attributeFilter['operator']) { return this.triggerDataReload(); }
+    if (['empty', 'not_empty'].indexOf(attributeFilter['operator']) != -1) { return this.triggerDataReload(); }
   }
 
   triggerDataReload() {
@@ -180,29 +180,29 @@ export class ConnecUiComponent implements OnInit {
     this.availableAttributes = [];
 
     // Get collection JSON schema
-    let collection = this.collectionCtrl.value;
+    const collection = this.collectionCtrl.value;
     this.jsonSchema$ = this.connecApiService.jsonSchema(collection);
     this.jsonSchema$.subscribe(schema => {
       this.jsonSchema = schema.plain();
 
-      let json_properties = this.jsonSchema['properties'][collection]['items']['properties'];
-      let properties = Object.keys(json_properties);
+      const json_properties = this.jsonSchema['properties'][collection]['items']['properties'];
+      const properties = Object.keys(json_properties);
       properties.forEach(property => {
-        if(['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
-          let propertyHash = json_properties[property];
-          if(['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
+        if (['resource_type', 'channel_id', 'group_id'].indexOf(property) == -1) {
+          const propertyHash = json_properties[property];
+          if (['string', 'number', 'boolean'].indexOf(propertyHash['type']) != -1) {
             propertyHash['name'] = property;
 
             // Icon to display
-            if (propertyHash['name'] === "id") {
+            if (propertyHash['name'] === 'id') {
               propertyHash['icon'] = 'vpn_key';
-            } else if (propertyHash['name'].endsWith("_id")) {
+            } else if (propertyHash['name'].endsWith('_id')) {
               propertyHash['icon'] = 'compare_arrows';
             } else if (propertyHash['type'] === 'number') {
               propertyHash['icon'] = 'keyboard';
             } else if (propertyHash['type'] === 'boolean') {
               propertyHash['icon'] = 'remove';
-            } else if(propertyHash['type'] === 'string') {
+            } else if (propertyHash['type'] === 'string') {
               if (propertyHash['format'] === 'date-time') {
                 propertyHash['icon'] = 'date_range';
               } else {
@@ -219,7 +219,7 @@ export class ConnecUiComponent implements OnInit {
 
       // Build list of filterable attributes
       this.availableAttributes.forEach(availableAttribute => {
-        let value = availableAttribute['type'] === 'boolean' ? true : null;
+        const value = availableAttribute['type'] === 'boolean' ? true : null;
         this.attributeFilters[availableAttribute['name']] = {
           enabled: false,
           value: value,

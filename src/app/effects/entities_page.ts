@@ -46,7 +46,7 @@ export class EntitiesPageEffects {
     .mergeMap(() => {
       return this.connecApiService.fetchEntities('contacts')
         .map((entitiesPage: EntitiesPage) => new entitiesPageAction.LoadSuccessAction(entitiesPage))
-        .catch(error => of(new entitiesPageAction.LoadFailAction(error)))
+        .catch(error => of(new entitiesPageAction.LoadFailAction(error)));
     });
 
     constructor(

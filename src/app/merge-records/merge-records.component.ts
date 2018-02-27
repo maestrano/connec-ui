@@ -44,7 +44,7 @@ export class MergeRecordsComponent implements OnInit {
 
     this.route.params.subscribe((params: Params) => {
       this.collection = params['collection'];
-      var filter = '_id in [' + params['records'] + ']';
+      const filter = '_id in [' + params['records'] + ']';
       Observable.forkJoin(
         // Load json schema
         this.jsonSchema$ = this.connecApiService.jsonSchema(this.collection),
@@ -63,23 +63,23 @@ export class MergeRecordsComponent implements OnInit {
   }
 
   mergeRecords() {
-    let primeRecord: Entity = this.records.entities.find(entity => entity['connecId'] == this.selectedAttributes['id']);
-    let mergedRecords: Entity[] = this.records.entities.filter(entity => entity['connecId'] != this.selectedAttributes['id']);
+    const primeRecord: Entity = this.records.entities.find(entity => entity['connecId'] == this.selectedAttributes['id']);
+    const mergedRecords: Entity[] = this.records.entities.filter(entity => entity['connecId'] != this.selectedAttributes['id']);
 
     this.connecApiService.mergeRecords(primeRecord, mergedRecords, this.selectedAttributes)
       .subscribe(record => {
         this.navigateToDetails(record);
-        scroll(0,0);
+        scroll(0, 0);
       });
   }
 
   navigateToCollection() {
     this.router.navigate(['/visualiser', this.collection]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 
   navigateToDetails(entity: Entity) {
     this.router.navigate(['/visualiser', entity.resource_type, entity['connecId']]);
-    scroll(0,0);
+    scroll(0, 0);
   }
 }
